@@ -12,10 +12,11 @@
     "test": "jest"
   },
   "dependencies": {
-    "nuxt": "^2.0.0",
+    "core-js": "^3.6.4",
     "cross-env": "^5.2.0",
+    "element-ui": "^2.4.11",
     "express": "^4.16.4",
-    "element-ui": "^2.4.11"
+    "nuxt": "^2.0.0"
   },
   "devDependencies": {
     "nodemon": "^1.18.9",
