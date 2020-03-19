@@ -19,6 +19,8 @@
     <el-main>
       <Basic />
 
+      <Block />
+
     </el-main>
     <el-footer>
 
@@ -29,11 +31,13 @@
 <script>
 import Logo from '~/components/Logo.vue';
 import Basic from '~/components/Basic.vue';
+import Block from '~/components/Block.vue';
 
 export default {
   components: {
     Logo,
-    Basic
+    Basic,
+    Block,
   }
 }
 </script>
