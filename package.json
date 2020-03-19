@@ -11,17 +11,21 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
-    "nuxt": "^2.0.0",
-    "cross-env": "^5.2.0",
-    "express": "^4.16.4",
-    "element-ui": "^2.4.11",
+    "@gny/client": "^1.0.19",
     "@nuxtjs/axios": "^5.3.6",
-    "@nuxtjs/dotenv": "^1.4.0"
+    "@nuxtjs/dotenv": "^1.4.0",
+    "cors": "^2.8.5",
+    "cross-env": "^5.2.0",
+    "element-theme-chalk": "^2.13.0",
+    "element-ui": "^2.4.11",
+    "express": "^4.16.4",
+    "nuxt": "^2.0.0"
   },
   "devDependencies": {
-    "nodemon": "^1.18.9",
+    "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-prettier": "^3.1.2",
+    "nodemon": "^1.18.9",
     "prettier": "^1.19.1"
   }
 }
