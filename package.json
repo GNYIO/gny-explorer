@@ -14,6 +14,7 @@
     "@gny/client": "^1.0.19",
     "@nuxtjs/axios": "^5.3.6",
     "@nuxtjs/dotenv": "^1.4.0",
+    "bignumber.js": "^8.1.1",
     "cors": "^2.8.5",
     "cross-env": "^5.2.0",
     "element-theme-chalk": "^2.13.0",

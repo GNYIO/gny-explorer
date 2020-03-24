@@ -26,7 +26,7 @@ const connection = new gnyClient.Connection(
 export default {
   data() {
     return {
-      blocks: '',
+      blocks: [],
     }
   },
 
