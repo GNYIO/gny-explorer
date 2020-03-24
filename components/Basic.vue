@@ -50,6 +50,7 @@ export default {
       dalegates: '',
       latestHeight:'',
       nodes: '',
+      size: '',
     }
   },
 
@@ -60,7 +61,7 @@ export default {
     this.transactions = String((await connection.api.Transaction.getTransactions({})).count);
     this.latestHeight = height;
     this.nodes = (await connection.api.Peer.getPeers()).count;
-    
+
   },
 }
 </script>
