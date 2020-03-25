@@ -24,6 +24,8 @@ const connection = new gnyClient.Connection(
   process.env['GNY_NETWORK'],
 );
 
+const EPOCH_TIME = new Date(Date.UTC(2018, 10, 18, 20, 0, 0, 0));
+
 export default {
   data() {
     return {
@@ -33,8 +35,7 @@ export default {
 
   methods: {
     timestamp2date: function (row, column) {
-      console.log(row.timestamp);
-      return moment(row.timestamp * 1000).format('YYYY-MM-DD hh:mm:ss');
+      return moment(row.timestamp * 1000 + EPOCH_TIME.getTime()).format('YYYY-MM-DD hh:mm:ss');
     }
   },
 
@@ -44,8 +45,6 @@ export default {
     const orderBy = 'height:desc';
 
     this.blocks = (await connection.api.Block.getBlocks(offset, limit, orderBy)).blocks;
-    // this.blocks = this.blocks.map(block => block['date']= moment(block.timestamp).format('YYYY-MM-DD hh:mm'));
-
   },
 }
 </script>

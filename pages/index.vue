@@ -2,18 +2,9 @@
   <el-container >
     <el-header>
       <!-- <img src="../assets/logo.png" alt="logo" class="head-log"> -->
-      <el-menu :default-active="$route.path" class="el-menu-demo" mode="horizontal">
+      <el-menu :default-active="$route.path" class="el-menu" mode="horizontal">
         <el-menu-item index="/index">EXPLORER</el-menu-item>
-        <el-menu-item >
-          <el-form :inline="true" :model="formInline" class="demo-form-inline">
-            <el-form-item>
-              <el-input placeholder="Explore"></el-input>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="onSubmit">Search</el-button>
-            </el-form-item>
-          </el-form> 
-        </el-menu-item>
+        <Search />
       </el-menu>
     </el-header>
     <el-main>
@@ -32,12 +23,14 @@
 import Logo from '~/components/Logo.vue';
 import Basic from '~/components/Basic.vue';
 import Block from '~/components/Block.vue';
+import Search from '~/components/Search.vue';
 
 export default {
   components: {
     Logo,
     Basic,
     Block,
+    Search
   }
 }
 </script>
