@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <h2>Latest transactions</h2>
-    <el-table :data="transactions" stripe style="width: 80%; margin: auto;">
+    <el-table :data="transactions" stripe style="width: 95%; margin: auto;">
       <el-table-column prop="height" align="center" label="Height" width="200"></el-table-column>
       <el-table-column prop="id" align="center" label="Block ID" width="300"></el-table-column>
       <el-table-column prop="timestamp" align="center" label="Forged Time" width="180"></el-table-column>
