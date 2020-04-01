@@ -1,36 +1,35 @@
 <template>
-  <el-row>
+  <el-card>
+    <h1>Basic</h1>
     <el-row class="basic">
       <el-col :span="8" >
-        Blocks
+        Blocks:
         <p v-if="blocks">{{blocks}}</p>
       </el-col>
       <el-col :span="8" >
-        Transactions
+        Transactions:
         <p v-if="transactions">{{transactions}}</p>
       </el-col>
       <el-col :span="8" >
-        Delegates
+        Delegates:
         <p v-if="dalegates">{{dalegates}}</p>
       </el-col>
     </el-row>
     <el-row class="statics">
       <el-col :span="8" >
-        Blockchain size
+        Blockchain size:
         <p v-if="size">{{size}}</p>
       </el-col>
       <el-col :span="8" >
-        Latest block height
+        Latest block height:
         <p v-if="latestHeight">{{latestHeight}}</p>
       </el-col>
       <el-col :span="8" >
-        Nodes
+        Nodes:
         <p v-if="nodes">{{nodes}}</p>
       </el-col>
     </el-row>
-  </el-row>
-
-  
+  </el-card>
 </template>
 
 <script>
@@ -50,7 +49,7 @@ export default {
       dalegates: '',
       latestHeight:'',
       nodes: '',
-      size: '',
+      size: 'loading',
     }
   },
 
@@ -61,16 +60,19 @@ export default {
     this.transactions = String((await connection.api.Transaction.getTransactions({})).count);
     this.latestHeight = height;
     this.nodes = (await connection.api.Peer.getPeers()).count;
-
   },
 }
 </script>
 
 <style>
-.el-row {
-  margin-bottom: 20px;
-}
+
 .el-col {
-  border-radius: 4px;
+  font-weight: 500;
 }
+
+p {
+  color: #acacac;
+}
+
+
 </style>
