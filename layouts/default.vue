@@ -1,11 +1,37 @@
 <template>
-  <div>
-    <nuxt />
-  </div>
+  <el-container >
+      <el-header class="header">
+        <nav class="inner" >
+          <img src="../assets/logo.png" alt="logo" class="logo">
+          <router-link to="/" >EXPLORER</router-link>
+          <Search />
+        </nav>
+      </el-header>
+      <el-main>
+        <nuxt />
+
+      </el-main>
+      <el-footer>
+
+      </el-footer>
+    </el-container>
+
 </template>
 
+<script>
+import Logo from '~/components/Logo.vue';
+import Search from '~/components/Search.vue';
+
+export default {
+  components: {
+    Logo,
+    Search
+  }
+}
+</script>
+
 <style>
-html {
+body {
   font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
     Roboto, 'Helvetica Neue', Arial, sans-serif;
   font-size: 16px;
@@ -17,39 +43,27 @@ html {
   box-sizing: border-box;
 }
 
-*,
-*:before,
-*:after {
+a {
+  text-decoration: none;
+}
+
+.header {
+  z-index: 999;
+  height: 60px;
+}
+
+.inner {
+  max-width: 1000px;
   box-sizing: border-box;
-  margin: 0;
+  margin: 0px auto;
+  padding: 15px 15px;
 }
 
-.button--green {
+.logo {
+  width: 40px;
+  margin-right: 10px;
   display: inline-block;
-  border-radius: 4px;
-  border: 1px solid #3b8070;
-  color: #3b8070;
-  text-decoration: none;
-  padding: 10px 30px;
+  vertical-align: middle;
 }
 
-.button--green:hover {
-  color: #fff;
-  background-color: #3b8070;
-}
-
-.button--grey {
-  display: inline-block;
-  border-radius: 4px;
-  border: 1px solid #35495e;
-  color: #35495e;
-  text-decoration: none;
-  padding: 10px 30px;
-  margin-left: 15px;
-}
-
-.button--grey:hover {
-  color: #fff;
-  background-color: #35495e;
-}
 </style>
