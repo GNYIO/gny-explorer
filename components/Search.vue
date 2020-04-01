@@ -1,39 +1,23 @@
 <template>
-  <el-menu-item >
-    <el-form :inline="true">
-      <el-form-item>
-        <el-input placeholder="Explore" v-model="form.item"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="search">Search</el-button>
-      </el-form-item>
-    </el-form> 
-  </el-menu-item>
 
-  
+  <el-input placeholder="Block height" v-model="input" @keyup.enter.native="search">
+    <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
+  </el-input>
 
 </template>
 
 <script>
-// import * as gnyClient from '@gny/client';
-// const connection = new gnyClient.Connection(
-//   process.env['GNY_ENDPOINT'],
-//   process.env['GNY_PORT'],
-//   process.env['GNY_NETWORK'],
-// );
 
 export default {
   data() {
     return {
-      form: {
-        item: '',
-      },
+      input: '',
     }
   },
 
   methods: {
     async search() {
-      const height = this.form.item;
+      const height = this.input;
       // console.log(this.$route.params.height);
       this.$router.push({name: 'block', query: {height: height}});
     }
@@ -45,4 +29,9 @@ export default {
 </script>
 
 <style>
+.el-input {
+  width: 500px;
+  margin: 0;
+  float: right;
+}
 </style>
