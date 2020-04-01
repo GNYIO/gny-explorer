@@ -83,13 +83,15 @@ export default {
 
   async mounted() {
     const height = this.$route.query.height;
-    this.block  = (await connection.api.Block.getBlockByHeight(height)).block;
-    this.subID = this.block.id.slice(0, 8);
-    this.date = moment(slots.getRealTime(this.block.timestamp)).format('YYYY-MM-DD hh:mm:ss');
-    this.transactions = this.block.transactions;
+    try {
+      this.block  = (await connection.api.Block.getBlockByHeight(height)).block;
+      this.subID = this.block.id.slice(0, 8);
+      this.date = moment(slots.getRealTime(this.block.timestamp)).format('YYYY-MM-DD hh:mm:ss');
+      this.transactions = this.block.transactions;
+    } catch (error) {
+      error({ statusCode: 404, message: 'Oops...' })
+    }
   }
-
-
 }
 </script>
 
