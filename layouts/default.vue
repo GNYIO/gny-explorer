@@ -12,7 +12,7 @@
 
       </el-main>
       <el-footer>
-
+        © 2020 by gny.io Limited
       </el-footer>
     </el-container>
 
@@ -38,9 +38,7 @@ body {
   word-spacing: 1px;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
-  -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  box-sizing: border-box;
 }
 
 a {
@@ -49,7 +47,7 @@ a {
 
 .header {
   z-index: 999;
-  height: 60px;
+  height: 50px;
 }
 
 .inner {
@@ -60,10 +58,14 @@ a {
 }
 
 .logo {
-  width: 40px;
+  width: 45px;
   margin-right: 10px;
   display: inline-block;
   vertical-align: middle;
+}
+
+.el-footer {
+  text-align: center;
 }
 
 </style>
