@@ -22,12 +22,12 @@
           <p >{{block.count}}</p>
         </el-col>
         <el-col :span="8" >
-          Transaction Fees
-          <p >{{block.fees}}</p>
-        </el-col>
-        <el-col :span="8" >
           Reward
           <p >{{block.reward}}</p>
+        </el-col>
+        <el-col :span="8" >
+          Delegate
+          <p >{{delegateID}}</p>
         </el-col>
       </el-row>
     </el-card>
@@ -36,7 +36,13 @@
       
       <el-table :data="transactions" stripe style="width: 95%; margin: auto;">
         <el-table-column prop="height" align="center" label="Height" width="150"></el-table-column>
-        <el-table-column prop="id" align="center" label="Transaction ID" width="200" :formatter="subID"></el-table-column>
+        <el-table-column prop="id" align="center" label="Transaction ID" width="200" :formatter="subID">
+          <template v-slot:default="table">
+            <router-link :to="{name: 'transaction', query: { id: table.row.id }}" tag="span">
+              {{table.row.id}}
+            </router-link>
+          </template>
+        </el-table-column>
         <el-table-column prop="timestamp" align="center" label="Forged Time" width="200" :formatter="timestamp2date"></el-table-column>
         <el-table-column prop="fee" align="center" label="Fee" width="200"></el-table-column>
       </el-table>
@@ -62,6 +68,7 @@ export default {
       block: {},
       sliceID: '',
       date: '',
+      delegateID: '',
       transactions: [],
     }
   },
@@ -82,13 +89,14 @@ export default {
       this.block = (await connection.api.Block.getBlockByHeight(height)).block;
       this.sliceID = this.block.id.slice(0, 8);
       this.date = moment(slots.getRealTime(this.block.timestamp)).format('YYYY-MM-DD hh:mm:ss');
+      this.delegateID = this.block.delegate.slice(0, 8);
       
       const query = {
         limit: 5,
         height: height,
       }
       this.transactions = (await connection.api.Transaction.getTransactions(query)).transactions;
-      console.log(this.transactions);
+      this.$store.commit('setTransactions', this.transactions);
     } catch (error) {
       error({ statusCode: 404, message: 'Oops...' })
     }

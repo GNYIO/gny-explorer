@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { BigNumber } from 'bignumber.js';
+import BigNumber from 'bignumber.js';
 import * as gnyClient from '@gny/client';
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],
