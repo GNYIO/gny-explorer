@@ -8,7 +8,7 @@
         </el-col>
         <el-col :span="8" >
           ID
-          <p >{{subID}}</p>
+          <p >{{sliceID}}</p>
         </el-col>
         <el-col :span="8" >
           Date
@@ -38,8 +38,7 @@
         <el-table-column prop="height" align="center" label="Height" width="150"></el-table-column>
         <el-table-column prop="id" align="center" label="Transaction ID" width="200" :formatter="subID"></el-table-column>
         <el-table-column prop="timestamp" align="center" label="Forged Time" width="200" :formatter="timestamp2date"></el-table-column>
-        <!-- <el-table-column prop="fees" align="center" label="Fee"></el-table-column> -->
-        <el-table-column prop="delegate" align="center" label="Delegate" width="200" :formatter="subDelegate"></el-table-column>
+        <el-table-column prop="fee" align="center" label="Fee" width="200"></el-table-column>
       </el-table>
     </el-card>
   </el-container>
@@ -61,7 +60,7 @@ export default {
   data() {
     return {
       block: {},
-      subID: '',
+      sliceID: '',
       date: '',
       transactions: [],
     }
@@ -72,10 +71,6 @@ export default {
       return row.id.slice(0,8);
     },
 
-    subDelegate: function (row, column) {
-      return row.delegate.slice(0,8);
-    },
-
     timestamp2date: function (row, column) {
       return moment(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD hh:mm:ss');
     },
@@ -84,10 +79,16 @@ export default {
   async mounted() {
     const height = this.$route.query.height;
     try {
-      this.block  = (await connection.api.Block.getBlockByHeight(height)).block;
-      this.subID = this.block.id.slice(0, 8);
+      this.block = (await connection.api.Block.getBlockByHeight(height)).block;
+      this.sliceID = this.block.id.slice(0, 8);
       this.date = moment(slots.getRealTime(this.block.timestamp)).format('YYYY-MM-DD hh:mm:ss');
-      this.transactions = this.block.transactions;
+      
+      const query = {
+        limit: 5,
+        height: height,
+      }
+      this.transactions = (await connection.api.Transaction.getTransactions(query)).transactions;
+      console.log(this.transactions);
     } catch (error) {
       error({ statusCode: 404, message: 'Oops...' })
     }
