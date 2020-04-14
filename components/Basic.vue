@@ -17,8 +17,8 @@
     </el-row>
     <el-row class="statics">
       <el-col :span="8" >
-        Blockchain size:
-        <p v-if="size">{{size}}</p>
+        Accounts:
+        <p v-if="size">{{accounts}}</p>
       </el-col>
       <el-col :span="8" >
         Latest block height:
@@ -50,6 +50,7 @@ export default {
       latestHeight:'',
       nodes: '',
       size: 'loading',
+      accounts: '',
     }
   },
 
@@ -60,6 +61,7 @@ export default {
     this.transactions = String((await connection.api.Transaction.getTransactions({})).count);
     this.latestHeight = height;
     this.nodes = (await connection.api.Peer.getPeers()).count;
+    this.accounts = (await connection.api.Account.countAccounts()).count;
   },
 }
 </script>
