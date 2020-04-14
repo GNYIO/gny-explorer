@@ -4,29 +4,33 @@
         <h1>Basic</h1>
         <el-row>
             <el-col :span="8">
-            Delegates count:
+            All Delegates:
             <p>{{count}}</p>
             </el-col>
-                        <el-col :span="8">
-                Highest Vote Weight:
-                
+            <el-col :span="8">
+                Most Produced Blocks:
+                <p>{{mostProducedBlocks}}</p>
             </el-col>
             <el-col :span="8">
-                Highest Productivity
+                Highest Approval
+                <p>{{highestApproval}} %</p>
             </el-col>
         </el-row>
         <el-row>
             <el-col :span="8">
-                test
+                Forging Delegates:
+                <p>101</p>
             </el-col>
             <el-col :span="8">
-                test
+                Most Produced Blocks Delegate:
+                <p>{{mostProducedBlocksDelegate}}</p>
             </el-col>
             <el-col :span="8">
-                Lowest Productivity:
+                Highest Approval Name:
+                <p>{{highestApprovalDelegate}}</p>
             </el-col>
         </el-row>
-       
+
     </el-card>
     <el-card>
       <el-table :data="allDelegates" stripe style="width: 100%">
@@ -50,7 +54,7 @@
             prop="productivity"
             label="Productivity"
           ></el-table-column>
-          <el-table-column prop="approval" label="Approval"> </el-table-column>
+          <el-table-column prop="approval" label="Approval %"> </el-table-column>
         </el-table>
     </el-card>
   </el-container>
@@ -63,13 +67,20 @@ const connection = new gnyClient.Connection(
   process.env['GNY_PORT'],
   process.env['GNY_NETWORK'],
 );
+import { BigNumber } from 'bignumber.js';
 
 export default {
   data() {
     return {
       allDelegates: [],
       count: 101,
-    }
+
+      mostProducedBlocks: '',
+      mostProducedBlocksDelegate: '',
+
+      highestApproval: '',
+      highestApprovalDelegate: '',
+    };
   },
   async mounted() {
     try {
@@ -83,8 +94,50 @@ export default {
             all.push(...part.delegates);
           }
         }
+
         this.allDelegates = all;
         this.count = all.length;
+
+        // Array.sort() changes own array (not only returned value)
+        const copy = JSON.parse(JSON.stringify(all));
+
+
+        // approval
+        const highestApproval = copy.sort((a, b) => {
+            if (new BigNumber(a.approval).isGreaterThan(b.approval)) {
+                return -1;
+            }
+
+            if (new BigNumber(a.approval).isLessThan(b.approval)) {
+                return 1;
+            }
+
+            return 0;
+        })[0];
+
+        this.highestApproval = highestApproval.approval;
+        this.highestApprovalDelegate = highestApproval.username;
+
+
+
+        // produced Blocks
+        const copy2 = JSON.parse(JSON.stringify(all));
+
+        const mostProducedBlocks = copy2.sort((a, b) => {
+            if (new BigNumber(a.producedBlocks).isGreaterThan(b.producedBlocks)) {
+                return -1;
+            }
+
+            if (new BigNumber(a.producedBlocks).isLessThan(b.producedBlocks)) {
+                return 1;
+            }
+
+            return 0;
+        })[0];
+
+        this.mostProducedBlocks = mostProducedBlocks.producedBlocks;
+        this.mostProducedBlocksDelegate = mostProducedBlocks.username;
+
       } else {
         this.allDelegates = [];
       }
