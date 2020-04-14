@@ -8,7 +8,10 @@
       <!-- <el-table-column prop="fees" align="center" label="Fee"></el-table-column> -->
       <el-table-column prop="delegate" align="center" label="Delegate" :formatter="subDelegate"></el-table-column>
     </el-table>
-
+    <br>
+    <nuxt-link to="blocks">
+      Explore more blocks →
+    </nuxt-link>
   </el-card>
   
   

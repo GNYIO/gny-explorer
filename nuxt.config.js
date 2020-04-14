@@ -29,7 +29,8 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '@/plugins/element-ui'
+    '@/plugins/element-ui',
+    { src: '@/plugins/vue-infinite-scroll', ssr: false },
   ],
   /*element-theme-chalk
   ** Nuxt.js dev-modules
