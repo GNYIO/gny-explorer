@@ -30,8 +30,8 @@ export default {
 
 <style>
 .el-input {
-  width: 500px;
-  margin: 0;
+  width: 300px;
+  margin-right: 0;
   float: right;
 }
 </style>
