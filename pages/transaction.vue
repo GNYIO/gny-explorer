@@ -1,37 +1,40 @@
 <template>
   <el-container direction="vertical">
-    <h2>General info</h2>
     <el-card>
+      <h2>General info</h2>
       <el-row>
         <el-col :span="24" >
           <span>Transaction ID</span>
-          <span v-if="!!transaction">{{transaction.id}}</span>
+          <span v-if="!!transaction" id="data" class="content">{{transaction.id}}</span>
         </el-col>
       </el-row>
 
       <el-row>
         <el-col :span="24" >
           <span>Block height</span>
-          <span v-if="!!transaction">{{transaction.height}}</span>
-          <span v-if="!!confirmation">{{confirmation}}</span>
+          <span v-if="!!transaction" class="content">
+            {{transaction.height}}
+            <span v-if="!!confirmation" class="confirm">{{confirmation}}</span>
+          </span>
+          
         </el-col>
       </el-row>
 
       <el-row>
         <el-col :span="24" >
           <span>Forged Time</span>
-          <span v-if="!!transaction">{{transaction.timestamp}}</span>
+          <span v-if="!!date" class="content">{{date}}</span>
         </el-col>
       </el-row>
 
       <el-row>
-        <el-col :span="12" >
+        <el-col :span="11">
           <span>Fee</span>
-          <span v-if="!!transaction">{{transaction.fee}}</span>
+          <span v-if="!!transaction" class="content">{{transaction.fee}}</span>
         </el-col>
-        <el-col :span="12" >
+        <el-col :span="11" class="type">
           <span>Type</span>
-          <span v-if="!!transaction">{{transaction.type}}</span>
+          <span v-if="!!transaction" class="content">{{transaction.type}}</span>
         </el-col>
       </el-row>
     </el-card>
@@ -61,21 +64,11 @@ export default {
         type: null,
       },
       confirmation: '',
+      date:'',
     }
   },
 
   methods: {
-    // subID: function (row, column) {
-    //   return row.id.slice(0,8);
-    // },
-
-    // subDelegate: function (row, column) {
-    //   return row.delegate.slice(0,8);
-    // },
-
-    // timestamp2date: function (row, column) {
-    //   return moment(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD hh:mm:ss');
-    // },
   },
 
   async mounted() {
@@ -96,6 +89,8 @@ export default {
         // error({ statusCode: 404, message: 'Oops...' });
       }
     }
+
+    this.date = moment(slots.getRealTime(this.transaction.timestamp)).format('YYYY-MM-DD hh:mm:ss');
 
     try {
       const currentHeight = (await connection.api.Block.getHeight()).height;
@@ -132,10 +127,24 @@ export default {
 
 .el-col {
   font-weight: 500;
+  margin-bottom: 5px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #bbb;
 }
 
-p {
+.content {
+  float: right;
   color: #acacac;
+}
+
+.confirm {
+  border: 1px solid;
+  border-radius: 5px;
+  padding: 4px;
+}
+
+.type {
+  float: right;
 }
 
 </style>
