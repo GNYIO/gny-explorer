@@ -18,8 +18,7 @@ export default {
   methods: {
     async search() {
       const height = this.input;
-      // console.log(this.$route.params.height);
-      this.$router.push({name: 'block', query: {height: height}});
+      this.$router.push({name: 'block-detail', query: {height: height}});
     }
   },
 

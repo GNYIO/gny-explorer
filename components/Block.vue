@@ -35,7 +35,7 @@ export default {
   methods: {
     rowClick: function(row) {
         console.log(row.height);
-        this.$router.push({name: 'block', query: { height: row.height }});
+        this.$router.push({name: 'block-detail', query: { height: row.height }});
     },
     subID: function (row, column) {
       return row.id.slice(0,8);
