@@ -5,7 +5,7 @@
           <router-link to="/">
             <img src="../assets/logo.png" alt="logo" class="logo">
           </router-link>
-          <router-link to="/" >EXPLORER</router-link>
+          <router-link to="/">EXPLORER</router-link>
           <router-link to="/delegates" class="second-link">DELEGATES</router-link>
           <Search />
         </nav>

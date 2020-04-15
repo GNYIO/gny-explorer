@@ -1,7 +1,7 @@
 <template>
   <el-container direction="vertical">
     <el-card>
-        <h1>Basic</h1>
+        <h1>Delegates</h1>
         <el-row>
             <el-col :span="8">
             All Delegates:
@@ -12,7 +12,7 @@
                 <p>{{mostProducedBlocks}}</p>
             </el-col>
             <el-col :span="8">
-                Highest Approval
+                Highest Approval:
                 <p>{{highestApproval}} %</p>
             </el-col>
         </el-row>
@@ -33,7 +33,8 @@
 
     </el-card>
     <el-card>
-      <el-table :data="allDelegates" stripe style="width: 100%">
+      <el-table class="clickable-rows" :data="allDelegates" stripe style="width: 100%"
+        @row-click="handleCurrentChange">
           <el-table-column prop="rate" label="Rank" width="100"></el-table-column>
           <el-table-column
             prop="username"
@@ -70,6 +71,12 @@ const connection = new gnyClient.Connection(
 import { BigNumber } from 'bignumber.js';
 
 export default {
+  methods: {
+    handleCurrentChange: function(row) {
+        console.log(row.username);
+        this.$router.push({name: 'delegates', query: { username: row.username }});
+    },
+  },
   data() {
     return {
       allDelegates: [],
@@ -167,5 +174,16 @@ export default {
 p {
   color: #acacac;
 }
+
+
+/* row clickable */
+.clickable-rows tbody tr td {
+    cursor: pointer;
+}
+
+.clickable-rows .el-table__expanded-cell {
+cursor: default;
+}
+
 
 </style>
