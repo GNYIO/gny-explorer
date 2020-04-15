@@ -74,7 +74,7 @@ export default {
   methods: {
     handleCurrentChange: function(row) {
         console.log(row.username);
-        this.$router.push({name: 'delegates', query: { username: row.username }});
+        this.$router.push({name: 'delegate-detail', query: { username: row.username }});
     },
   },
   data() {
