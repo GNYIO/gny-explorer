@@ -1,7 +1,7 @@
 <template>
   <el-card>
     <h2>Latest blocks</h2>
-    <el-table :data="blocks" stripe style="width: 95%; margin: auto;">
+    <el-table class="clickable-rows" @row-click="rowClick" :data="blocks" stripe style="width: 95%; margin: auto;">
       <el-table-column prop="height" align="center" label="Height" width="150"></el-table-column>
       <el-table-column prop="id" align="center" label="Block ID" width="200" :formatter="subID"></el-table-column>
       <el-table-column prop="timestamp" align="center" label="Forged Time" width="200" :formatter="timestamp2date"></el-table-column>
@@ -33,6 +33,10 @@ export default {
   },
 
   methods: {
+    rowClick: function(row) {
+        console.log(row.height);
+        this.$router.push({name: 'block', query: { height: row.height }});
+    },
     subID: function (row, column) {
       return row.id.slice(0,8);
     },
@@ -61,5 +65,15 @@ export default {
 .el-card {
   margin-top: 20px;
 }
+
+/* row clickable */
+.clickable-rows tbody tr td {
+    cursor: pointer;
+}
+
+.clickable-rows .el-table__expanded-cell {
+cursor: default;
+}
+
 
 </style>
