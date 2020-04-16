@@ -53,7 +53,7 @@ export default {
       return moment(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD hh:mm:ss');
     },
 
-    async infiniteHandler() {
+    async infiniteHandler($state) {
       console.log('Loading more blocks...');
       const limit = 10;
       const offset = this.loaded;
@@ -65,6 +65,7 @@ export default {
       this.blocks = this.$store.state.blocks;
       console.log(this.blocks.length);
       this.loaded += limit;
+      $state.loaded();
       console.log(this.loaded);
     },
   },
