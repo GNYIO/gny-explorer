@@ -2,7 +2,7 @@
   <el-container>
     <el-card>
       <h2>GNY blocks</h2>
-      <el-table :data="blocks" stripe style="width: 100%; margin: auto;">
+      <el-table :data="blocks" stripe style="width: 100%; margin: auto;" height="500">
         <el-table-column prop="height" align="center" label="Height" width="80"></el-table-column>
         <el-table-column prop="id" align="center" label="Block ID" width="100" :formatter="subID"></el-table-column>
         <el-table-column prop="timestamp" align="center" label="Forged Time" width="200" :formatter="timestamp2date"></el-table-column>
@@ -53,20 +53,21 @@ export default {
       return moment(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD hh:mm:ss');
     },
 
-    async infiniteHandler($state) {
-      console.log('Loading more blocks...');
-      const limit = 10;
-      const offset = this.loaded;
-      const orderBy = 'height:desc';
+    infiniteHandler: function ($state) {
+      setTimeout(async () => {
+        console.log('Loading more blocks...');
+        const limit = 10;
+        const offset = this.loaded;
+        const orderBy = 'height:desc';
 
-      const newBlocks = (await connection.api.Block.getBlocks(offset, limit, orderBy)).blocks;
+        const newBlocks = (await connection.api.Block.getBlocks(offset, limit, orderBy)).blocks;
 
-      await this.$store.dispatch('appendBlocks', newBlocks);
-      this.blocks = this.$store.state.blocks;
-      console.log(this.blocks.length);
-      this.loaded += limit;
-      $state.loaded();
-      console.log(this.loaded);
+        await this.$store.dispatch('appendBlocks', newBlocks);
+        this.blocks = this.$store.state.blocks;
+
+        this.loaded += limit;
+        $state.loaded();
+      }, 1000)
     },
   },
 
