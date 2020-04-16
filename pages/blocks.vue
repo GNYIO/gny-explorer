@@ -2,7 +2,7 @@
   <el-container>
     <el-card>
       <h2>GNY blocks</h2>
-        <el-table :data="blocks" stripe style="width: 100%; margin: auto;">
+      <el-table :data="blocks" stripe style="width: 100%; margin: auto;">
         <el-table-column prop="height" align="center" label="Height" width="80"></el-table-column>
         <el-table-column prop="id" align="center" label="Block ID" width="100" :formatter="subID"></el-table-column>
         <el-table-column prop="timestamp" align="center" label="Forged Time" width="200" :formatter="timestamp2date"></el-table-column>
@@ -10,6 +10,13 @@
         <el-table-column prop="fees" align="center" label="Fees" width="100"></el-table-column>
         <el-table-column prop="reward" align="center" label="Reward" width="100"></el-table-column>
         <el-table-column prop="delegate" align="center" label="Delegate" :formatter="subDelegate" width="150"></el-table-column>
+        
+        <infinite-loading
+          slot="append"
+          @infinite="infiniteHandler"
+          force-use-infinite-wrapper=".el-table__body-wrapper">
+        </infinite-loading>
+
       </el-table>
     </el-card>
   </el-container>
@@ -29,6 +36,7 @@ export default {
   data() {
     return {
       blocks: [],
+      loaded: 0,
     }
   },
 
@@ -44,6 +52,21 @@ export default {
     timestamp2date: function (row, column) {
       return moment(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD hh:mm:ss');
     },
+
+    async infiniteHandler() {
+      console.log('Loading more blocks...');
+      const limit = 10;
+      const offset = this.loaded;
+      const orderBy = 'height:desc';
+
+      const newBlocks = (await connection.api.Block.getBlocks(offset, limit, orderBy)).blocks;
+
+      await this.$store.dispatch('appendBlocks', newBlocks);
+      this.blocks = this.$store.state.blocks;
+      console.log(this.blocks.length);
+      this.loaded += limit;
+      console.log(this.loaded);
+    },
   },
 
   async mounted() {
@@ -52,7 +75,8 @@ export default {
     const orderBy = 'height:desc';
 
     this.blocks = (await connection.api.Block.getBlocks(offset, limit, orderBy)).blocks;
-    this.$store.commit('setBlocks', this.blocks);
+    this.loaded = 10;
+    await this.$store.dispatch('setBlocks', this.blocks);
   },
 }
 </script>

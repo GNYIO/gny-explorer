@@ -30,7 +30,7 @@ module.exports = {
   */
   plugins: [
     '@/plugins/element-ui',
-    { src: '@/plugins/vue-infinite-scroll', ssr: false },
+    { src: '~/plugins/infinite-loading', ssr: false },
   ],
   /*element-theme-chalk
   ** Nuxt.js dev-modules
