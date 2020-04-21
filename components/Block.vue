@@ -3,10 +3,28 @@
     <h2>Latest blocks</h2>
     <el-table :data="blocks" stripe style="width: 95%; margin: auto;">
       <el-table-column prop="height" align="center" label="Height" width="150"></el-table-column>
-      <el-table-column prop="id" align="center" label="Block ID" width="200" :formatter="subID"></el-table-column>
+      <el-table-column prop="id" align="center" label="Block ID" width="200" :formatter="subID">
+        <template v-slot:default="table">
+          <el-tooltip content="Bottom center" placement="bottom" effect="light">
+            <div slot="content">{{table.row.id}}</div>
+            <router-link :to="{name: 'transaction', query: { id: table.row.id }}" tag="span" :formatter="subID">
+              {{table.row.id.slice(0,8)}}
+            </router-link>
+          </el-tooltip>
+        </template>
+      </el-table-column>
       <el-table-column prop="timestamp" align="center" label="Forged Time" width="200" :formatter="timestamp2date"></el-table-column>
       <!-- <el-table-column prop="fees" align="center" label="Fee"></el-table-column> -->
-      <el-table-column prop="delegate" align="center" label="Delegate" :formatter="subDelegate"></el-table-column>
+      <el-table-column prop="delegate" align="center" label="Delegate" :formatter="subDelegate">
+        <template v-slot:default="table">
+          <el-tooltip content="Bottom center" placement="bottom" effect="light">
+            <div slot="content">{{table.row.delegate}}</div>
+            <router-link :to="{name: 'delegate', query: { delegate: table.row.delegate }}" tag="span" :formatter="subID">
+            {{table.row.delegate.slice(0,8)}}
+            </router-link>
+          </el-tooltip>
+        </template>
+      </el-table-column>
     </el-table>
     <br>
     <nuxt-link to="blocks">
