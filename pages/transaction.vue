@@ -5,7 +5,11 @@
       <el-row>
         <el-col :span="24" >
           <span>Transaction ID</span>
-          <span v-if="!!transaction" id="data" class="content">{{transaction.id}}</span>
+          <span v-if="!!transaction" id="data" class="content">
+            {{transaction.id}}
+            <i class="el-icon-copy-document" @click="copyId"></i>
+          </span>
+          
         </el-col>
       </el-row>
 
@@ -69,6 +73,13 @@ export default {
   },
 
   methods: {
+    async copyId() {
+      try {
+        await this.$copyText(this.transaction.id);
+      } catch (e) {
+        console.error(e);
+      }
+    },
   },
 
   async mounted() {
