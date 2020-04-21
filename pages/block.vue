@@ -38,9 +38,12 @@
         <el-table-column prop="height" align="center" label="Height" width="150"></el-table-column>
         <el-table-column prop="id" align="center" label="Transaction ID" width="200" :formatter="subID">
           <template v-slot:default="table">
-            <router-link :to="{name: 'transaction', query: { id: table.row.id }}" tag="span">
-              {{table.row.id}}
-            </router-link>
+            <el-tooltip content="Bottom center" placement="bottom" effect="light">
+              <div slot="content">{{table.row.id}}</div>
+              <router-link :to="{name: 'transaction', query: { id: table.row.id }}" tag="span" :formatter="subID">
+                {{table.row.id.slice(0,8)}}
+              </router-link>
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column prop="timestamp" align="center" label="Forged Time" width="200" :formatter="timestamp2date"></el-table-column>
