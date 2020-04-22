@@ -2,8 +2,11 @@
   <el-container >
       <el-header class="header">
         <nav class="inner" >
-          <img src="../assets/logo.png" alt="logo" class="logo">
-          <router-link to="/" >EXPLORER</router-link>
+          <router-link to="/">
+            <img src="../assets/logo.png" alt="logo" class="logo">
+          </router-link>
+          <router-link to="/">EXPLORER</router-link>
+          <router-link to="/delegates" class="second-link">DELEGATES</router-link>
           <Search />
         </nav>
       </el-header>
@@ -57,9 +60,13 @@ a {
   padding: 15px 15px;
 }
 
+.second-link {
+    margin-left: 30px;
+}
+
 .logo {
   width: 45px;
-  margin-right: 10px;
+  margin-right: 30px;
   display: inline-block;
   vertical-align: middle;
 }

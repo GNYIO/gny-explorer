@@ -18,7 +18,7 @@ export default {
   methods: {
     async search() {
       const height = this.input;
-      this.$router.push({name: 'block', query: {height: height}});
+      this.$router.push({name: 'block-detail', query: {height: height}});
     }
   },
 
@@ -29,8 +29,8 @@ export default {
 
 <style>
 .el-input {
-  width: 500px;
-  margin: 0;
+  width: 300px;
+  margin-right: 0;
   float: right;
 }
 </style>

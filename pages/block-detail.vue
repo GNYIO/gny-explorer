@@ -8,7 +8,7 @@
         </el-col>
         <el-col :span="8" >
           ID
-          <p >{{sliceID}}</p>
+          <p >{{id}}</p>
         </el-col>
         <el-col :span="8" >
           Date
@@ -47,7 +47,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="timestamp" align="center" label="Forged Time" width="200" :formatter="timestamp2date"></el-table-column>
-        <el-table-column prop="fee" align="center" label="Fee" width="200"></el-table-column>
+        <el-table-column prop="senderId" align="center" label="Sender" width="200" :formatter="subSenderId"></el-table-column>
       </el-table>
     </el-card>
   </el-container>
@@ -69,7 +69,7 @@ export default {
   data() {
     return {
       block: {},
-      sliceID: '',
+      id: '',
       date: '',
       delegateID: '',
       transactions: [],
@@ -81,6 +81,10 @@ export default {
       return row.id.slice(0,8);
     },
 
+    subSenderId: function (row, column) {
+      return row.senderId.slice(0,8);
+    },
+
     timestamp2date: function (row, column) {
       return moment(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD hh:mm:ss');
     },
@@ -89,17 +93,15 @@ export default {
   async mounted() {
     const height = this.$route.query.height;
     try {
-      this.block = (await connection.api.Block.getBlockByHeight(height)).block;
-      this.sliceID = this.block.id.slice(0, 8);
+      const block = (await connection.api.Block.getBlockByHeight(height)).block;
+      const transactions = (await connection.api.Transaction.getTransactions({
+          height: height,
+      })).transactions;
+
+      this.block = block
+      this.id = this.block.id.slice(0, 8);
       this.date = moment(slots.getRealTime(this.block.timestamp)).format('YYYY-MM-DD hh:mm:ss');
-      this.delegateID = this.block.delegate.slice(0, 8);
-      
-      const query = {
-        limit: 5,
-        height: height,
-      }
-      this.transactions = (await connection.api.Transaction.getTransactions(query)).transactions;
-      this.$store.commit('setTransactions', this.transactions);
+      this.transactions = transactions;
     } catch (error) {
       error({ statusCode: 404, message: 'Oops...' })
     }
