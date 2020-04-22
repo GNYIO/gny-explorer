@@ -76,8 +76,4 @@ a {
   color: #acacac;
 }
 
-.router-link {
-  
-}
-
 </style>
