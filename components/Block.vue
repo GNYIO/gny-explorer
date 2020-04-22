@@ -7,7 +7,7 @@
         <template v-slot:default="table">
           <el-tooltip content="Bottom center" placement="bottom" effect="light">
             <div slot="content">{{table.row.id}}</div>
-            <router-link :to="{name: 'block', query: { height: table.row.height }}" tag="span" :formatter="subID">
+            <router-link :to="{name: 'block-detail', query: { height: table.row.height }}" tag="span" :formatter="subID">
               {{table.row.id.slice(0,8)}}
             </router-link>
           </el-tooltip>
@@ -90,11 +90,11 @@ export default {
 
 /* row clickable */
 .clickable-rows tbody tr td {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .clickable-rows .el-table__expanded-cell {
-cursor: default;
+  cursor: default;
 }
 
 
