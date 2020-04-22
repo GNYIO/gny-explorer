@@ -41,6 +41,44 @@
           <span v-if="!!transaction" class="content">{{transaction.type}}</span>
         </el-col>
       </el-row>
+
+      <el-row>
+        <el-col :span="24">
+          <span>Arguments</span>
+          <span v-if="!!transaction" class="content">{{transaction.args | truncate(60) }}</span>
+        </el-col>
+      </el-row>
+
+      <el-row>
+        <el-col :span="24">
+          <span>SenderId</span>
+          <span v-if="!!transaction" class="content">{{transaction.senderId}}</span>
+        </el-col>
+
+      </el-row>
+
+      <el-row>
+        <el-col :span="24">
+          <span>Sender Public Key</span>
+          <span v-if="!!transaction" class="content">{{transaction.senderPublicKey}}</span>
+        </el-col>
+      </el-row>
+
+      <el-row>
+        <el-col :span="24">
+          <span>Signatures</span>
+          <span v-if="!!transaction" class="content">{{transaction.signatures | truncate(50) }}</span>
+        </el-col>
+      </el-row>
+
+      <el-row v-if="!!transaction && transaction.secondSignature">
+        <el-col :span="24">
+          <span>Second Signature</span>
+          <span v-if="!!transaction && transaction.secondSignature" class="content">
+            {{transaction.secondSignature | truncate(50) }}
+          </span>
+        </el-col>
+      </el-row>
     </el-card>
   </el-container>
 </template>
@@ -121,6 +159,11 @@ export default {
 </script>
 
 <style>
+h2 {
+  margin-left: 20px;
+  margin-bottom: 40px;
+}
+
 .el-container {
   max-width: 1000px;
   box-sizing: border-box;
