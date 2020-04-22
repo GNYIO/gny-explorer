@@ -66,6 +66,11 @@ a {
 
 .el-footer {
   text-align: center;
+  color: #acacac;
+}
+
+.router-link {
+  
 }
 
 </style>

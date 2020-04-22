@@ -11,8 +11,8 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
-    "@gny/client": "^1.0.19",
-    "@gny/utils": "^1.0.23",
+    "@gny/client": "^1.0.27",
+    "@gny/utils": "^1.0.27",
     "@nuxtjs/axios": "^5.3.6",
     "@nuxtjs/dotenv": "^1.4.0",
     "bignumber.js": "^8.1.1",
