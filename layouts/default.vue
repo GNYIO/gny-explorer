@@ -73,6 +73,7 @@ a {
 
 .el-footer {
   text-align: center;
+  color: #acacac;
 }
 
 </style>

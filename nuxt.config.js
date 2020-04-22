@@ -29,7 +29,8 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '@/plugins/element-ui'
+    '@/plugins/element-ui',
+    { src: '~/plugins/infinite-loading', ssr: false },
   ],
   /*element-theme-chalk
   ** Nuxt.js dev-modules
@@ -44,6 +45,7 @@ module.exports = {
     '@nuxtjs/axios',
     // Doc: https://github.com/nuxt-community/dotenv-module
     '@nuxtjs/dotenv',
+    'nuxt-clipboard2',
   ],
   /*
   ** Axios module configuration
