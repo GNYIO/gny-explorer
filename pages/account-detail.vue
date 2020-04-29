@@ -29,6 +29,16 @@
       </el-row>
     </el-card>
 
+    <el-card v-if="balances.length > 0">
+      <h2>Assets</h2>
+
+      <el-table class="clickable-rows" :data="balances" stripe style="width: 95%; margin: auto;">
+        <el-table-column prop="currency" align="center" label="Currency" width="200"></el-table-column>
+        <el-table-column prop="balance" align="center" label="Balance" width="300"></el-table-column>
+        <el-table-column prop="flag" align="center" label="Flag" width="300"></el-table-column>
+      </el-table>
+    </el-card>
+
     <el-card>
       <h2>Transactions</h2>
       
@@ -82,6 +92,7 @@ export default {
       return {
         account: {},
         transactions: [],
+        balances: [],
         address: '',
         publicKey: '',
         balance: '',
@@ -140,9 +151,6 @@ export default {
         this.address = account.address.slice(0, 8);
         this.balance = new BigNumber(account.gny).dividedBy(1e8).toFixed();
 
-        console.log('balance: ', account.gny);
-        console.log('balance: ', this.balance);
-
         if (account.publicKey) {
           this.publicKey = account.publicKey.slice(0, 8);
         }
@@ -159,9 +167,11 @@ export default {
 
         this.transactions = (await connection.api.Transaction.getTransactions(query)).transactions;
         this.loaded = 5;
-        await this.$store.dispatch('setTransactions', this.transactions);
 
-        console.log(this.transactions[0]);
+        this.balances = (await connection.api.Uia.getBalances(senderId)).balances;
+        console.log(this.balances);
+
+        await this.$store.dispatch('setTransactions', this.transactions);
       } catch (error) {
         debugger;
         error({ statusCode: 404, message: 'Oops...' })
