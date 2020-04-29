@@ -1,25 +1,30 @@
 <template>
   <el-container direction="vertical">
     <el-card>
-      <h2>Account</h2>
+      <h2>Account info</h2>
       <el-row>
-        <el-col :span="6" >
+        <el-col :span="5" >
           Address
           <p >{{address}}</p>
         </el-col>
-        <el-col :span="6" >
-          Balance
+        <el-col :span="5" >
+          GNY Balance
           <p >{{balance}}</p>
         </el-col>
-        <el-col :span="6" >
+        <el-col :span="5" >
           Username
           <p v-if="account.username">{{account.username}}</p>
           <p v-else>Not set</p>
         </el-col>
-        <el-col :span="6" >
-          PublicKey
+        <el-col :span="5" >
+          Public Key
           <p v-if="publicKey">{{publicKey}}</p>
           <p v-else>Not set</p>
+        </el-col> 
+        <el-col :span="4" >
+          Delegate
+          <p v-if="account.isDelegate"><router-link :to="{name: 'delegate-detail', query: { username: account.username }}">Details</router-link></p>
+          <p v-else>False</p>
         </el-col> 
       </el-row>
     </el-card>
