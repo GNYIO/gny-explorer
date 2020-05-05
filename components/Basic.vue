@@ -20,13 +20,9 @@
         Accounts:
         <p v-if="size">{{accounts}}</p>
       </el-col>
-      <el-col :span="8" >
+      <el-col :span="16" >
         Latest block height:
         <p v-if="latestHeight">{{latestHeight}}</p>
-      </el-col>
-      <el-col :span="8" >
-        Nodes:
-        <p v-if="nodes">{{nodes}}</p>
       </el-col>
     </el-row>
   </el-card>
@@ -48,7 +44,6 @@ export default {
       transactions: '',
       dalegates: '',
       latestHeight:'',
-      nodes: '',
       size: 'loading',
       accounts: '',
     }

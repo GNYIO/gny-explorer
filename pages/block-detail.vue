@@ -29,7 +29,10 @@
           Delegate
           <el-tooltip content="Bottom center" placement="bottom" effect="light">
             <div slot="content">{{block.delegate}}</div>
-            <p >{{delegateID}}</p>
+            <router-link :to="{ name: 'delegate-detail', query: { publicKey: block.delegate }}">
+              <p >{{delegateID}}</p>
+            </router-link>
+            
           </el-tooltip>
         </el-col>
       </el-row>

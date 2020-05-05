@@ -19,7 +19,7 @@
         <template v-slot:default="table">
           <el-tooltip content="Bottom center" placement="bottom" effect="light">
             <div slot="content">{{table.row.delegate}}</div>
-            <router-link :to="{name: 'delegate', query: { delegate: table.row.delegate }}" tag="span" :formatter="subID">
+            <router-link :to="{name: 'delegate-detail', query: { username: table.row.delegate }}" tag="span" :formatter="subID">
             {{table.row.delegate.slice(0,8)}}
             </router-link>
           </el-tooltip>

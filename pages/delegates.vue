@@ -73,8 +73,8 @@ import { BigNumber } from 'bignumber.js';
 export default {
   methods: {
     handleCurrentChange: function(row) {
-        console.log(row.username);
-        this.$router.push({name: 'delegate-detail', query: { username: row.username }});
+      console.log(row.username);
+      this.$router.push({name: 'delegate-detail', query: { username: row.username }});
     },
   },
   data() {

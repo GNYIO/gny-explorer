@@ -73,14 +73,30 @@ export default {
 
     async mounted() {
       const username = this.$route.query.username;
+      const publicKey = this.$route.query.publicKey;
+      console.log(`publicKey: ${publicKey}`);
+
+      console.log(`delegate-detail: ${username}`);
       try {
-        const delegate = (await connection.api.Delegate.getDelegateByUsername(username)).delegate;
+        let delegate = null;
+        if (username) {
+          const result = await connection.api.Delegate.getDelegateByUsername(username);
+          if (result.success) {
+            delegate = result.delegate;
+          }
+        }
+
+        if (publicKey) {
+            const result = await connection.api.Delegate.getDelegateByPubKey(publicKey);
+            if (result.success) {
+                delegate = result.delegate;
+            }
+        }
   
         console.log(`delegate: ${JSON.stringify(delegate, null, 2)}`);
         this.delegate = delegate;
         this.publicKey = delegate.publicKey.slice(0, 8);
       } catch (error) {
-        debugger;
         error({ statusCode: 404, message: 'Oops...' })
       }
     }
