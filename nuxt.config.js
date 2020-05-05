@@ -1,6 +1,12 @@
 
 module.exports = {
   mode: 'universal',
+  env: {
+   GNY_ENDPOINT: process.env.GNY_ENDPOINT,
+   GNY_PORT: process.env.GNY_PORT,
+   GNY_NETWORK: process.env.GNY_NETWORK,
+   GNY_HTTPS: process.env.GNY_HTTPS,
+  },
   /*
   ** Headers of the page
   */

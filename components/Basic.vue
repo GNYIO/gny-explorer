@@ -31,6 +31,7 @@
 <script>
 import BigNumber from 'bignumber.js';
 import * as gnyClient from '@gny/client';
+console.log(`endpoint: ${process.env['GNY_ENDPOINT']}`);
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],
   process.env['GNY_PORT'],
