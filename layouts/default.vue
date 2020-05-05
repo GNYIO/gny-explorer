@@ -7,6 +7,7 @@
           </router-link>
           <router-link to="/">EXPLORER</router-link>
           <router-link to="/delegates" class="second-link">DELEGATES</router-link>
+          <router-link to="/transactions" class="second-link">TRANSACTIONS</router-link>
           <Search />
         </nav>
       </el-header>

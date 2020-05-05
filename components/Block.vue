@@ -1,6 +1,6 @@
 <template>
   <el-card>
-    <h2>Latest blocks</h2>
+    <h2>Latest Blocks</h2>
     <el-table class="clickable-rows" @row-click="rowClick" :data="blocks" stripe style="width: 95%; margin: auto;">
       <el-table-column prop="height" align="center" label="Height" width="150"></el-table-column>
       <el-table-column prop="id" align="center" label="Block ID" width="200" :formatter="subID">
@@ -31,9 +31,6 @@
       Explore more blocks →
     </nuxt-link>
   </el-card>
-  
-  
-
 </template>
 
 <script>
@@ -82,7 +79,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 
 .el-card {
   margin-top: 20px;
@@ -96,6 +93,4 @@ export default {
 .clickable-rows .el-table__expanded-cell {
   cursor: default;
 }
-
-
 </style>

@@ -3,18 +3,22 @@
     <Basic />
 
     <Block />
+
+    <Transaction />
   </el-container>
 </template>
 
 <script>
 import Basic from '~/components/Basic.vue';
 import Block from '~/components/Block.vue';
+import Transaction from '~/components/Transaction.vue';
 
 
 export default {
   components: {
     Basic,
-    Block
+    Block,
+    Transaction,
   }
 }
 </script>
