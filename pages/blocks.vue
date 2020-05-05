@@ -67,6 +67,10 @@ export default {
 
         this.loaded += limit;
         $state.loaded();
+
+        if (newBlocks.length === 0) {
+          $state.complete();
+        }
       }, 1000)
     },
   },

@@ -69,6 +69,16 @@
           @infinite="infiniteHandler"
           force-use-infinite-wrapper=".el-table__body-wrapper">
         </infinite-loading>
+
+        <!-- <template slot="append">
+            <infinite-loading ref="Infinite" @infinite="infiniteHandler" force-use-infinite-wrapper=".el-table__body-wrapper">
+              <span slot="no-more">
+              No more data
+              </span>
+              <span slot="no-results">No data</span>
+            </infinite-loading>
+          </template> -->
+
       </el-table>
     </el-card>
 
@@ -134,7 +144,13 @@ export default {
         console.log(`transaction[0]: ${JSON.stringify(this.transactions[0], null, 2)}`);
 
         this.loaded += limit;
+
+        console.log(transactions.length);
         $state.loaded();
+
+        if (transactions.length === 0) {
+          $state.complete();
+        }
       }, 1000)
     },
   },
