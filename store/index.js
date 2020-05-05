@@ -14,6 +14,11 @@ export const mutations = {
     blocks.forEach(block => {
       state.blocks.push(block);
     });
+  },
+  appendTransactions(state, transactions) {
+    transactions.forEach(transaction => {
+      state.transactions.push(transaction);
+    });
   }
 }
 
@@ -26,5 +31,8 @@ export const actions = {
   },
   appendBlocks({ commit }, blocks) {
     commit('appendBlocks', blocks);
+  },
+  appendTransactions({ commit }, transactions) {
+    commit('appendTransactions', transactions);
   },
 }
