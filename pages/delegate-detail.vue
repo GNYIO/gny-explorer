@@ -5,7 +5,9 @@
       <el-row>
         <el-col :span="8" >
           Username
-          <p >{{delegate.username}}</p>
+          <router-link class="clickable" :to="{ name: 'account-detail', query: { username: delegate.username }}" tag="span">
+              <p >{{delegate.username}}</p>
+          </router-link>
         </el-col>
         <el-col :span="8" >
           PublicKey
@@ -13,7 +15,9 @@
         </el-col>
         <el-col :span="8" >
           Address
-          <p >{{delegate.address}}</p>
+          <router-link class="clickable" :to="{ name: 'account-detail', query: { address: delegate.address }}" tag="span">
+              <p>{{delegate.address}}</p>
+          </router-link>
         </el-col>
       </el-row>
 
@@ -85,6 +89,10 @@ export default {
 </script>
 
 <style scoped>
+.clickable {
+    cursor: pointer;
+}
+
 .el-container {
   max-width: 1000px;
   box-sizing: border-box;

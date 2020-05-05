@@ -1,7 +1,7 @@
 <template>
   <el-container direction="vertical">
     <el-card>
-      <h2>General info</h2>
+      <h2>Transaction</h2>
       <el-row>
         <el-col :span="24" >
           <span>Transaction ID</span>
@@ -16,10 +16,21 @@
       <el-row>
         <el-col :span="24" >
           <span>Block height</span>
-          <span v-if="!!transaction" class="content">
-            {{transaction.height}}
-            <span v-if="!!confirmation" class="confirm">{{confirmation}}</span>
-          </span>
+          <router-link
+            class="content clickable"
+            v-if="!!transaction"
+            :to="{name: 'block-detail', query: { height: transaction.height }}">
+
+             <span v-if="!!transaction" class="content">
+                {{transaction.height}}
+                <span class="confirm">
+                  <span v-if="!!confirmation">{{confirmation}}</span>
+                  <span v-if="!!confirmationText">{{confirmationText}}</span>
+                </span>
+              </span>
+
+          </router-link>
+
           
         </el-col>
       </el-row>
@@ -52,7 +63,12 @@
       <el-row>
         <el-col :span="24">
           <span>SenderId</span>
-          <span v-if="!!transaction" class="content">{{transaction.senderId}}</span>
+          <router-link
+            class="clickable"
+            v-if="!!transaction"
+            :to="{name: 'account-detail', query: { address: transaction.senderId }}">
+            <span class="content">{{transaction.senderId}}</span>
+          </router-link>
         </el-col>
 
       </el-row>
@@ -106,6 +122,7 @@ export default {
         type: null,
       },
       confirmation: '',
+      confirmationText: '',
       date:'',
     }
   },
@@ -146,9 +163,9 @@ export default {
       this.confirmation = new BigNumber(currentHeight).minus(this.transaction.height).toFixed();
 
       if (this.confirmation === '1') {
-        this.confirmation += ' confirmation';
+        this.confirmationText = ' confirmation';
       } else {
-        this.confirmation += ' confirmations';
+        this.confirmationText = ' confirmations';
       }
     } catch (error) {
       console.log(error.message);
@@ -159,6 +176,14 @@ export default {
 </script>
 
 <style>
+i {
+    cursor: pointer;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
 h2 {
   margin-left: 20px;
   margin-bottom: 40px;
