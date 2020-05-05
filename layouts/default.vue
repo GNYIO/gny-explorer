@@ -5,9 +5,9 @@
           <router-link to="/">
             <img src="../assets/logo.png" alt="logo" class="logo">
           </router-link>
-          <router-link to="/">EXPLORER</router-link>
-          <router-link to="/delegates" class="second-link">DELEGATES</router-link>
+          <router-link to="/blocks" class="second-link">BLOCKS</router-link>
           <router-link to="/transactions" class="second-link">TRANSACTIONS</router-link>
+          <router-link to="/delegates" class="second-link">DELEGATES</router-link>
           <Search />
         </nav>
       </el-header>
@@ -62,7 +62,7 @@ a {
 }
 
 .second-link {
-    margin-left: 30px;
+    margin-left: 20px;
 }
 
 .logo {
