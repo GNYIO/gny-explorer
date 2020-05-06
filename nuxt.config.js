@@ -1,6 +1,12 @@
 
 module.exports = {
   mode: 'universal',
+  env: {
+   GNY_ENDPOINT: process.env.GNY_ENDPOINT,
+   GNY_PORT: process.env.GNY_PORT,
+   GNY_NETWORK: process.env.GNY_NETWORK,
+   GNY_HTTPS: process.env.GNY_HTTPS,
+  },
   /*
   ** Headers of the page
   */
@@ -37,6 +43,15 @@ module.exports = {
   */
   buildModules: [
   ],
+  netlify: { 
+    mergeSecurityHeaders: true,
+    headers: {
+      '/*': [
+        'Access-Control-Allow-Origin: *'
+      ]
+    }
+  },
+
   /*
   ** Nuxt.js modules
   */
@@ -46,6 +61,7 @@ module.exports = {
     // Doc: https://github.com/nuxt-community/dotenv-module
     '@nuxtjs/dotenv',
     'nuxt-clipboard2',
+    '@aceforth/nuxt-netlify',
   ],
   /*
   ** Axios module configuration

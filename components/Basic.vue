@@ -20,13 +20,9 @@
         Accounts:
         <p v-if="size">{{accounts}}</p>
       </el-col>
-      <el-col :span="8" >
+      <el-col :span="16" >
         Latest block height:
         <p v-if="latestHeight">{{latestHeight}}</p>
-      </el-col>
-      <el-col :span="8" >
-        Nodes:
-        <p v-if="nodes">{{nodes}}</p>
       </el-col>
     </el-row>
   </el-card>
@@ -35,10 +31,12 @@
 <script>
 import BigNumber from 'bignumber.js';
 import * as gnyClient from '@gny/client';
+console.log(`endpoint: ${process.env['GNY_ENDPOINT']}`);
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],
-  process.env['GNY_PORT'],
+  Number(process.env['GNY_PORT']),
   process.env['GNY_NETWORK'],
+  process.env['GNY_HTTPS'] || false,
 );
 
 export default {
@@ -48,7 +46,6 @@ export default {
       transactions: '',
       dalegates: '',
       latestHeight:'',
-      nodes: '',
       size: 'loading',
       accounts: '',
     }

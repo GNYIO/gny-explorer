@@ -32,8 +32,8 @@
     <el-card v-if="balances.length > 0">
       <h2>Assets</h2>
 
-      <el-table class="clickable-rows" :data="balances" stripe style="width: 95%; margin: auto;">
-        <el-table-column prop="currency" align="center" label="Currency" width="200"></el-table-column>
+      <el-table class="clickable-rows" :data="balances" stripe style="width: 95%;">
+        <el-table-column prop="currency" align="center" label="Currency" ></el-table-column>
         <el-table-column prop="balance" align="center" label="Balance" width="300"></el-table-column>
         <el-table-column prop="flag" align="center" label="Flag" width="300"></el-table-column>
       </el-table>
@@ -42,9 +42,9 @@
     <el-card>
       <h2>Transactions</h2>
       
-      <el-table class="clickable-rows" @row-click="rowClick" :data="transactions" stripe style="width: 95%; margin: auto;" height="300">
+      <el-table class="clickable-rows" @row-click="rowClick" :data="transactions" stripe style="width: 95%;" height="300">
         <el-table-column prop="height" align="center" label="Height" width="150"></el-table-column>
-        <el-table-column prop="id" align="center" label="Transaction ID" width="200">
+        <el-table-column prop="id" align="center" label="Transaction ID">
           <template v-slot:default="table">
             <el-tooltip content="Bottom center" placement="bottom" effect="light">
               <div slot="content">{{table.row.id}}</div>
@@ -64,20 +64,11 @@
           </template>
         </el-table-column>
 
-        <infinite-loading
+        <!-- <infinite-loading
           slot="append"
           @infinite="infiniteHandler"
           force-use-infinite-wrapper=".el-table__body-wrapper">
-        </infinite-loading>
-
-        <!-- <template slot="append">
-            <infinite-loading ref="Infinite" @infinite="infiniteHandler" force-use-infinite-wrapper=".el-table__body-wrapper">
-              <span slot="no-more">
-              No more data
-              </span>
-              <span slot="no-results">No data</span>
-            </infinite-loading>
-          </template> -->
+        </infinite-loading> -->
 
       </el-table>
     </el-card>
@@ -93,8 +84,9 @@ import * as gnyClient from '@gny/client';
 
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],
-  process.env['GNY_PORT'],
+  Number(process.env['GNY_PORT']),
   process.env['GNY_NETWORK'],
+  process.env['GNY_HTTPS'] || false,
 );
 
 export default {
@@ -116,7 +108,7 @@ export default {
         this.$router.push({name: 'transaction', query: { id: row.id }});
     },
 
-    subSenderId: function (row, column) {
+    subSenderId: function (row, column) {0
       return row.senderId.slice(0,8);
     },
 
@@ -124,34 +116,41 @@ export default {
       return moment(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD hh:mm:ss');
     },
 
-    infiniteHandler: function ($state) {
-      setTimeout(async () => {
-        console.log('Loading more transactions...');
-        const limit = 5;
-        const offset = this.loaded;
-        const senderId = this.account.address;
-        const query = {
-          limit,
-          offset,
-          senderId
-        }
+    infiniteHandler: async function ($state) {
+      console.log(`infiniteHandler`);
+      
+      var ctx = this;
 
-        const transactions = (await connection.api.Transaction.getTransactions(query)).transactions;
+        // try {
+        //     console.log('Loading more transactions...');
+        //     const limit = 5;
+        //     const offset = ctx.loaded;
+        //     const senderId = ctx.account.address;
+        //     const query = {
+        //       limit,
+        //       offset,
+        //       senderId
+        //     }
 
-        await this.$store.dispatch('appendTransactions', transactions);
-        this.transactions = this.$store.state.transactions;
+        //     const transactions = (await connection.api.Transaction.getTransactions(query)).transactions;
+        //     this.transactions = transactions;
 
-        console.log(`transaction[0]: ${JSON.stringify(this.transactions[0], null, 2)}`);
+        //     // await ctx.$store.dispatch('appendTransactions', transactions);
+        //     // ctx.transactions = this.$store.state.transactions;
 
-        this.loaded += limit;
+        //     ctx.loaded += limit;
 
-        console.log(transactions.length);
-        $state.loaded();
+        //     console.log(transactions.length);
+        //     $state.loaded();
 
-        if (transactions.length === 0) {
-          $state.complete();
-        }
-      }, 1000)
+        //     if (transactions.length === 0) {
+        //       $state.complete();
+        //     }
+        // } catch (err) {
+        //   console.log(err);
+        // }
+
+
     },
   },
 
@@ -160,12 +159,24 @@ export default {
       const username = this.$route.query.username;
 
       try {
-        const account = (await connection.api.Account.getAccountByUsername(username));
-  
-        console.log(`account: ${JSON.stringify(account, null, 2)}`);
+        let account = null;
+        if (address) {
+            const result = await connection.api.Account.getAccountByAddress(address);
+            if (result.success === true) {
+                account = result.account;
+            }
+        }
+
+        if (username) {
+            const result = await connection.api.Account.getAccountByUsername(username);
+            if (result.success === true) {
+                account = result;
+            }
+        }
+
         this.account = account;
         this.address = account.address.slice(0, 8);
-        this.balance = new BigNumber(account.gny).dividedBy(1e8).toFixed();
+        this.balance = new BigNumber(account.balance).dividedBy(1e8).toFixed();
 
         if (account.publicKey) {
           this.publicKey = account.publicKey.slice(0, 8);
@@ -185,12 +196,11 @@ export default {
         this.loaded = 5;
 
         this.balances = (await connection.api.Uia.getBalances(senderId)).balances;
-        console.log(this.balances);
 
         await this.$store.dispatch('setTransactions', this.transactions);
       } catch (error) {
-        debugger;
-        error({ statusCode: 404, message: 'Oops...' })
+        console.log(error && error.response && error.response.data);
+        // error({ statusCode: 404, message: 'Oops...' })
       }
     }
 };

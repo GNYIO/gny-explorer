@@ -29,7 +29,10 @@
           Delegate
           <el-tooltip content="Bottom center" placement="bottom" effect="light">
             <div slot="content">{{block.delegate}}</div>
-            <p >{{delegateID}}</p>
+            <router-link :to="{ name: 'delegate-detail', query: { publicKey: block.delegate }}">
+              <p >{{delegateID}}</p>
+            </router-link>
+            
           </el-tooltip>
         </el-col>
       </el-row>
@@ -69,8 +72,9 @@ import * as gnyClient from '@gny/client';
 import { slots } from '@gny/utils';
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],
-  process.env['GNY_PORT'],
+  Number(process.env['GNY_PORT']),
   process.env['GNY_NETWORK'],
+  process.env['GNY_HTTPS'] || false,
 );
 
 

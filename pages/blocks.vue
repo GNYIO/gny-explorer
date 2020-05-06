@@ -1,8 +1,8 @@
 <template>
   <el-container>
     <el-card>
-      <h2>GNY blocks</h2>
-      <el-table :data="blocks" stripe style="width: 100%; margin: auto;" height="500">
+      <h2>Blocks</h2>
+      <el-table @row-click="rowClick" class="clickable-rows" :data="blocks" stripe style="width: 100%; margin: auto;" height="500">
         <el-table-column prop="height" align="center" label="Height" width="80"></el-table-column>
         <el-table-column prop="id" align="center" label="Block ID" width="100" :formatter="subID"></el-table-column>
         <el-table-column prop="timestamp" align="center" label="Forged Time" width="200" :formatter="timestamp2date"></el-table-column>
@@ -28,8 +28,9 @@ import * as gnyClient from '@gny/client';
 import { slots } from '@gny/utils';
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],
-  process.env['GNY_PORT'],
+  Number(process.env['GNY_PORT']),
   process.env['GNY_NETWORK'],
+  process.env['GNY_HTTPS'] || false,
 );
 
 export default {
@@ -41,6 +42,11 @@ export default {
   },
 
   methods: {
+    rowClick: function(row) {
+      console.log(row.height);
+      this.$router.push({name: 'block-detail', query: { height: row.height }});
+    },
+
     subID: function (row, column) {
       return row.id.slice(0,8);
     },
@@ -87,7 +93,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 
 .el-container {
   max-width: 1000px;
@@ -98,6 +104,15 @@ export default {
 
 .el-card {
   margin-top: 20px;
+}
+
+/* row clickable */
+.clickable-rows tbody tr td {
+    cursor: pointer;
+}
+
+.clickable-rows .el-table__expanded-cell {
+cursor: default;
 }
 
 </style>
