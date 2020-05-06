@@ -84,7 +84,7 @@ import * as gnyClient from '@gny/client';
 
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],
-  process.env['GNY_PORT'],
+  Number(process.env['GNY_PORT']),
   process.env['GNY_NETWORK'],
   process.env['GNY_HTTPS'] || false,
 );
