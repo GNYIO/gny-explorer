@@ -43,6 +43,15 @@ module.exports = {
   */
   buildModules: [
   ],
+  netlify: { 
+    mergeSecurityHeaders: true,
+    headers: {
+      '/*': [
+        'Access-Control-Allow-Origin: *'
+      ]
+    }
+  },
+
   /*
   ** Nuxt.js modules
   */
@@ -52,6 +61,7 @@ module.exports = {
     // Doc: https://github.com/nuxt-community/dotenv-module
     '@nuxtjs/dotenv',
     'nuxt-clipboard2',
+    '@aceforth/nuxt-netlify',
   ],
   /*
   ** Axios module configuration
