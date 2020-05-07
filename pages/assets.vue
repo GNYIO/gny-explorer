@@ -7,8 +7,7 @@
         <el-table-column prop="desc" align="center" label="Description" width="130"></el-table-column>
         <el-table-column prop="tid" align="center" label="TransactionId" width="120" :formatter="subTransactionId"></el-table-column>
         <el-table-column prop="timestamp" align="center" label="Timestamp" width="180" :formatter="timestamp2date"></el-table-column>
-        <el-table-column prop="precision" align="center" label="Precision" width="90"></el-table-column>
-        <el-table-column prop="quantity" align="center" label="Quantity"></el-table-column>
+        <el-table-column prop="leftToIssuePretty" align="center" label="Left To Issue" width="180"></el-table-column>
         <el-table-column prop="issuerId" align="center" label="Issuer" width="120" :formatter="subIssuerId"></el-table-column>
 
         <infinite-loading
@@ -26,6 +25,7 @@
 import moment from 'moment';
 import * as gnyClient from '@gny/client';
 import { slots } from '@gny/utils';
+import { BigNumber } from 'bignumber.js';
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],
   Number(process.env['GNY_PORT']),
@@ -46,10 +46,6 @@ export default {
       this.$router.push({name: 'asset-detail', query: { assetName: row.name }});
     },
 
-    subID: function (row, column) {
-      return row.id.slice(0,8);
-    },
-
     subTransactionId: function (row, column) {
       return row.tid.slice(0, 8);
     },
@@ -62,14 +58,37 @@ export default {
       return moment(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD hh:mm:ss');
     },
 
+    makeAssetPretty: function(asset) {
+      const prec = Math.pow(10, asset.precision);
+      const difference = new BigNumber(asset.maximum)
+        .minus(asset.quantity)
+        .toFixed();
+
+      const one = {
+        tid: asset.tid,
+        name: asset.name,
+        precision: asset.precision,
+        maximum: asset.maximum,
+        maximumPretty: new BigNumber(asset.maximum).dividedBy(prec).toFixed(),
+        quantity: asset.quantity,
+        quantityPretty: new BigNumber(asset.quantity).dividedBy(prec).toFixed(),
+        leftToIssue: difference,
+        leftToIssuePretty: new BigNumber(difference).dividedBy(prec).toFixed(),
+        desc: asset.desc,
+        issuerId: asset.issuerId,
+      };
+      return one;
+    },
+
     infiniteHandler: function ($state) {
       setTimeout(async () => {
         const limit = 10;
         const offset = this.loaded;
 
-        console.log(`infiniteHandler(): limit ${limit}, offset: ${offset}`);
+        const newAssets = (await connection.api.Uia.getAssets(limit, offset))
+          .assets
+          .map(x => this.makeAssetPretty(x));
 
-        const newAssets = (await connection.api.Uia.getAssets(limit, offset)).assets;
         this.assets.push(...newAssets);
 
         this.loaded += limit;
@@ -86,7 +105,10 @@ export default {
     const limit = 10;
     const offset = 0;
 
-    const result = (await connection.api.Uia.getAssets(limit, offset)).assets;
+    const result = (await connection.api.Uia.getAssets(limit, offset))
+      .assets
+      .map(x => this.makeAssetPretty(x));
+
     this.assets = result;
     this.loaded = 10;
   },
