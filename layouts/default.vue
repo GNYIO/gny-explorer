@@ -8,6 +8,7 @@
           <router-link to="/blocks" class="second-link">BLOCKS</router-link>
           <router-link to="/transactions" class="second-link">TRANSACTIONS</router-link>
           <router-link to="/delegates" class="second-link">DELEGATES</router-link>
+          <router-link to="/assets" class="second-link">ASSETS</router-link>
           <Search />
         </nav>
       </el-header>
