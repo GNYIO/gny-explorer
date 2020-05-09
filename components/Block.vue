@@ -28,7 +28,7 @@
     </el-table>
     <br>
     <nuxt-link to="blocks">
-      Explore more blocks →
+      Explore more Blocks →
     </nuxt-link>
   </el-card>
 </template>

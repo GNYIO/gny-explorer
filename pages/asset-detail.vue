@@ -16,15 +16,20 @@
           <p>{{issuer.name}}</p>
         </el-col>
         <el-col :span="6">
-          Address
-          <p>{{assetIssuerId}}</p>
+          Account
+          <router-link :to="{name: 'account-detail', query: { address: asset.issuerId }}">
+            <p>{{assetIssuerId}}</p>
+          </router-link>
+
         </el-col>
       </el-row>
 
       <el-row>
         <el-col :span="6" >
           TransactionId
-          <p>{{assetTid}}</p>
+          <router-link :to="{name: 'transaction', query: { id: asset.tid }}">
+            <p>{{assetTid}}</p>
+          </router-link>
         </el-col> 
         <el-col :span="6">
           Precision

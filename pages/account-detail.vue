@@ -29,7 +29,8 @@
       </el-row>
     </el-card>
 
-    <el-card v-if="balances.length > 0">
+    <!-- v-if="balances.length > 0" -->
+    <el-card>
       <h2>Assets</h2>
 
       <el-table class="clickable-rows" :data="balances" stripe style="width: 95%;">
@@ -64,12 +65,6 @@
           </template>
         </el-table-column>
 
-        <!-- <infinite-loading
-          slot="append"
-          @infinite="infiniteHandler"
-          force-use-infinite-wrapper=".el-table__body-wrapper">
-        </infinite-loading> -->
-
       </el-table>
     </el-card>
 
@@ -103,56 +98,19 @@ export default {
     },
 
     methods: {
-    rowClick: function(row) {
-        console.log(row.id);
-        this.$router.push({name: 'transaction', query: { id: row.id }});
+      rowClick: function(row) {
+          console.log(row.id);
+          this.$router.push({name: 'transaction', query: { id: row.id }});
+      },
+  
+      subSenderId: function (row, column) {0
+        return row.senderId.slice(0,8);
+      },
+  
+      timestamp2date: function (row, column) {
+        return moment(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD hh:mm:ss');
+      },
     },
-
-    subSenderId: function (row, column) {0
-      return row.senderId.slice(0,8);
-    },
-
-    timestamp2date: function (row, column) {
-      return moment(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD hh:mm:ss');
-    },
-
-    infiniteHandler: async function ($state) {
-      console.log(`infiniteHandler`);
-      
-      var ctx = this;
-
-        // try {
-        //     console.log('Loading more transactions...');
-        //     const limit = 5;
-        //     const offset = ctx.loaded;
-        //     const senderId = ctx.account.address;
-        //     const query = {
-        //       limit,
-        //       offset,
-        //       senderId
-        //     }
-
-        //     const transactions = (await connection.api.Transaction.getTransactions(query)).transactions;
-        //     this.transactions = transactions;
-
-        //     // await ctx.$store.dispatch('appendTransactions', transactions);
-        //     // ctx.transactions = this.$store.state.transactions;
-
-        //     ctx.loaded += limit;
-
-        //     console.log(transactions.length);
-        //     $state.loaded();
-
-        //     if (transactions.length === 0) {
-        //       $state.complete();
-        //     }
-        // } catch (err) {
-        //   console.log(err);
-        // }
-
-
-    },
-  },
 
     async mounted() {
       const address = this.$route.query.address;

@@ -8,7 +8,7 @@
         <el-table-column prop="tid" align="center" label="TransactionId" width="120" :formatter="subTransactionId"></el-table-column>
         <el-table-column prop="timestamp" align="center" label="Timestamp" width="180" :formatter="timestamp2date"></el-table-column>
         <el-table-column prop="leftToIssuePretty" align="center" label="Left To Issue" width="180"></el-table-column>
-        <el-table-column prop="issuerId" align="center" label="Issuer" width="120" :formatter="subIssuerId"></el-table-column>
+        <el-table-column prop="issuerId" align="center" label="Issuer" width="100" :formatter="subIssuerId"></el-table-column>
 
         <infinite-loading
           slot="append"

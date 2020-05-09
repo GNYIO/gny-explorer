@@ -23,6 +23,10 @@
         </template>
       </el-table-column>
     </el-table>
+    <br>
+    <nuxt-link to="transactions">
+      Explore more Transactions →
+    </nuxt-link>
   </el-card>
 </template>
 
