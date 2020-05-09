@@ -23,7 +23,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .el-container {
   max-width: 1000px;
   box-sizing: border-box;

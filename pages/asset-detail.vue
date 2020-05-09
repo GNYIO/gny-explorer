@@ -12,11 +12,11 @@
           <p>{{asset.desc}}</p>
         </el-col>
         <el-col :span="6">
-          Issuer
+          Issuer Name
           <p>{{issuer.name}}</p>
         </el-col>
         <el-col :span="6">
-          Account
+          Issuer Account
           <router-link :to="{name: 'account-detail', query: { address: asset.issuerId }}">
             <p>{{assetIssuerId}}</p>
           </router-link>
