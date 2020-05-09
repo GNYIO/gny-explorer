@@ -122,8 +122,6 @@ export default {
       this.date = moment(slots.getRealTime(this.block.timestamp)).format('YYYY-MM-DD hh:mm:ss');
       this.transactions = transactions;
       this.delegateID = this.block.delegate.slice(0, 8);
-
-      await this.$store.dispatch('setTransactions', this.transactions);
     } catch (error) {
       error({ statusCode: 404, message: 'Oops...' })
     }

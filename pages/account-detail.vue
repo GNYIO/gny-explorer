@@ -154,8 +154,6 @@ export default {
         this.loaded = 5;
 
         this.balances = (await connection.api.Uia.getBalances(senderId)).balances;
-
-        await this.$store.dispatch('setTransactions', this.transactions);
       } catch (error) {
         console.log(error && error.response && error.response.data);
         // error({ statusCode: 404, message: 'Oops...' })

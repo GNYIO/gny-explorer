@@ -63,21 +63,22 @@ export default {
       return moment(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD hh:mm:ss');
     },
 
-    infiniteHandler: async function ($state) {
-      const limit = 10;
-      const offset = this.loaded;
-      const orderBy = 'height:desc'
-      const newTransactions = (await connection.api.Transaction.getTransactions({
-        limit,
-        offset,
-      })).transactions
-      await this.$store.dispatch('appendTransactions', newTransactions);
-      this.transactions = this.$store.state.transactions
-      this.loaded += limit;
-      $state.loaded()
-      if (newTransactions.length === 0) {
-        $state.complete();
-      }
+    infiniteHandler: function ($state) {
+      setTimeout(async () => {
+        const limit = 50;
+        const offset = this.loaded;
+        const orderBy = 'height:desc'
+        const newTransactions = (await connection.api.Transaction.getTransactions({
+          limit,
+          offset,
+        })).transactions
+        this.transactions.push(...newTransactions);
+        this.loaded += limit;
+        $state.loaded()
+        if (newTransactions.length === 0) {
+          $state.complete();
+        }
+      }, 100);
     },
   },
   data() {
@@ -88,7 +89,7 @@ export default {
   },
 
   async mounted() {
-    const limit = 10;
+    const limit = 50;
     const offset = 0;
     const result = (await connection.api.Transaction.getTransactions({
       limit,
@@ -96,7 +97,7 @@ export default {
     })).transactions;
 
     this.transactions = result;
-    this.loaded = 10;
+    this.loaded = limit;
   },
 }
 </script>

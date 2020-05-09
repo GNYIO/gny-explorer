@@ -140,21 +140,16 @@ export default {
 
   async mounted() {
     const id = this.$route.query.id;
-    this.transaction = this.$store.state.transactions.find(transation => transation.id = id);
 
-
-    if (!this.transaction) {
-      try {
-        const query = {
-          id: id,
-        }
-        const result = (await connection.api.Transaction.getTransactions(query)).transactions;
-        this.transaction = result[0];
-
-      } catch (error) {
-        console.log(error.message);
-        // error({ statusCode: 404, message: 'Oops...' });
+    try {
+      const query = {
+        id: id,
       }
+      const result = (await connection.api.Transaction.getTransactions(query)).transactions;
+      this.transaction = result[0]
+    } catch (error) {
+      console.log(error.message);
+      // error({ statusCode: 404, message: 'Oops...' });
     }
 
     this.date = moment(slots.getRealTime(this.transaction.timestamp)).format('YYYY-MM-DD hh:mm:ss');

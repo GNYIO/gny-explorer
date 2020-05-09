@@ -59,30 +59,29 @@ export default {
       return moment(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD hh:mm:ss');
     },
 
-    infiniteHandler: async function ($state) {
-      console.log('Loading more blocks...');
-      const limit = 10;
-      const offset = this.loaded;
-      const orderBy = 'height:desc'
-      const newBlocks = (await connection.api.Block.getBlocks(offset, limit, orderBy)).blocks
-      await this.$store.dispatch('appendBlocks', newBlocks);
-      this.blocks = this.$store.state.blocks
-      this.loaded += limit;
-      $state.loaded()
-      if (newBlocks.length === 0) {
-        $state.complete();
-      }
+    infiniteHandler: function ($state) {
+      setTimeout(async () => {
+        const limit = 50;
+        const offset = this.loaded;
+        const orderBy = 'height:desc'
+        const newBlocks = (await connection.api.Block.getBlocks(offset, limit, orderBy)).blocks
+        this.blocks.push(...newBlocks);
+        this.loaded += limit;
+        $state.loaded()
+        if (newBlocks.length === 0) {
+          $state.complete();
+        }
+      }, 100);
     },
   },
 
   async mounted() {
-    const limit = 10;
+    const limit = 50;
     const offset = 0;
     const orderBy = 'height:desc';
 
     this.blocks = (await connection.api.Block.getBlocks(offset, limit, orderBy)).blocks;
-    this.loaded = 10;
-    await this.$store.dispatch('setBlocks', this.blocks);
+    this.loaded = limit;
   },
 }
 </script>

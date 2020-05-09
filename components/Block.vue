@@ -75,7 +75,6 @@ export default {
     const orderBy = 'height:desc';
 
     this.blocks = (await connection.api.Block.getBlocks(offset, limit, orderBy)).blocks;
-    this.$store.commit('setBlocks', this.blocks);
   },
 }
 </script>

@@ -80,18 +80,20 @@ export default {
       return one;
     },
 
-    infiniteHandler: async function ($state) {
-      const limit = 10;
-      const offset = this.loaded
-      const newAssets = (await connection.api.Uia.getAssets(limit, offset))
-        .assets
-        .map(x => this.makeAssetPretty(x))
-      this.assets.push(...newAssets)
-      this.loaded += limit;
-      $state.loaded()
-      if (newAssets.length === 0) {
-        $state.complete();
-      }
+    infiniteHandler: function ($state) {
+      setTimeout(async () => {
+        const limit = 10;
+        const offset = this.loaded
+        const newAssets = (await connection.api.Uia.getAssets(limit, offset))
+          .assets
+          .map(x => this.makeAssetPretty(x))
+        this.assets.push(...newAssets)
+        this.loaded += limit;
+        $state.loaded()
+        if (newAssets.length === 0) {
+          $state.complete();
+        }
+      }, 100);
     },
   },
 
