@@ -27,7 +27,7 @@
       <el-row>
         <el-col :span="6" >
           TransactionId
-          <router-link :to="{name: 'transaction', query: { id: asset.tid }}">
+          <router-link :to="{name: 'transaction-detail', query: { id: asset.tid }}">
             <p>{{assetTid}}</p>
           </router-link>
         </el-col> 

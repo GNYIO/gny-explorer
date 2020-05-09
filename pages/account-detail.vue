@@ -49,7 +49,7 @@
           <template v-slot:default="table">
             <el-tooltip content="Bottom center" placement="bottom" effect="light">
               <div slot="content">{{table.row.id}}</div>
-              <router-link :to="{name: 'transaction', query: { id: table.row.id }}" tag="span">
+              <router-link :to="{name: 'transaction-detail', query: { id: table.row.id }}" tag="span">
                 {{table.row.id.slice(0,8)}}
               </router-link>
             </el-tooltip>
@@ -100,7 +100,7 @@ export default {
     methods: {
       rowClick: function(row) {
           console.log(row.id);
-          this.$router.push({name: 'transaction', query: { id: row.id }});
+          this.$router.push({name: 'transaction-detail', query: { id: row.id }});
       },
   
       subSenderId: function (row, column) {0
