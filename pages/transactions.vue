@@ -3,7 +3,7 @@
     <el-card>
       <h2>Transactions</h2>
       <el-table class="clickable-rows" @row-click="rowClick" :data="transactions" stripe style="width: 100%; margin: auto;" height="500">
-        <el-table-column prop="height" align="center" width="150" label="Height"></el-table-column>
+        <el-table-column prop="height" align="center" label="Height"></el-table-column>
         <el-table-column prop="id" align="center" width="230" label="Transaction ID">
           <template v-slot:default="table">
             <el-tooltip content="Bottom center" placement="bottom" effect="light">
