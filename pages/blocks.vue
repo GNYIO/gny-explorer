@@ -2,14 +2,32 @@
   <el-container>
     <el-card>
       <h2>Blocks</h2>
-      <el-table @row-click="rowClick" class="clickable-rows" :data="blocks" stripe style="width: 100%; margin: auto;" height="500">
-        <el-table-column prop="height" align="center" label="Height" width="80"></el-table-column>
-        <el-table-column prop="id" align="center" label="Block ID" width="100" :formatter="subID"></el-table-column>
+      <el-table class="clickable-rows" :data="blocks" stripe style="width: 100%; margin: auto;" height="500">
+        <el-table-column prop="height" align="center" label="Height" width="80">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
+              {{table.row.height}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+        <el-table-column prop="id" align="center" label="Block ID" width="100">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
+              {{subID(table.row.id)}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
         <el-table-column prop="timestamp" align="center" label="Forged Time" width="200" :formatter="timestamp2date"></el-table-column>
         <el-table-column prop="count" align="center" label="Transactions" width="120"></el-table-column>
         <el-table-column prop="fees" align="center" label="Fees" width="100"></el-table-column>
         <el-table-column prop="reward" align="center" label="Reward" width="100"></el-table-column>
-        <el-table-column prop="delegate" align="center" label="Delegate" :formatter="subDelegate" width="150"></el-table-column>
+        <el-table-column prop="delegate" align="center" label="Delegate" width="150">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{name: 'delegate-detail', query: { publicKey: table.row.delegate }}">
+              {{subDelegate(table.row.delegate)}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
         
         <infinite-loading
           slot="append"
@@ -42,17 +60,12 @@ export default {
   },
 
   methods: {
-    rowClick: function(row) {
-      console.log(row.height);
-      this.$router.push({name: 'block-detail', query: { height: row.height }});
+    subID: function (id) {
+      return id.slice(0,8);
     },
 
-    subID: function (row, column) {
-      return row.id.slice(0,8);
-    },
-
-    subDelegate: function (row, column) {
-      return row.delegate.slice(0,8);
+    subDelegate: function (delegate) {
+      return delegate.slice(0,8);
     },
 
     timestamp2date: function (row, column) {
@@ -101,11 +114,16 @@ export default {
 
 /* row clickable */
 .clickable-rows tbody tr td {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .clickable-rows .el-table__expanded-cell {
-cursor: default;
+  cursor: default;
+}
+
+.nuxt-link {
+  color:#2475ba;
+  cursor: pointer;
 }
 
 </style>

@@ -17,9 +17,9 @@
         </el-col>
         <el-col :span="6">
           Issuer Account
-          <router-link :to="{name: 'account-detail', query: { address: asset.issuerId }}">
+          <nuxt-link :to="{name: 'account-detail', query: { address: asset.issuerId }}">
             <p>{{assetIssuerId}}</p>
-          </router-link>
+          </nuxt-link>
 
         </el-col>
       </el-row>
@@ -27,9 +27,9 @@
       <el-row>
         <el-col :span="6" >
           TransactionId
-          <router-link :to="{name: 'transaction-detail', query: { id: asset.tid }}">
+          <nuxt-link :to="{name: 'transaction-detail', query: { id: asset.tid }}">
             <p>{{assetTid}}</p>
-          </router-link>
+          </nuxt-link>
         </el-col> 
         <el-col :span="6">
           Precision

@@ -7,9 +7,9 @@
         <template v-slot:default="table">
           <el-tooltip content="Bottom center" placement="bottom" effect="light">
             <div slot="content">{{table.row.id}}</div>
-            <router-link :to="{name: 'block-detail', query: { height: table.row.height }}" tag="span" :formatter="subID">
+            <nuxt-link :to="{name: 'block-detail', query: { height: table.row.height }}" tag="span" :formatter="subID">
               {{table.row.id.slice(0,8)}}
-            </router-link>
+            </nuxt-link>
           </el-tooltip>
         </template>
       </el-table-column>
@@ -19,9 +19,9 @@
         <template v-slot:default="table">
           <el-tooltip content="Bottom center" placement="bottom" effect="light">
             <div slot="content">{{table.row.delegate}}</div>
-            <router-link :to="{name: 'delegate-detail', query: { username: table.row.delegate }}" tag="span" :formatter="subID">
+            <nuxt-link :to="{name: 'delegate-detail', query: { username: table.row.delegate }}" tag="span" :formatter="subID">
             {{table.row.delegate.slice(0,8)}}
-            </router-link>
+            </nuxt-link>
           </el-tooltip>
         </template>
       </el-table-column>

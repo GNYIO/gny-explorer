@@ -7,9 +7,9 @@
         <template v-slot:default="table">
           <el-tooltip content="Bottom center" placement="bottom" effect="light">
             <div slot="content">{{table.row.id}}</div>
-            <router-link :to="{name: 'transaction-detail', query: { id: table.row.id }}" tag="span">
+            <nuxt-link :to="{name: 'transaction-detail', query: { id: table.row.id }}" tag="span">
               {{table.row.id.slice(0,8)}}
-            </router-link>
+            </nuxt-link>
           </el-tooltip>
         </template>
       </el-table-column>

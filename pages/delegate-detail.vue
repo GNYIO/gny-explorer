@@ -5,9 +5,9 @@
       <el-row>
         <el-col :span="8" >
           Username
-          <router-link class="clickable" :to="{ name: 'account-detail', query: { username: delegate.username }}" tag="span">
+          <nuxt-link class="clickable" :to="{ name: 'account-detail', query: { username: delegate.username }}" tag="span">
               <p >{{delegate.username}}</p>
-          </router-link>
+          </nuxt-link>
         </el-col>
         <el-col :span="8" >
           PublicKey
@@ -15,9 +15,9 @@
         </el-col>
         <el-col :span="8" >
           Address
-          <router-link class="clickable" :to="{ name: 'account-detail', query: { address: delegate.address }}" tag="span">
+          <nuxt-link class="clickable" :to="{ name: 'account-detail', query: { address: delegate.address }}" tag="span">
               <p>{{delegate.address}}</p>
-          </router-link>
+          </nuxt-link>
         </el-col>
       </el-row>
 

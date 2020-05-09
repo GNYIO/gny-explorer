@@ -2,25 +2,27 @@
   <el-container>
     <el-card>
       <h2>Transactions</h2>
-      <el-table class="clickable-rows" @row-click="rowClick" :data="transactions" stripe style="width: 100%; margin: auto;" height="500">
-        <el-table-column prop="height" align="center" label="Height"></el-table-column>
+      <el-table class="clickable-rows" :data="transactions" stripe style="width: 100%; margin: auto;" height="500">
+        <el-table-column prop="height" align="center" label="Height">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
+              {{table.row.height}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
         <el-table-column prop="id" align="center" width="230" label="Transaction ID">
           <template v-slot:default="table">
-            <el-tooltip content="Bottom center" placement="bottom" effect="light">
-              <div slot="content">{{table.row.id}}</div>
-              <router-link :to="{name: 'transaction-detail', query: { id: table.row.id }}" tag="span">
-                {{table.row.id.slice(0,8)}}
-              </router-link>
-            </el-tooltip>
+            <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: table.row.id }}" tag="span">
+              {{table.row.id.slice(0,8)}}
+            </nuxt-link>
           </template>
         </el-table-column>
         <el-table-column prop="timestamp" align="center" label="Forged Time" width="200" :formatter="timestamp2date"></el-table-column>
         <el-table-column prop="senderId" align="center" label="Sender" width="200" :formatter="subSenderId">
           <template v-slot:default="table">
-            <el-tooltip content="Bottom center" placement="bottom" effect="light">
-              <div slot="content">{{table.row.senderId}}</div>
-              <div>{{table.row.senderId.slice(0,8)}}</div>
-            </el-tooltip>
+            <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.senderId }}" tag="span">
+              {{table.row.senderId.slice(0,8)}}
+            </nuxt-link>
           </template>
         </el-table-column>
         <el-table-column prop="fee" label="Fee"></el-table-column>
@@ -31,7 +33,7 @@
           force-use-infinite-wrapper=".el-table__body-wrapper">
         </infinite-loading>
       </el-table>
-  
+
     </el-card>
   </el-container>
 </template>
@@ -123,6 +125,11 @@ export default {
 
 .clickable-rows .el-table__expanded-cell {
   cursor: default;
+}
+
+.nuxt-link {
+  color:#2475ba;
+  cursor: pointer;
 }
 
 </style>

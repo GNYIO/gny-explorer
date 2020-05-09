@@ -16,7 +16,7 @@
       <el-row>
         <el-col :span="24" >
           <span>Block height</span>
-          <router-link
+          <nuxt-link
             class="content clickable"
             v-if="!!transaction"
             :to="{name: 'block-detail', query: { height: transaction.height }}">
@@ -29,7 +29,7 @@
                 </span>
               </span>
 
-          </router-link>
+          </nuxt-link>
 
           
         </el-col>
@@ -63,12 +63,12 @@
       <el-row>
         <el-col :span="24">
           <span>SenderId</span>
-          <router-link
+          <nuxt-link
             class="clickable"
             v-if="!!transaction"
             :to="{name: 'account-detail', query: { address: transaction.senderId }}">
             <span class="content">{{transaction.senderId}}</span>
-          </router-link>
+          </nuxt-link>
         </el-col>
 
       </el-row>
