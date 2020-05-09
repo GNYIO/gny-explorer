@@ -209,7 +209,6 @@ h2 {
   font-weight: 500;
   margin-bottom: 5px;
   padding-bottom: 10px;
-  border-bottom: 1px solid #bbb;
 }
 
 .content {

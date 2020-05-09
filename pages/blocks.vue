@@ -59,25 +59,19 @@ export default {
       return moment(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD hh:mm:ss');
     },
 
-    infiniteHandler: function ($state) {
-      setTimeout(async () => {
-        console.log('Loading more blocks...');
-        const limit = 10;
-        const offset = this.loaded;
-        const orderBy = 'height:desc';
-
-        const newBlocks = (await connection.api.Block.getBlocks(offset, limit, orderBy)).blocks;
-
-        await this.$store.dispatch('appendBlocks', newBlocks);
-        this.blocks = this.$store.state.blocks;
-
-        this.loaded += limit;
-        $state.loaded();
-
-        if (newBlocks.length === 0) {
-          $state.complete();
-        }
-      }, 1000)
+    infiniteHandler: async function ($state) {
+      console.log('Loading more blocks...');
+      const limit = 10;
+      const offset = this.loaded;
+      const orderBy = 'height:desc'
+      const newBlocks = (await connection.api.Block.getBlocks(offset, limit, orderBy)).blocks
+      await this.$store.dispatch('appendBlocks', newBlocks);
+      this.blocks = this.$store.state.blocks
+      this.loaded += limit;
+      $state.loaded()
+      if (newBlocks.length === 0) {
+        $state.complete();
+      }
     },
   },
 
