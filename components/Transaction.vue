@@ -1,6 +1,6 @@
 <template>
   <el-card>
-    <h2>Latest transactions</h2>
+    <h2>Latest Transactions</h2>
     <el-table :data="transactions" stripe style="width: 95%; margin: auto;">
       <el-table-column prop="id" align="center" label="Transaction ID">
         <template v-slot:default="table">
