@@ -2,13 +2,24 @@
   <el-container>
     <el-card>
       <h2>Assets</h2>
-      <el-table @row-click="rowClick" class="clickable-rows" :data="assets" stripe style="width: 100%; margin: auto;" height="500">
-        <el-table-column prop="name" align="center" label="Name" width="110"></el-table-column>
+      <el-table :data="assets" stripe style="width: 100%; margin: auto;" height="500">
+        <el-table-column prop="name" align="center" label="Name" width="110">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{name: 'asset-detail', query: { assetName: table.row.name }}">
+              {{table.row.name}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
         <el-table-column prop="desc" align="center" label="Description" width="130"></el-table-column>
-        <el-table-column prop="tid" align="center" label="TransactionId" width="120" :formatter="subTransactionId"></el-table-column>
         <el-table-column prop="timestamp" align="center" label="Timestamp" width="180" :formatter="timestamp2date"></el-table-column>
         <el-table-column prop="leftToIssuePretty" align="center" label="Left To Issue" width="180"></el-table-column>
-        <el-table-column prop="issuerId" align="center" label="Issuer" width="100" :formatter="subIssuerId"></el-table-column>
+        <el-table-column prop="issuerId" align="center" label="Issuer" width="220" :formatter="subIssuerId">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.issuerId }}">
+              {{subIssuerId(table.row.issuerId)}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
 
         <infinite-loading
           slot="append"
@@ -42,16 +53,12 @@ export default {
   },
 
   methods: {
-    rowClick: function(row) {
-      this.$router.push({name: 'asset-detail', query: { assetName: row.name }});
-    },
-
     subTransactionId: function (row, column) {
       return row.tid.slice(0, 8);
     },
 
-    subIssuerId: function (row, column) {
-      return row.issuerId.slice(0,8);
+    subIssuerId: function (issuerId) {
+      return issuerId.slice(0,8);
     },
 
     timestamp2date: function (row, column) {
@@ -122,15 +129,6 @@ export default {
 
 .el-card {
   margin-top: 20px;
-}
-
-/* row clickable */
-.clickable-rows tbody tr td {
-    cursor: pointer;
-}
-
-.clickable-rows .el-table__expanded-cell {
-    cursor: default;
 }
 
 </style>

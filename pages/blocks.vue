@@ -2,7 +2,7 @@
   <el-container>
     <el-card>
       <h2>Blocks</h2>
-      <el-table class="clickable-rows" :data="blocks" stripe style="width: 100%; margin: auto;" height="500">
+      <el-table :data="blocks" stripe style="width: 100%; margin: auto;" height="500">
         <el-table-column prop="height" align="center" label="Height" width="80">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
@@ -18,8 +18,8 @@
           </template>
         </el-table-column>
         <el-table-column prop="timestamp" align="center" label="Forged Time" width="200" :formatter="timestamp2date"></el-table-column>
-        <el-table-column prop="count" align="center" label="Transactions" width="120"></el-table-column>
-        <el-table-column prop="fees" align="center" label="Fees" width="100"></el-table-column>
+        <el-table-column prop="count" align="center" label="Transactions" width="110"></el-table-column>
+        <el-table-column prop="fees" align="center" label="Fees" width="70"></el-table-column>
         <el-table-column prop="reward" align="center" label="Reward" width="100"></el-table-column>
         <el-table-column prop="delegate" align="center" label="Delegate" width="150">
           <template v-slot:default="table">
@@ -110,15 +110,6 @@ export default {
 
 .el-card {
   margin-top: 20px;
-}
-
-/* row clickable */
-.clickable-rows tbody tr td {
-  cursor: pointer;
-}
-
-.clickable-rows .el-table__expanded-cell {
-  cursor: default;
 }
 
 .nuxt-link {

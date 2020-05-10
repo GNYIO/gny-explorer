@@ -3,29 +3,31 @@
     <el-card>
       <h2>Account info</h2>
       <el-row>
-        <el-col :span="5" >
+        <el-col :span="10">
           Address
-          <p >{{address}}</p>
+          <p >{{account.address}}</p>
         </el-col>
-        <el-col :span="5" >
+        <el-col :span="7">
           GNY Balance
           <p >{{balance}}</p>
         </el-col>
-        <el-col :span="5" >
+        <el-col :span="7">
           Username
           <p v-if="account.username">{{account.username}}</p>
           <p v-else>Not set</p>
         </el-col>
-        <el-col :span="5" >
+      </el-row>
+      <el-row>
+        <el-col :span="10">
           Public Key
           <p v-if="publicKey">{{publicKey}}</p>
           <p v-else>Not set</p>
         </el-col> 
-        <el-col :span="4" >
+        <el-col :span="7">
           Delegate
           <p v-if="account.isDelegate"><nuxt-link :to="{name: 'delegate-detail', query: { username: account.username }}">Details</nuxt-link></p>
           <p v-else>False</p>
-        </el-col> 
+        </el-col>
       </el-row>
     </el-card>
 
@@ -43,27 +45,23 @@
     <el-card>
       <h2>Transactions</h2>
       
-      <el-table class="clickable-rows" @row-click="rowClick" :data="transactions" stripe style="width: 95%;" height="300">
-        <el-table-column prop="height" align="center" label="Height" width="150"></el-table-column>
+      <el-table @row-click="rowClick" :data="transactions" stripe style="width: 95%;">
+        <el-table-column prop="height" align="center" label="Height" width="150">
+          <template v-slot:default="table">
+             <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}" tag="span">
+              {{table.row.height}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
         <el-table-column prop="id" align="center" label="Transaction ID">
           <template v-slot:default="table">
-            <el-tooltip content="Bottom center" placement="bottom" effect="light">
-              <div slot="content">{{table.row.id}}</div>
-              <nuxt-link :to="{name: 'transaction-detail', query: { id: table.row.id }}" tag="span">
-                {{table.row.id.slice(0,8)}}
-              </nuxt-link>
-            </el-tooltip>
+            <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: table.row.id }}" tag="span">
+              {{table.row.id.slice(0,8)}}
+            </nuxt-link>
           </template>
         </el-table-column>
         <el-table-column prop="timestamp" align="center" label="Forged Time" width="200" :formatter="timestamp2date"></el-table-column>
-        <el-table-column prop="senderId" align="center" label="Sender" width="200" :formatter="subSenderId">
-          <template v-slot:default="table">
-            <el-tooltip content="Bottom center" placement="bottom" effect="light">
-              <div slot="content">{{table.row.senderId}}</div>
-              <div>{{table.row.senderId.slice(0,8)}}</div>
-            </el-tooltip>
-          </template>
-        </el-table-column>
+        <el-table-column prop="senderId" align="center" label="Sender" width="200" :formatter="subSenderId"></el-table-column>
 
       </el-table>
     </el-card>
@@ -133,7 +131,6 @@ export default {
         }
 
         this.account = account;
-        this.address = account.address.slice(0, 8);
         this.balance = new BigNumber(account.balance).dividedBy(1e8).toFixed();
 
         if (account.publicKey) {
@@ -184,12 +181,8 @@ p {
   color: #acacac;
 }
 
-/* row clickable */
-.clickable-rows tbody tr td {
+.nuxt-link {
+  color:#2475ba;
   cursor: pointer;
-}
-
-.clickable-rows .el-table__expanded-cell {
-  cursor: default;
 }
 </style>
