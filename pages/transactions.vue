@@ -3,17 +3,17 @@
     <el-card>
       <h2>Transactions</h2>
       <el-table :data="transactions" stripe style="width: 100%; margin: auto;" height="500">
-        <el-table-column prop="height" align="center" label="Block Height" width="120">
-          <template v-slot:default="table">
-            <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
-              {{table.row.height}}
-            </nuxt-link>
-          </template>
-        </el-table-column>
         <el-table-column prop="id" align="center" width="200" label="Transaction ID">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: table.row.id }}" tag="span">
               {{table.row.id.slice(0,8)}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+        <el-table-column prop="height" align="center" label="Block Height" width="120">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
+              {{table.row.height}}
             </nuxt-link>
           </template>
         </el-table-column>
