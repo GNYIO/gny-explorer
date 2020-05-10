@@ -8,8 +8,8 @@
             <p>{{count}}</p>
             </el-col>
             <el-col :span="8">
-                Most Produced Blocks:
-                <p>{{mostProducedBlocks}}</p>
+              Most Produced Blocks:
+              <p>{{mostProducedBlocks}}</p>
             </el-col>
             <el-col :span="8">
                 Highest Approval:
@@ -23,39 +23,52 @@
             </el-col>
             <el-col :span="8">
                 Most Produced Blocks Delegate:
-                <p>{{mostProducedBlocksDelegate}}</p>
+                <p>
+                  <nuxt-link class="nuxt-link" :to="{ name: 'delegate-detail', query: { username: mostProducedBlocksDelegate }}">
+                  {{mostProducedBlocksDelegate}}
+                  </nuxt-link>
+                </p>
             </el-col>
             <el-col :span="8">
                 Highest Approval Name:
-                <p>{{highestApprovalDelegate}}</p>
+                <p>
+                   <nuxt-link class="nuxt-link" :to="{ name: 'delegate-detail', query: { username: highestApprovalDelegate }}">
+                    {{highestApprovalDelegate}}
+                   </nuxt-link>
+                </p>
             </el-col>
         </el-row>
 
     </el-card>
     <el-card>
-      <el-table class="clickable-rows" :data="allDelegates" stripe style="width: 100%"
-        @row-click="handleCurrentChange">
+      <el-table :data="allDelegates" stripe style="width: 100%">
           <el-table-column prop="rate" label="Rank" width="100"></el-table-column>
           <el-table-column
             prop="username"
             label="Username"
             width="120"
-          ></el-table-column>
+          >
+            <template v-slot:default="table">
+              <nuxt-link class="nuxt-link" :to="{ name: 'delegate-detail', query: { username: table.row.username }}">
+                    {{table.row.username}}
+                   </nuxt-link>
+            </template>
+          </el-table-column>
           <el-table-column
             prop="producedBlocks"
             label="Produced Blocks"
-            width="180"
+            width="140"
           ></el-table-column>
           <el-table-column
             prop="rewards"
             label="Rewards"
-            width="180"
+            width="140"
           ></el-table-column>
           <el-table-column
             prop="productivity"
             label="Productivity"
           ></el-table-column>
-          <el-table-column prop="approval" label="Approval %"> </el-table-column>
+          <el-table-column prop="approval" label="Approval %" width="100"></el-table-column>
         </el-table>
     </el-card>
   </el-container>
@@ -177,14 +190,9 @@ p {
 }
 
 
-/* row clickable */
-.clickable-rows tbody tr td {
-    cursor: pointer;
+.nuxt-link {
+  color:#2475ba;
+  cursor: pointer;
 }
-
-.clickable-rows .el-table__expanded-cell {
-cursor: default;
-}
-
 
 </style>

@@ -55,7 +55,7 @@
         <el-col :span="24">
           Registration Transaction
           <p>
-            <nuxt-link :to="{ name: 'transaction-detail', query: { id: delegate.tid }}">
+            <nuxt-link class="nuxt-link" :to="{ name: 'transaction-detail', query: { id: delegate.tid }}">
               {{trs}}
             </nuxt-link>
           </p>

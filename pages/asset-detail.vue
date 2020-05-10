@@ -17,20 +17,15 @@
         </el-col>
         <el-col :span="6">
           Issuer Account
-          <nuxt-link :to="{name: 'account-detail', query: { address: asset.issuerId }}">
-            <p>{{assetIssuerId}}</p>
-          </nuxt-link>
-
+          <p>
+            <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: asset.issuerId }}">
+             {{assetIssuerId}}
+            </nuxt-link>
+          </p>
         </el-col>
       </el-row>
 
       <el-row>
-        <el-col :span="6" >
-          TransactionId
-          <nuxt-link :to="{name: 'transaction-detail', query: { id: asset.tid }}">
-            <p>{{assetTid}}</p>
-          </nuxt-link>
-        </el-col> 
         <el-col :span="6">
           Precision
           <p>{{asset.precision}}</p>
@@ -43,6 +38,14 @@
           Left to Issue
           <p>{{asset.leftToIssuePretty}}</p>
         </el-col>
+        <el-col :span="6" >
+          TransactionId
+          <p>
+            <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: asset.tid }}">
+              {{assetTid}}
+            </nuxt-link>
+          </p>
+        </el-col> 
       </el-row>
     </el-card>
 
@@ -141,12 +144,8 @@ p {
   color: #acacac;
 }
 
-/* row clickable */
-.clickable-rows tbody tr td {
+.nuxt-link {
+  color:#2475ba;
   cursor: pointer;
-}
-
-.clickable-rows .el-table__expanded-cell {
-  cursor: default;
 }
 </style>
