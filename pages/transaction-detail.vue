@@ -3,98 +3,77 @@
     <el-card>
       <h2>Transaction</h2>
       <el-row>
-        <el-col :span="24" >
-          <span>Transaction ID</span>
-          <span v-if="!!transaction" id="data" class="content">
-            {{transaction.id}}
-            <i class="el-icon-copy-document" @click="copyId"></i>
-          </span>
-          
+        <el-col :span="8">
+          Block height
+          <p>
+            <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: transaction.height }}">
+              {{transaction.height}}
+            </nuxt-link>
+          </p>
+        </el-col>
+        <el-col :span="8">
+          Confirmations
+          <p>{{confirmation}}</p>
+        </el-col>
+        <el-col :span="8">
+          Forged Time
+          <p>{{date}}</p>
+        </el-col>
+      </el-row>
+
+      <el-row>
+        <el-col :span="8">
+          Fee
+          <p>{{transaction.fee}}</p>
+        </el-col>
+        <el-col :span="8">
+          Transaction Type
+          <p>{{transaction.type}}</p>
+        </el-col>
+        <el-col :span="8">
+          Signatures
+          <p>{{transaction.signatures | truncate(24) }}</p>
         </el-col>
       </el-row>
 
       <el-row>
         <el-col :span="24" >
-          <span>Block height</span>
-          <nuxt-link
-            class="content clickable"
-            v-if="!!transaction"
-            :to="{name: 'block-detail', query: { height: transaction.height }}">
-
-             <span v-if="!!transaction" class="content">
-                {{transaction.height}}
-                <span class="confirm">
-                  <span v-if="!!confirmation">{{confirmation}}</span>
-                  <span v-if="!!confirmationText">{{confirmationText}}</span>
-                </span>
-              </span>
-
-          </nuxt-link>
-
-          
+          Transaction ID
+          <p>{{transaction.id}}     <i class="el-icon-copy-document" @click="copyId"></i></p>
         </el-col>
       </el-row>
 
       <el-row>
-        <el-col :span="24" >
-          <span>Forged Time</span>
-          <span v-if="!!date" class="content">{{date}}</span>
+        <el-col :span="8">
+          SenderId
+          <p>
+            <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: transaction.senderId }}">
+              {{transaction.senderId | truncate(20)}}
+            </nuxt-link>
+          </p>
+        </el-col>
+        <el-col :span="16">
+          Sender Public Key
+          <p>{{transaction.senderPublicKey}}</p>
         </el-col>
       </el-row>
 
-      <el-row>
-        <el-col :span="11">
-          <span>Fee</span>
-          <span v-if="!!transaction" class="content">{{transaction.fee}}</span>
-        </el-col>
-        <el-col :span="11" class="type">
-          <span>Type</span>
-          <span v-if="!!transaction" class="content">{{transaction.type}}</span>
-        </el-col>
-      </el-row>
-
-      <el-row>
-        <el-col :span="24">
-          <span>Arguments</span>
-          <span v-if="!!transaction" class="content">{{transaction.args | truncate(60) }}</span>
-        </el-col>
-      </el-row>
-
-      <el-row>
-        <el-col :span="24">
-          <span>SenderId</span>
-          <nuxt-link
-            class="clickable"
-            v-if="!!transaction"
-            :to="{name: 'account-detail', query: { address: transaction.senderId }}">
-            <span class="content">{{transaction.senderId}}</span>
-          </nuxt-link>
-        </el-col>
-
-      </el-row>
-
-      <el-row>
-        <el-col :span="24">
-          <span>Sender Public Key</span>
-          <span v-if="!!transaction" class="content">{{transaction.senderPublicKey}}</span>
-        </el-col>
-      </el-row>
-
-      <el-row>
-        <el-col :span="24">
-          <span>Signatures</span>
-          <span v-if="!!transaction" class="content">{{transaction.signatures | truncate(50) }}</span>
-        </el-col>
-      </el-row>
 
       <el-row v-if="!!transaction && transaction.secondSignature">
         <el-col :span="24">
-          <span>Second Signature</span>
-          <span v-if="!!transaction && transaction.secondSignature" class="content">
-            {{transaction.secondSignature | truncate(50) }}
-          </span>
+          Second Signature
+          <p>{{transaction.secondSignature | truncate(24) }}</p>
         </el-col>
       </el-row>
+
+      <el-row>
+        <el-col :span="24">
+          Arguments
+          <p>{{transaction.args | truncate(60)}}</p>
+        </el-col>
+      </el-row>
+
+
     </el-card>
   </el-container>
 </template>
@@ -176,15 +155,6 @@ i {
     cursor: pointer;
 }
 
-.clickable {
-    cursor: pointer;
-}
-
-h2 {
-  margin-left: 20px;
-  margin-bottom: 40px;
-}
-
 .el-container {
   max-width: 1000px;
   box-sizing: border-box;
@@ -196,29 +166,9 @@ h2 {
   margin-top: 20px;
 }
 
-.el-row {
-  margin: 20px;
-}
-
-.el-col {
-  font-weight: 500;
-  margin-bottom: 5px;
-  padding-bottom: 10px;
-}
-
-.content {
-  float: right;
-  color: #acacac;
-}
-
-.confirm {
-  border: 1px solid;
-  border-radius: 5px;
-  padding: 4px;
-}
-
-.type {
-  float: right;
+.nuxt-link {
+  color:#2475ba;
+  cursor: pointer;
 }
 
 </style>
