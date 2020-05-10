@@ -1,6 +1,6 @@
 
 module.exports = {
-  mode: 'universal',
+  mode: 'spa',
   env: {
    GNY_ENDPOINT: process.env.GNY_ENDPOINT,
    GNY_PORT: process.env.GNY_PORT,
