@@ -89,7 +89,6 @@ export default {
       const publicKey = this.$route.query.publicKey;
       console.log(`publicKey: ${publicKey}`);
 
-      console.log(`delegate-detail: ${username}`);
       try {
         let delegate = null;
         if (username) {
@@ -111,6 +110,7 @@ export default {
         this.publicKey = delegate.publicKey.slice(0, 8);
         this.trs = delegate.tid.slice(0, 8);
       } catch (error) {
+        console.log(`error(delegate-detail): ${JSON.stringify(error && error.response && error.response.data, null, 2)}`);
         error({ statusCode: 404, message: 'Oops...' })
       }
     }
