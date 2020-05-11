@@ -1,28 +1,34 @@
 <template>
   <el-card>
-    <h2>Latest transactions</h2>
-    <el-table class="clickable-rows" @row-click="rowClick" :data="transactions" stripe style="width: 95%; margin: auto;">
-      <el-table-column prop="height" align="center" label="Height" width="150"></el-table-column>
-      <el-table-column prop="id" align="center" label="Transaction ID" width="200">
+    <h2>Latest Transactions</h2>
+    <el-table :data="transactions" stripe style="width: 95%; margin: auto;">
+      <el-table-column prop="id" align="center" label="Transaction ID">
         <template v-slot:default="table">
-          <el-tooltip content="Bottom center" placement="bottom" effect="light">
-            <div slot="content">{{table.row.id}}</div>
-            <router-link :to="{name: 'transaction', query: { id: table.row.id }}" tag="span">
-              {{table.row.id.slice(0,8)}}
-            </router-link>
-          </el-tooltip>
+          <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: table.row.id }}">
+            {{table.row.id.slice(0,8)}}
+          </nuxt-link>
+        </template>
+      </el-table-column>
+      <el-table-column prop="height" align="center" label="Block Height" width="150">
+        <template v-slot:default="table">
+          <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
+            {{table.row.height}}
+          </nuxt-link>
         </template>
       </el-table-column>
       <el-table-column prop="timestamp" align="center" label="Forged Time" width="200" :formatter="timestamp2date"></el-table-column>
       <el-table-column prop="senderId" align="center" label="Sender" width="200" :formatter="subSenderId">
         <template v-slot:default="table">
-          <el-tooltip content="Bottom center" placement="bottom" effect="light">
-            <div slot="content">{{table.row.senderId}}</div>
+          <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.senderId }}" tag="span">
             <div>{{table.row.senderId.slice(0,8)}}</div>
-          </el-tooltip>
+          </nuxt-link>
         </template>
       </el-table-column>
     </el-table>
+    <br>
+    <nuxt-link to="transactions">
+      Explore more Transactions →
+    </nuxt-link>
   </el-card>
 </template>
 
@@ -39,11 +45,6 @@ const connection = new gnyClient.Connection(
 
 export default {
   methods: {
-    rowClick: function(row) {
-      console.log(row.id);
-      this.$router.push({name: 'transaction', query: { id: row.id }});
-    },
-
     subSenderId: function (row, column) {
       return row.senderId.slice(0,8);
     },
@@ -85,12 +86,8 @@ export default {
   border-radius: 4px;
 }
 
-/* row clickable */
-.clickable-rows tbody tr td {
+.nuxt-link {
+  color:#2475ba;
   cursor: pointer;
-}
-
-.clickable-rows .el-table__expanded-cell {
-  cursor: default;
 }
 </style>

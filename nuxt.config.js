@@ -1,6 +1,6 @@
 
 module.exports = {
-  mode: 'universal',
+  mode: 'spa',
   env: {
    GNY_ENDPOINT: process.env.GNY_ENDPOINT,
    GNY_PORT: process.env.GNY_PORT,
@@ -18,7 +18,7 @@ module.exports = {
       { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico?v2' }
     ]
   },
   /*

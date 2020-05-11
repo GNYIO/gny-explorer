@@ -2,12 +2,13 @@
   <el-container >
       <el-header class="header">
         <nav class="inner" >
-          <router-link to="/">
+          <nuxt-link to="/">
             <img src="../assets/logo.png" alt="logo" class="logo">
-          </router-link>
-          <router-link to="/blocks" class="second-link">BLOCKS</router-link>
-          <router-link to="/transactions" class="second-link">TRANSACTIONS</router-link>
-          <router-link to="/delegates" class="second-link">DELEGATES</router-link>
+          </nuxt-link>
+          <nuxt-link to="/blocks" class="second-link">BLOCKS</nuxt-link>
+          <nuxt-link to="/transactions" class="second-link">TRANSACTIONS</nuxt-link>
+          <nuxt-link to="/delegates" class="second-link">DELEGATES</nuxt-link>
+          <nuxt-link to="/assets" class="second-link">ASSETS</nuxt-link>
           <Search />
         </nav>
       </el-header>

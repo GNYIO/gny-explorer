@@ -2,14 +2,32 @@
   <el-container>
     <el-card>
       <h2>Blocks</h2>
-      <el-table @row-click="rowClick" class="clickable-rows" :data="blocks" stripe style="width: 100%; margin: auto;" height="500">
-        <el-table-column prop="height" align="center" label="Height" width="80"></el-table-column>
-        <el-table-column prop="id" align="center" label="Block ID" width="100" :formatter="subID"></el-table-column>
-        <el-table-column prop="timestamp" align="center" label="Forged Time" width="200" :formatter="timestamp2date"></el-table-column>
-        <el-table-column prop="count" align="center" label="Transactions" width="120"></el-table-column>
-        <el-table-column prop="fees" align="center" label="Fees" width="100"></el-table-column>
+      <el-table :data="blocks" stripe style="width: 100%; margin: auto;" height="500">
+        <el-table-column prop="height" align="center" label="Height" width="80">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
+              {{table.row.height}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+        <el-table-column prop="id" align="center" label="Block ID" width="100">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
+              {{subID(table.row.id)}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+        <el-table-column prop="timestamp" align="center" label="Forged Time" width="160" :formatter="timestamp2date"></el-table-column>
+        <el-table-column prop="count" align="center" label="Transactions" width="110"></el-table-column>
+        <el-table-column prop="fees" align="center" label="Fees" width="130"></el-table-column>
         <el-table-column prop="reward" align="center" label="Reward" width="100"></el-table-column>
-        <el-table-column prop="delegate" align="center" label="Delegate" :formatter="subDelegate" width="150"></el-table-column>
+        <el-table-column prop="delegate" align="center" label="Delegate" width="150">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{name: 'delegate-detail', query: { publicKey: table.row.delegate }}">
+              {{subDelegate(table.row.delegate)}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
         
         <infinite-loading
           slot="append"
@@ -42,17 +60,12 @@ export default {
   },
 
   methods: {
-    rowClick: function(row) {
-      console.log(row.height);
-      this.$router.push({name: 'block-detail', query: { height: row.height }});
+    subID: function (id) {
+      return id.slice(0,8);
     },
 
-    subID: function (row, column) {
-      return row.id.slice(0,8);
-    },
-
-    subDelegate: function (row, column) {
-      return row.delegate.slice(0,8);
+    subDelegate: function (delegate) {
+      return delegate.slice(0,8);
     },
 
     timestamp2date: function (row, column) {
@@ -61,34 +74,27 @@ export default {
 
     infiniteHandler: function ($state) {
       setTimeout(async () => {
-        console.log('Loading more blocks...');
-        const limit = 10;
+        const limit = 50;
         const offset = this.loaded;
-        const orderBy = 'height:desc';
-
-        const newBlocks = (await connection.api.Block.getBlocks(offset, limit, orderBy)).blocks;
-
-        await this.$store.dispatch('appendBlocks', newBlocks);
-        this.blocks = this.$store.state.blocks;
-
+        const orderBy = 'height:desc'
+        const newBlocks = (await connection.api.Block.getBlocks(offset, limit, orderBy)).blocks
+        this.blocks.push(...newBlocks);
         this.loaded += limit;
-        $state.loaded();
-
+        $state.loaded()
         if (newBlocks.length === 0) {
           $state.complete();
         }
-      }, 1000)
+      }, 100);
     },
   },
 
   async mounted() {
-    const limit = 10;
+    const limit = 50;
     const offset = 0;
     const orderBy = 'height:desc';
 
     this.blocks = (await connection.api.Block.getBlocks(offset, limit, orderBy)).blocks;
-    this.loaded = 10;
-    await this.$store.dispatch('setBlocks', this.blocks);
+    this.loaded = limit;
   },
 }
 </script>
@@ -106,13 +112,9 @@ export default {
   margin-top: 20px;
 }
 
-/* row clickable */
-.clickable-rows tbody tr td {
-    cursor: pointer;
-}
-
-.clickable-rows .el-table__expanded-cell {
-cursor: default;
+.nuxt-link {
+  color:#2475ba;
+  cursor: pointer;
 }
 
 </style>

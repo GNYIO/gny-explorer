@@ -5,19 +5,19 @@
       <el-row>
         <el-col :span="8" >
           Username
-          <router-link class="clickable" :to="{ name: 'account-detail', query: { username: delegate.username }}" tag="span">
-              <p >{{delegate.username}}</p>
-          </router-link>
+          <p>
+            <nuxt-link class="nuxt-link" :to="{ name: 'account-detail', query: { username: delegate.username }}">{{delegate.username}}</nuxt-link>
+          </p>
         </el-col>
         <el-col :span="8" >
-          PublicKey
-          <p >{{publicKey}}</p>
+          Public Key
+          <p>{{publicKey}}</p>
         </el-col>
         <el-col :span="8" >
           Address
-          <router-link class="clickable" :to="{ name: 'account-detail', query: { address: delegate.address }}" tag="span">
-              <p>{{delegate.address}}</p>
-          </router-link>
+          <p>
+            <nuxt-link class="nuxt-link" :to="{ name: 'account-detail', query: { address: delegate.address }}">{{delegate.address}}</nuxt-link>
+          </p>
         </el-col>
       </el-row>
 
@@ -32,14 +32,14 @@
         </el-col>
         <el-col :span="8" >
           Rewards
-          <p >{{delegate.rewards}}</p>
+          <p >{{delegate.rewards}} GNY</p>
         </el-col>
       </el-row>
 
       <el-row>
           <el-col :span="8">
               Rank
-              <p>{{delegate.rate}}</p>
+              <p># {{delegate.rate}}</p>
           </el-col>
           <el-col :span="8">
               Approval
@@ -47,8 +47,19 @@
           </el-col>
           <el-col :span="8">
               Productivity
-              <p>{{delegate.productivity}}</p>
+              <p>{{delegate.productivity}} / 1</p>
           </el-col>
+      </el-row>
+      
+      <el-row>
+        <el-col :span="24">
+          Registration Transaction
+          <p>
+            <nuxt-link class="nuxt-link" :to="{ name: 'transaction-detail', query: { id: delegate.tid }}">
+              {{trs}}
+            </nuxt-link>
+          </p>
+        </el-col>
       </el-row>
     </el-card>
 
@@ -69,6 +80,7 @@ export default {
       return {
         delegate: {},
         publicKey: '',
+        trs: '',
       }
     },
 
@@ -77,7 +89,6 @@ export default {
       const publicKey = this.$route.query.publicKey;
       console.log(`publicKey: ${publicKey}`);
 
-      console.log(`delegate-detail: ${username}`);
       try {
         let delegate = null;
         if (username) {
@@ -97,7 +108,9 @@ export default {
         console.log(`delegate: ${JSON.stringify(delegate, null, 2)}`);
         this.delegate = delegate;
         this.publicKey = delegate.publicKey.slice(0, 8);
+        this.trs = delegate.tid.slice(0, 8);
       } catch (error) {
+        console.log(`error(delegate-detail): ${JSON.stringify(error && error.response && error.response.data, null, 2)}`);
         error({ statusCode: 404, message: 'Oops...' })
       }
     }
@@ -106,14 +119,15 @@ export default {
 </script>
 
 <style scoped>
-.clickable {
-    cursor: pointer;
-}
-
 .el-container {
   max-width: 1000px;
   box-sizing: border-box;
   margin: 0px auto;
   padding: 20px 20px;
+}
+
+.nuxt-link {
+  color:#2475ba;
+  cursor: pointer;
 }
 </style>

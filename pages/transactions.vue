@@ -2,25 +2,27 @@
   <el-container>
     <el-card>
       <h2>Transactions</h2>
-      <el-table class="clickable-rows" @row-click="rowClick" :data="transactions" stripe style="width: 100%; margin: auto;" height="500">
-        <el-table-column prop="height" align="center" width="150" label="Height"></el-table-column>
-        <el-table-column prop="id" align="center" width="230" label="Transaction ID">
+      <el-table :data="transactions" stripe style="width: 100%; margin: auto;" height="500">
+        <el-table-column prop="id" align="center" width="200" label="Transaction ID">
           <template v-slot:default="table">
-            <el-tooltip content="Bottom center" placement="bottom" effect="light">
-              <div slot="content">{{table.row.id}}</div>
-              <router-link :to="{name: 'transaction', query: { id: table.row.id }}" tag="span">
-                {{table.row.id.slice(0,8)}}
-              </router-link>
-            </el-tooltip>
+            <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: table.row.id }}" tag="span">
+              {{table.row.id.slice(0,8)}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+        <el-table-column prop="height" align="center" label="Block Height" width="120">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
+              {{table.row.height}}
+            </nuxt-link>
           </template>
         </el-table-column>
         <el-table-column prop="timestamp" align="center" label="Forged Time" width="200" :formatter="timestamp2date"></el-table-column>
         <el-table-column prop="senderId" align="center" label="Sender" width="200" :formatter="subSenderId">
           <template v-slot:default="table">
-            <el-tooltip content="Bottom center" placement="bottom" effect="light">
-              <div slot="content">{{table.row.senderId}}</div>
-              <div>{{table.row.senderId.slice(0,8)}}</div>
-            </el-tooltip>
+            <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.senderId }}" tag="span">
+              {{table.row.senderId.slice(0,8)}}
+            </nuxt-link>
           </template>
         </el-table-column>
         <el-table-column prop="fee" label="Fee"></el-table-column>
@@ -31,7 +33,7 @@
           force-use-infinite-wrapper=".el-table__body-wrapper">
         </infinite-loading>
       </el-table>
-  
+
     </el-card>
   </el-container>
 </template>
@@ -52,7 +54,7 @@ export default {
   methods: {
     rowClick: function(row) {
       console.log(row.id);
-      this.$router.push({name: 'transaction', query: { id: row.id }});
+      this.$router.push({name: 'transaction-detail', query: { id: row.id }});
     },
 
     subSenderId: function (row, column) {
@@ -65,25 +67,20 @@ export default {
 
     infiniteHandler: function ($state) {
       setTimeout(async () => {
-        const limit = 10;
+        const limit = 50;
         const offset = this.loaded;
-        const orderBy = 'height:desc';
-
+        const orderBy = 'height:desc'
         const newTransactions = (await connection.api.Transaction.getTransactions({
           limit,
           offset,
-        })).transactions;
-
-        await this.$store.dispatch('appendTransactions', newTransactions);
-        this.transactions = this.$store.state.transactions;
-
+        })).transactions
+        this.transactions.push(...newTransactions);
         this.loaded += limit;
-        $state.loaded();
-
+        $state.loaded()
         if (newTransactions.length === 0) {
           $state.complete();
         }
-      }, 1000)
+      }, 100);
     },
   },
   data() {
@@ -94,7 +91,7 @@ export default {
   },
 
   async mounted() {
-    const limit = 10;
+    const limit = 50;
     const offset = 0;
     const result = (await connection.api.Transaction.getTransactions({
       limit,
@@ -102,7 +99,7 @@ export default {
     })).transactions;
 
     this.transactions = result;
-    this.loaded = 10;
+    this.loaded = limit;
   },
 }
 </script>
@@ -121,13 +118,9 @@ export default {
   margin-top: 20px;
 }
 
-/* row clickable */
-.clickable-rows tbody tr td {
+.nuxt-link {
+  color:#2475ba;
   cursor: pointer;
-}
-
-.clickable-rows .el-table__expanded-cell {
-  cursor: default;
 }
 
 </style>
