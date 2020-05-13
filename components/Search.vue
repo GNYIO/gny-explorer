@@ -1,6 +1,6 @@
 <template>
 
-  <el-input placeholder="Address/Username/Block height ..." v-model="input" @keyup.enter.native="search">
+  <el-input placeholder="Address/Block height ..." v-model="input" @keyup.enter.native="search">
     <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
   </el-input>
 
@@ -9,6 +9,7 @@
 <script>
 import { joi } from '@gny/extended-joi';
 import BigNumber from 'bignumber.js';
+import * as gnyClient from '@gny/client';
 
 console.log(`endpoint: ${process.env['GNY_ENDPOINT']}`);
 const connection = new gnyClient.Connection(
