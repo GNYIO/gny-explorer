@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@gny/client": "^1.0.27",
+    "@gny/extended-joi": "^1.0.27",
     "@gny/utils": "^1.0.27",
     "@nuxtjs/axios": "^5.3.6",
     "@nuxtjs/dotenv": "^1.4.0",
@@ -22,6 +23,7 @@
     "element-ui": "^2.4.11",
     "express": "^4.16.4",
     "moment": "^2.24.0",
+    "net": "^1.0.2",
     "nuxt": "^2.12.0",
     "nuxt-clipboard2": "^0.2.1",
     "vue-infinite-loading": "^2.4.5"

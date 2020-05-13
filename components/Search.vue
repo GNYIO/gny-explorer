@@ -7,6 +7,7 @@
 </template>
 
 <script>
+import { joi } from '@gny/extended-joi';
 
 export default {
   data() {
@@ -17,6 +18,17 @@ export default {
 
   methods: {
     async search() {
+      const input = this.input;
+
+      const addressSchema = joi
+        .string()
+        .address()
+        .required();
+      const addressReport = joi.validate(input, addressSchema);
+      if (!addressReport.error) {
+        this.$router.push({name: 'account-detail', query: {address: input}});
+      }
+      
       const height = this.input;
       this.$router.push({name: 'block-detail', query: {height: height}});
     }
