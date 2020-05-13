@@ -1,6 +1,6 @@
 <template>
 
-  <el-input placeholder="Block height" v-model="input" @keyup.enter.native="search">
+  <el-input placeholder="Address/Username/Block height ..." v-model="input" @keyup.enter.native="search">
     <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
   </el-input>
 
@@ -8,6 +8,15 @@
 
 <script>
 import { joi } from '@gny/extended-joi';
+import BigNumber from 'bignumber.js';
+
+console.log(`endpoint: ${process.env['GNY_ENDPOINT']}`);
+const connection = new gnyClient.Connection(
+  process.env['GNY_ENDPOINT'],
+  Number(process.env['GNY_PORT']),
+  process.env['GNY_NETWORK'],
+  process.env['GNY_HTTPS'] || false,
+);
 
 export default {
   data() {
@@ -37,9 +46,42 @@ export default {
       if (!usernameReport.error) {
         this.$router.push({name: 'account-detail', query: {username: input}});
       }
-      
-      const height = this.input;
-      this.$router.push({name: 'block-detail', query: {height: height}});
+
+      const assetSchema = joi
+        .string()
+        .asset()
+        .required();
+      const assetReport = joi.validate(input, assetSchema);
+      if (!assetReport.error) {
+        this.$router.push({name: 'asset-detail', query: {assetName: input}});
+      }
+
+      const heightSchema = joi
+        .string()
+        .positiveOrZeroBigInt()
+        .required();
+      const heightReport = joi.validate(input, heightSchema);
+      if (!heightReport.error) {
+        this.$router.push({name: 'block-detail', query: {height: input}});
+      }
+
+      try {
+        const block = (await connection.api.Block.getBlockById(input)).block;
+        if (block) {
+          this.$router.push({name: 'block-detail', query: {height: block.height}});
+        }
+
+        const trsQuery = {
+          id: input,
+        }
+        const transaction = (await connection.api.Transaction.getTransactions(trsQuery)).transactions[0];
+
+        if (transaction) {
+          this.$router.push({name: 'transaction-detail', query: {id: input}});
+        }
+      } catch (error) {
+        console.log(error.message);
+      }      
     }
   },
 
