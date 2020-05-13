@@ -28,6 +28,15 @@ export default {
       if (!addressReport.error) {
         this.$router.push({name: 'account-detail', query: {address: input}});
       }
+
+      const usenameSchema = joi
+        .string()
+        .username()
+        .required();
+      const usernameReport = joi.validate(input, usenameSchema);
+      if (!usernameReport.error) {
+        this.$router.push({name: 'account-detail', query: {username: input}});
+      }
       
       const height = this.input;
       this.$router.push({name: 'block-detail', query: {height: height}});
