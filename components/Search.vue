@@ -63,25 +63,40 @@ export default {
         .required();
       const usernameReport = joi.validate(input, usernameSchema);
       if (!usernameReport.error) {
-        this.$router.push({name: 'account-detail', query: {username: input}});
+        try {
+          const result = await connection.api.Account.getAccountByUsername(username);
+          if (result.success === true) {
+            this.$router.push({name: 'account-detail', query: {username: input}});
+          }         
+        } catch (error) {
+          console.log(error.message);
+        }
       }
 
-      try {
-        const block = (await connection.api.Block.getBlockById(input)).block;
-        if (block) {
-          this.$router.push({name: 'block-detail', query: {height: block.height}});
-        }
+      const blockOrTrsIdSchema = joi
+        .string()
+        .hex(64)
+        .required();
+      const blockOrTrsIdReport = joi.validate(input, blockOrTrsIdSchema);
 
-        const trsQuery = {
-          id: input,
-        }
-        const transaction = (await connection.api.Transaction.getTransactions(trsQuery)).transactions[0];
+      if (!blockOrTrsIdReport.error) {
+        try {
+          const block = (await connection.api.Block.getBlockById(input)).block;
+          if (block) {
+            this.$router.push({name: 'block-detail', query: {height: block.height}});
+          } else {
+            const trsQuery = {
+              id: input,
+            }
+            const transaction = (await connection.api.Transaction.getTransactions(trsQuery)).transactions[0];
 
-        if (transaction) {
-          this.$router.push({name: 'transaction-detail', query: {id: input}});
+            if (transaction) {
+              this.$router.push({name: 'transaction-detail', query: {id: input}});
+            }
+          }
+        } catch (error) {
+          console.log(error.message);
         }
-      } catch (error) {
-        console.log(error.message);
       }      
     }
   },
