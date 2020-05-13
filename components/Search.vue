@@ -39,13 +39,13 @@ export default {
         this.$router.push({name: 'account-detail', query: {address: input}});
       }
 
-      const usenameSchema = joi
+      const heightSchema = joi
         .string()
-        .username()
+        .positiveOrZeroBigInt()
         .required();
-      const usernameReport = joi.validate(input, usenameSchema);
-      if (!usernameReport.error) {
-        this.$router.push({name: 'account-detail', query: {username: input}});
+      const heightReport = joi.validate(input, heightSchema);
+      if (!heightReport.error) {
+        this.$router.push({name: 'block-detail', query: {height: input}});
       }
 
       const assetSchema = joi
@@ -57,13 +57,13 @@ export default {
         this.$router.push({name: 'asset-detail', query: {assetName: input}});
       }
 
-      const heightSchema = joi
+      const usernameSchema = joi
         .string()
-        .positiveOrZeroBigInt()
+        .username()
         .required();
-      const heightReport = joi.validate(input, heightSchema);
-      if (!heightReport.error) {
-        this.$router.push({name: 'block-detail', query: {height: input}});
+      const usernameReport = joi.validate(input, usernameSchema);
+      if (!usernameReport.error) {
+        this.$router.push({name: 'account-detail', query: {username: input}});
       }
 
       try {
