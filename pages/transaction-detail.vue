@@ -1,6 +1,6 @@
 <template>
   <el-container direction="vertical">
-    <el-card v-if="transaction.type == 0">
+    <el-card>
       <h2>Transaction</h2>
       <el-row>
         <el-col :span="8">
