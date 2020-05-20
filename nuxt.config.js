@@ -47,7 +47,9 @@ module.exports = {
     mergeSecurityHeaders: true,
     headers: {
       '/*': [
-        'Access-Control-Allow-Origin: *'
+        'Access-Control-Allow-Origin: *',
+        'X-Frame-Options: DENY',
+        'X-XSS-Protection: 1; mode=block'
       ]
     }
   },
