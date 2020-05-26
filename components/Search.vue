@@ -65,23 +65,30 @@ export default {
       if (!usernameReport.error) {
         try {
           const result = await connection.api.Account.getAccountByUsername(input);
-          if (result.success === true) {
+          if (result.success === true && result.address) {
             this.$router.push({name: 'account-detail', query: {username: input}});
+          } else {
+            this.$router.push({name: 'search'});
           }         
         } catch (error) {
           console.log(error.message);
         }
       }
 
+      console.log('begin block');
+
       const blockOrTrsIdSchema = joi
         .string()
         .hex(64)
         .required();
       const blockOrTrsIdReport = joi.validate(input, blockOrTrsIdSchema);
+      console.log(blockOrTrsIdReport);
 
       if (!blockOrTrsIdReport.error) {
+        console.log('blockOrTrsIdSchema');
         try {
           const block = (await connection.api.Block.getBlockById(input)).block;
+          console.log('blocks');
           if (block) {
             this.$router.push({name: 'block-detail', query: {height: block.height}});
           } else {
@@ -89,7 +96,7 @@ export default {
               id: input,
             }
             const transaction = (await connection.api.Transaction.getTransactions(trsQuery)).transactions[0];
-
+            console.log('trsaction');
             if (transaction) {
               this.$router.push({name: 'transaction-detail', query: {id: input}});
             }
