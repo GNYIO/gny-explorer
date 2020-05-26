@@ -64,7 +64,7 @@ export default {
       const usernameReport = joi.validate(input, usernameSchema);
       if (!usernameReport.error) {
         try {
-          const result = await connection.api.Account.getAccountByUsername(username);
+          const result = await connection.api.Account.getAccountByUsername(input);
           if (result.success === true) {
             this.$router.push({name: 'account-detail', query: {username: input}});
           }         
