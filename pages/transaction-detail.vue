@@ -54,7 +54,7 @@
         </el-col>
         <el-col :span="16">
           Sender Public Key
-          <p>{{transaction.senderPublicKey}}</p>
+          <p>{{transaction.senderPublicKey | truncate(50)}}</p>
         </el-col>
       </el-row>
 
@@ -66,13 +66,16 @@
         </el-col>
       </el-row>
 
-      <el-row>
-        <el-col :span="24">
-          Arguments
-          <p>{{transaction.args | truncate(60)}}</p>
+      <el-row v-if="transaction.type === 0">
+        <el-col :span="8">
+          Amount
+          <p>{{args[0]}}</p>
+        </el-col>
+        <el-col :span="16">
+          Receiver Id
+          <p>{{args[1]}}</p>
         </el-col>
       </el-row>
-
 
     </el-card>
   </el-container>
@@ -104,6 +107,7 @@ export default {
       confirmation: '',
       confirmationText: '',
       date:'',
+      args: [],
     }
   },
 
@@ -126,12 +130,18 @@ export default {
       }
       const result = (await connection.api.Transaction.getTransactions(query)).transactions;
       this.transaction = result[0]
+      console.log(this.transaction);
     } catch (error) {
       console.log(error.message);
       // error({ statusCode: 404, message: 'Oops...' });
     }
 
     this.date = moment(slots.getRealTime(this.transaction.timestamp)).format('YYYY-MM-DD hh:mm:ss');
+
+    this.args = JSON.parse(this.transaction.args);
+    this.args[0] = new BigNumber(this.args[0]).dividedBy(1e8).toFixed();
+
+    this.transaction.fee = new BigNumber(this.transaction.fee).dividedBy(1e8).toFixed();
 
     try {
       const currentHeight = (await connection.api.Block.getHeight()).height;
