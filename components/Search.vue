@@ -37,6 +37,7 @@ export default {
       const addressReport = joi.validate(input, addressSchema);
       if (!addressReport.error) {
         this.$router.push({name: 'account-detail', query: {address: input}});
+        return;
       }
 
       const heightSchema = joi
@@ -46,6 +47,7 @@ export default {
       const heightReport = joi.validate(input, heightSchema);
       if (!heightReport.error) {
         this.$router.push({name: 'block-detail', query: {height: input}});
+        return;
       }
 
       const assetSchema = joi
@@ -55,6 +57,7 @@ export default {
       const assetReport = joi.validate(input, assetSchema);
       if (!assetReport.error) {
         this.$router.push({name: 'asset-detail', query: {assetName: input}});
+        return;
       }
 
       const usernameSchema = joi
@@ -67,44 +70,42 @@ export default {
           const result = await connection.api.Account.getAccountByUsername(input);
           if (result.success === true && result.address) {
             this.$router.push({name: 'account-detail', query: {username: input}});
+            return;
           } else {
             this.$router.push({name: 'search'});
+            return;
           }         
         } catch (error) {
           console.log(error.message);
         }
       }
 
-      console.log('begin block');
-
-      const blockOrTrsIdSchema = joi
-        .string()
-        .hex(64)
-        .required();
-      const blockOrTrsIdReport = joi.validate(input, blockOrTrsIdSchema);
-      console.log(blockOrTrsIdReport);
-
-      if (!blockOrTrsIdReport.error) {
-        console.log('blockOrTrsIdSchema');
+      if (input.length === 64) {
         try {
           const block = (await connection.api.Block.getBlockById(input)).block;
-          console.log('blocks');
           if (block) {
             this.$router.push({name: 'block-detail', query: {height: block.height}});
-          } else {
-            const trsQuery = {
-              id: input,
-            }
-            const transaction = (await connection.api.Transaction.getTransactions(trsQuery)).transactions[0];
-            console.log('trsaction');
-            if (transaction) {
-              this.$router.push({name: 'transaction-detail', query: {id: input}});
-            }
+            return;
           }
         } catch (error) {
           console.log(error.message);
         }
-      }      
+
+        try {
+          const trsQuery = {
+            id: input,
+          }
+          const transaction = (await connection.api.Transaction.getTransactions(trsQuery)).transactions[0];
+          if (transaction) {
+            this.$router.push({name: 'transaction-detail', query: {id: input}});
+            return;
+          }
+        } catch (error) {
+          console.log(error.message);
+        }
+      }
+
+      this.$router.push({name: 'search'}); 
     }
   },
 
