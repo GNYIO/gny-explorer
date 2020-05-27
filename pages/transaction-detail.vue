@@ -45,7 +45,7 @@
 
       <el-row>
         <el-col :span="8">
-          SenderId
+          Sender Id
           <p>
             <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: transaction.senderId }}">
               {{transaction.senderId | truncate(20)}}
@@ -74,6 +74,42 @@
         <el-col :span="16">
           Receiver Id
           <p>{{args[1]}}</p>
+        </el-col>
+      </el-row>
+
+      <el-row v-if="transaction.type === 1">
+        <el-col :span="8">
+          Username
+          <p>{{username}}</p>
+        </el-col>
+      </el-row>
+
+      <el-row v-if="transaction.type === 3">
+        <el-col :span="8">
+          Amount
+          <p>{{amount}}</p>
+        </el-col>
+        <el-col :span="16">
+          Lock Height
+          <p>{{lockHeight}}</p>
+        </el-col>
+      </el-row>
+
+       <el-row v-if="transaction.type === 4 || transaction.type === 5">
+        <el-col :span="24">
+          Vote List
+          <p>{{this.voteList | truncate(70)}}</p>
+        </el-col>
+      </el-row>
+
+      <el-row v-if="transaction.type === 100">
+        <el-col :span="8">
+          Username
+          <p>{{username}}</p>
+        </el-col>
+        <el-col :span="16">
+          Description
+          <p>{{desc}}</p>
         </el-col>
       </el-row>
 
@@ -108,6 +144,11 @@ export default {
       confirmationText: '',
       date:'',
       args: [],
+      username: '',
+      voteList: '',
+      amount: '',
+      lockHeight: '',
+      desc: '',
     }
   },
 
@@ -139,7 +180,31 @@ export default {
     this.date = moment(slots.getRealTime(this.transaction.timestamp)).format('YYYY-MM-DD hh:mm:ss');
 
     this.args = JSON.parse(this.transaction.args);
-    this.args[0] = new BigNumber(this.args[0]).dividedBy(1e8).toFixed();
+
+    switch (this.transaction.type) {
+      case 0:
+        this.args[0] = new BigNumber(this.args[0]).dividedBy(1e8).toFixed();
+        break;
+      case 1:
+        this.username = this.args[0];
+        break;
+      case 3:
+        this.lockHeight = new BigNumber(this.args[0]).toFixed();
+        this.amount = new BigNumber(this.args[1]).dividedBy(1e8).toFixed();
+      case 4:
+      case 5:
+        this.voteList = this.args[0];
+        break;
+
+      case 100:
+        this.username = this.args[0];
+        this.desc = this.args[1];
+        break;
+      
+
+      
+      
+    }
 
     this.transaction.fee = new BigNumber(this.transaction.fee).dividedBy(1e8).toFixed();
 
