@@ -72,7 +72,7 @@
           <p>{{args[0]}}</p>
         </el-col>
         <el-col :span="16">
-          Receiver Id
+          Recipient Id
           <p>{{args[1]}}</p>
         </el-col>
       </el-row>
@@ -109,9 +109,58 @@
         </el-col>
         <el-col :span="16">
           Description
-          <p>{{desc}}</p>
+          <p>{{desc | truncate(50)}}</p>
         </el-col>
       </el-row>
+
+      <el-row v-if="transaction.type === 101">
+        <el-col :span="8">
+          Username
+          <p>{{username}}</p>
+        </el-col>
+        <el-col :span="8">
+          Maximum
+          <p>{{maximum}}</p>
+        </el-col>
+        <el-col :span="8">
+          Precision
+          <p>{{precision}}</p>
+        </el-col>
+      </el-row>
+      <el-row v-if="transaction.type === 101">
+        <el-col :span="24">
+          Description
+          <p>{{desc | truncate(70)}}</p>
+        </el-col>
+      </el-row>
+
+      <el-row v-if="transaction.type === 102">
+        <el-col :span="8">
+          Currency
+          <p>{{currency}}</p>
+        </el-col>
+        <el-col :span="16">
+          Amount
+          <p>{{amount}}</p>
+        </el-col>
+      </el-row>
+
+      <el-row v-if="transaction.type === 103">
+        <el-col :span="8">
+          Currency
+          <p>{{currency}}</p>
+        </el-col>
+        <el-col :span="8">
+          Amount
+          <p>{{amount}}</p>
+        </el-col>
+        <el-col :span="8">
+          Recipient Id
+          <p>{{recipientId | truncate(20)}}</p>
+        </el-col>
+      </el-row>
+
+
 
     </el-card>
   </el-container>
@@ -149,6 +198,10 @@ export default {
       amount: '',
       lockHeight: '',
       desc: '',
+      maximum: '',
+      precision: 0,
+      currency: '',
+      recipientId: '',
     }
   },
 
@@ -195,15 +248,22 @@ export default {
       case 5:
         this.voteList = this.args[0];
         break;
-
       case 100:
         this.username = this.args[0];
         this.desc = this.args[1];
         break;
-      
-
-      
-      
+      case 101:
+        this.username = this.args[0];
+        this.desc = JSON.stringify(this.args[1]);
+        this.maximum = new BigNumber(this.args[2]).dividedBy(1e8).toFixed();
+        this.precision = this.args[3];
+      case 102:
+        this.currency = this.args[0];
+        this.amount = new BigNumber(this.args[1]).dividedBy(1e8).toFixed();
+      case 103:
+        this.currency = this.args[0];
+        this.amount = new BigNumber(this.args[1]).dividedBy(1e8).toFixed();
+        this.recipientId = this.args[2];     
     }
 
     this.transaction.fee = new BigNumber(this.transaction.fee).dividedBy(1e8).toFixed();
