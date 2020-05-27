@@ -84,6 +84,13 @@
         </el-col>
       </el-row>
 
+      <el-row v-if="transaction.type === 2">
+        <el-col :span="24">
+          Second Public Key
+          <p>{{secondPublicKey | truncate(70)}}</p>
+        </el-col>
+      </el-row>
+
       <el-row v-if="transaction.type === 3">
         <el-col :span="8">
           Amount
@@ -241,9 +248,13 @@ export default {
       case 1:
         this.username = this.args[0];
         break;
+      case 2:
+        this.secondPublicKey = this.args[0];
+        break;
       case 3:
         this.lockHeight = new BigNumber(this.args[0]).toFixed();
         this.amount = new BigNumber(this.args[1]).dividedBy(1e8).toFixed();
+        break;
       case 4:
       case 5:
         this.voteList = this.args[0];
@@ -257,13 +268,16 @@ export default {
         this.desc = JSON.stringify(this.args[1]);
         this.maximum = new BigNumber(this.args[2]).dividedBy(1e8).toFixed();
         this.precision = this.args[3];
+        break;
       case 102:
         this.currency = this.args[0];
         this.amount = new BigNumber(this.args[1]).dividedBy(1e8).toFixed();
+        break;
       case 103:
         this.currency = this.args[0];
         this.amount = new BigNumber(this.args[1]).dividedBy(1e8).toFixed();
-        this.recipientId = this.args[2];     
+        this.recipientId = this.args[2];
+        break;
     }
 
     this.transaction.fee = new BigNumber(this.transaction.fee).dividedBy(1e8).toFixed();
