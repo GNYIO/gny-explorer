@@ -209,6 +209,7 @@ export default {
       precision: 0,
       currency: '',
       recipientId: '',
+      secondPublicKey: '',
     }
   },
 
