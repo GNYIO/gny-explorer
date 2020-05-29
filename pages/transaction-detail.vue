@@ -109,7 +109,11 @@
        <el-row v-if="transaction.type === 4 || transaction.type === 5">
         <el-col :span="24">
           Vote List
-          <p>{{this.voteList | truncate(70)}}</p>
+          <p>
+            <nuxt-link v-for="vote in voteList" class="nuxt-link" :key="vote" :to="{name: 'account-detail', query: { username: vote}}">
+              {{vote}}
+            </nuxt-link>
+          </p>
         </el-col>
       </el-row>
 
@@ -266,7 +270,7 @@ export default {
         break;
       case 4:
       case 5:
-        this.voteList = this.args[0];
+        this.voteList = this.args[0].split(',');
         break;
       case 100:
         this.username = this.args[0];
