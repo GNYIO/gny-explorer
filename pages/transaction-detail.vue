@@ -73,7 +73,11 @@
         </el-col>
         <el-col :span="16">
           Recipient Id
-          <p>{{args[1]}}</p>
+          <p>
+            <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: args[1]}}">
+              {{args[1]}}
+            </nuxt-link>
+          </p>
         </el-col>
       </el-row>
 
@@ -163,7 +167,11 @@
         </el-col>
         <el-col :span="8">
           Recipient Id
-          <p>{{recipientId | truncate(20)}}</p>
+          <p>
+            <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: recipientId}}">
+              {{recipientId | truncate(20)}}
+            </nuxt-link>
+          </p>
         </el-col>
       </el-row>
 
@@ -282,7 +290,7 @@ export default {
         const precisionRaw = (await connection.api.Uia.getAsset(name)).precision;
         const precision = Math.pow(10, precisionRaw);
 
-        this.amount = new BigNumber(this.args[1]).times(precision).toFixed();
+        this.amount = new BigNumber(this.args[1]).dividedBy(precision).toFixed();
         this.recipientId = this.args[2];
         break;
     }
