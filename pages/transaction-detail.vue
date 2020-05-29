@@ -276,7 +276,13 @@ export default {
         break;
       case 103:
         this.currency = this.args[0];
-        this.amount = new BigNumber(this.args[1]).dividedBy(1e8).toFixed();
+
+        const username = (await connection.api.Account.getAccountByAddress(this.transaction.senderId)).account.username;
+        const name = this.username + '.' + this.currency;
+        const precisionRaw = (await connection.api.Uia.getAsset(name)).precision;
+        const precision = Math.pow(10, precisionRaw);
+
+        this.amount = new BigNumber(this.args[1]).times(precision).toFixed();
         this.recipientId = this.args[2];
         break;
     }
