@@ -45,7 +45,7 @@
 
       <el-row>
         <el-col :span="8">
-          SenderId
+          Sender Id
           <p>
             <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: transaction.senderId }}">
               {{transaction.senderId | truncate(20)}}
@@ -54,7 +54,7 @@
         </el-col>
         <el-col :span="16">
           Sender Public Key
-          <p>{{transaction.senderPublicKey}}</p>
+          <p>{{transaction.senderPublicKey | truncate(50)}}</p>
         </el-col>
       </el-row>
 
@@ -66,12 +66,119 @@
         </el-col>
       </el-row>
 
-      <el-row>
-        <el-col :span="24">
-          Arguments
-          <p>{{transaction.args | truncate(60)}}</p>
+      <el-row v-if="transaction.type === 0">
+        <el-col :span="8">
+          Amount
+          <p>{{args[0]}}</p>
+        </el-col>
+        <el-col :span="16">
+          Recipient Id
+          <p>
+            <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: args[1]}}">
+              {{args[1]}}
+            </nuxt-link>
+          </p>
         </el-col>
       </el-row>
+
+      <el-row v-if="transaction.type === 1">
+        <el-col :span="8">
+          Username
+          <p>{{username}}</p>
+        </el-col>
+      </el-row>
+
+      <el-row v-if="transaction.type === 2">
+        <el-col :span="24">
+          Second Public Key
+          <p>{{secondPublicKey | truncate(70)}}</p>
+        </el-col>
+      </el-row>
+
+      <el-row v-if="transaction.type === 3">
+        <el-col :span="8">
+          Amount
+          <p>{{amount}}</p>
+        </el-col>
+        <el-col :span="16">
+          Lock Height
+          <p>{{lockHeight}}</p>
+        </el-col>
+      </el-row>
+
+       <el-row v-if="transaction.type === 4 || transaction.type === 5">
+        <el-col :span="24">
+          Vote List
+          <p>
+            <nuxt-link v-for="vote in voteList" class="nuxt-link" :key="vote" :to="{name: 'account-detail', query: { username: vote}}">
+              {{vote}}
+            </nuxt-link>
+          </p>
+        </el-col>
+      </el-row>
+
+      <el-row v-if="transaction.type === 100">
+        <el-col :span="8">
+          Username
+          <p>{{username}}</p>
+        </el-col>
+        <el-col :span="16">
+          Description
+          <p>{{desc | truncate(50)}}</p>
+        </el-col>
+      </el-row>
+
+      <el-row v-if="transaction.type === 101">
+        <el-col :span="8">
+          Username
+          <p>{{username}}</p>
+        </el-col>
+        <el-col :span="8">
+          Maximum
+          <p>{{maximum}}</p>
+        </el-col>
+        <el-col :span="8">
+          Precision
+          <p>{{precision}}</p>
+        </el-col>
+      </el-row>
+      <el-row v-if="transaction.type === 101">
+        <el-col :span="24">
+          Description
+          <p>{{desc | truncate(70)}}</p>
+        </el-col>
+      </el-row>
+
+      <el-row v-if="transaction.type === 102">
+        <el-col :span="8">
+          Currency
+          <p>{{currency}}</p>
+        </el-col>
+        <el-col :span="16">
+          Amount
+          <p>{{amount}}</p>
+        </el-col>
+      </el-row>
+
+      <el-row v-if="transaction.type === 103">
+        <el-col :span="8">
+          Currency
+          <p>{{currency}}</p>
+        </el-col>
+        <el-col :span="8">
+          Amount
+          <p>{{amount}}</p>
+        </el-col>
+        <el-col :span="8">
+          Recipient Id
+          <p>
+            <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: recipientId}}">
+              {{recipientId | truncate(20)}}
+            </nuxt-link>
+          </p>
+        </el-col>
+      </el-row>
+
 
 
     </el-card>
@@ -104,6 +211,17 @@ export default {
       confirmation: '',
       confirmationText: '',
       date:'',
+      args: [],
+      username: '',
+      voteList: '',
+      amount: '',
+      lockHeight: '',
+      desc: '',
+      maximum: '',
+      precision: 0,
+      currency: '',
+      recipientId: '',
+      secondPublicKey: '',
     }
   },
 
@@ -126,12 +244,62 @@ export default {
       }
       const result = (await connection.api.Transaction.getTransactions(query)).transactions;
       this.transaction = result[0]
+      console.log(this.transaction);
     } catch (error) {
       console.log(error.message);
       // error({ statusCode: 404, message: 'Oops...' });
     }
 
     this.date = moment(slots.getRealTime(this.transaction.timestamp)).format('YYYY-MM-DD hh:mm:ss');
+
+    this.args = JSON.parse(this.transaction.args);
+
+    switch (this.transaction.type) {
+      case 0:
+        this.args[0] = new BigNumber(this.args[0]).dividedBy(1e8).toFixed();
+        break;
+      case 1:
+        this.username = this.args[0];
+        break;
+      case 2:
+        this.secondPublicKey = this.args[0];
+        break;
+      case 3:
+        this.lockHeight = new BigNumber(this.args[0]).toFixed();
+        this.amount = new BigNumber(this.args[1]).dividedBy(1e8).toFixed();
+        break;
+      case 4:
+      case 5:
+        this.voteList = this.args[0].split(',');
+        break;
+      case 100:
+        this.username = this.args[0];
+        this.desc = this.args[1];
+        break;
+      case 101:
+        this.username = this.args[0];
+        this.desc = JSON.stringify(this.args[1]);
+        this.maximum = new BigNumber(this.args[2]).dividedBy(1e8).toFixed();
+        this.precision = this.args[3];
+        break;
+      case 102:
+        this.currency = this.args[0];
+        this.amount = new BigNumber(this.args[1]).dividedBy(1e8).toFixed();
+        break;
+      case 103:
+        this.currency = this.args[0];
+
+        const username = (await connection.api.Account.getAccountByAddress(this.transaction.senderId)).account.username;
+        const name = this.username + '.' + this.currency;
+        const precisionRaw = (await connection.api.Uia.getAsset(name)).precision;
+        const precision = Math.pow(10, precisionRaw);
+
+        this.amount = new BigNumber(this.args[1]).dividedBy(precision).toFixed();
+        this.recipientId = this.args[2];
+        break;
+    }
+
+    this.transaction.fee = new BigNumber(this.transaction.fee).dividedBy(1e8).toFixed();
 
     try {
       const currentHeight = (await connection.api.Block.getHeight()).height;
