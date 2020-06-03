@@ -45,7 +45,7 @@
 
       <el-row>
         <el-col :span="8">
-          Sender Id
+          Sender ID
           <p>
             <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: transaction.senderId }}">
               {{transaction.senderId | truncate(20)}}
@@ -72,9 +72,9 @@
           <p>{{args[0]}}</p>
         </el-col>
         <el-col :span="16">
-          Recipient Id
+          Recipient
           <p>
-            <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: args[1]}}">
+            <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { username: args[1]}}">
               {{args[1]}}
             </nuxt-link>
           </p>
@@ -170,7 +170,7 @@
           <p>{{amount}}</p>
         </el-col>
         <el-col :span="8">
-          Recipient Id
+          Recipient ID
           <p>
             <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: recipientId}}">
               {{recipientId | truncate(20)}}
