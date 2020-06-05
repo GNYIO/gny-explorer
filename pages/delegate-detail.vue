@@ -76,19 +76,28 @@ const connection = new gnyClient.Connection(
 );
 
 export default {
-    data() {
-      return {
-        delegate: {},
-        publicKey: '',
-        trs: '',
-      }
+  watch: { 
+    '$route.query.username': async function(username) {
+      console.log(username);
+      await this.updatePage(username, null);
     },
 
-    async mounted() {
-      const username = this.$route.query.username;
-      const publicKey = this.$route.query.publicKey;
-      console.log(`publicKey: ${publicKey}`);
+    '$route.query.publicKey': async function(publicKey) {
+      console.log(publicKey);
+      await this.updatePage(null, publicKey);
+    }
+  },
 
+  data() {
+    return {
+      delegate: {},
+      publicKey: '',
+      trs: '',
+    }
+  },
+
+  methods: {
+    updatePage: async function (username, publicKey) {
       try {
         let delegate = null;
         if (username) {
@@ -99,21 +108,30 @@ export default {
         }
 
         if (publicKey) {
-            const result = await connection.api.Delegate.getDelegateByPubKey(publicKey);
-            if (result.success) {
-                delegate = result.delegate;
-            }
+          const result = await connection.api.Delegate.getDelegateByPubKey(publicKey);
+          if (result.success) {
+              delegate = result.delegate;
         }
-  
-        console.log(`delegate: ${JSON.stringify(delegate, null, 2)}`);
-        this.delegate = delegate;
-        this.publicKey = delegate.publicKey.slice(0, 8);
-        this.trs = delegate.tid.slice(0, 8);
+      }
+
+      console.log(`delegate: ${JSON.stringify(delegate, null, 2)}`);
+      this.delegate = delegate;
+      this.publicKey = delegate.publicKey.slice(0, 8);
+      this.trs = delegate.tid.slice(0, 8);
       } catch (error) {
         console.log(`error(delegate-detail): ${JSON.stringify(error && error.response && error.response.data, null, 2)}`);
         error({ statusCode: 404, message: 'Oops...' })
       }
     }
+  },
+
+  async mounted() {
+    const username = this.$route.query.username;
+    const publicKey = this.$route.query.publicKey;
+    console.log(`publicKey: ${publicKey}`);
+    
+    await this.updatePage(username, publicKey);
+  }
 };
 
 </script>
