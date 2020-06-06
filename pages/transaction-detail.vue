@@ -199,6 +199,13 @@ const connection = new gnyClient.Connection(
 
 
 export default {
+  watch: { 
+    '$route.query.id': async function(id) {
+      console.log(id);
+      await this.updatePage(id);
+    }
+  },
+
   data() {
     return {
       transaction: {
@@ -233,87 +240,92 @@ export default {
         console.error(e);
       }
     },
+
+    async updatePage(id) {
+      try {
+        const query = {
+          id: id,
+        }
+        const result = (await connection.api.Transaction.getTransactions(query)).transactions;
+        this.transaction = result[0]
+        console.log(this.transaction);
+      } catch (error) {
+        console.log(error.message);
+        // error({ statusCode: 404, message: 'Oops...' });
+      }
+
+      this.date = moment(slots.getRealTime(this.transaction.timestamp)).format('YYYY-MM-DD hh:mm:ss');
+
+      this.args = JSON.parse(this.transaction.args);
+
+      switch (this.transaction.type) {
+        case 0:
+          this.args[0] = new BigNumber(this.args[0]).dividedBy(1e8).toFixed();
+          break;
+        case 1:
+          this.username = this.args[0];
+          break;
+        case 2:
+          this.secondPublicKey = this.args[0];
+          break;
+        case 3:
+          this.lockHeight = new BigNumber(this.args[0]).toFixed();
+          this.amount = new BigNumber(this.args[1]).dividedBy(1e8).toFixed();
+          break;
+        case 4:
+        case 5:
+          this.voteList = this.args[0].split(',');
+          break;
+        case 100:
+          this.username = this.args[0];
+          this.desc = this.args[1];
+          break;
+        case 101:
+          this.username = this.args[0];
+          this.desc = JSON.stringify(this.args[1]);
+          this.maximum = new BigNumber(this.args[2]).dividedBy(1e8).toFixed();
+          this.precision = this.args[3];
+          break;
+        case 102:
+          this.currency = this.args[0];
+          this.amount = new BigNumber(this.args[1]).dividedBy(1e8).toFixed();
+          break;
+        case 103:
+          this.currency = this.args[0];
+
+          const username = (await connection.api.Account.getAccountByAddress(this.transaction.senderId)).account.username;
+          const name = this.username + '.' + this.currency;
+          const precisionRaw = (await connection.api.Uia.getAsset(name)).precision;
+          const precision = Math.pow(10, precisionRaw);
+
+          this.amount = new BigNumber(this.args[1]).dividedBy(precision).toFixed();
+          this.recipientId = this.args[2];
+          break;
+      }
+
+      this.transaction.fee = new BigNumber(this.transaction.fee).dividedBy(1e8).toFixed();
+
+      try {
+        const currentHeight = (await connection.api.Block.getHeight()).height;
+        this.confirmation = new BigNumber(currentHeight).minus(this.transaction.height).toFixed();
+
+        if (this.confirmation === '1') {
+          this.confirmationText = ' confirmation';
+        } else {
+          this.confirmationText = ' confirmations';
+        }
+      } catch (error) {
+        console.log(error.message);
+        // error({ statusCode: 404, message: 'Oops...' });
+      }
+    }
   },
 
   async mounted() {
     const id = this.$route.query.id;
 
-    try {
-      const query = {
-        id: id,
-      }
-      const result = (await connection.api.Transaction.getTransactions(query)).transactions;
-      this.transaction = result[0]
-      console.log(this.transaction);
-    } catch (error) {
-      console.log(error.message);
-      // error({ statusCode: 404, message: 'Oops...' });
-    }
-
-    this.date = moment(slots.getRealTime(this.transaction.timestamp)).format('YYYY-MM-DD hh:mm:ss');
-
-    this.args = JSON.parse(this.transaction.args);
-
-    switch (this.transaction.type) {
-      case 0:
-        this.args[0] = new BigNumber(this.args[0]).dividedBy(1e8).toFixed();
-        break;
-      case 1:
-        this.username = this.args[0];
-        break;
-      case 2:
-        this.secondPublicKey = this.args[0];
-        break;
-      case 3:
-        this.lockHeight = new BigNumber(this.args[0]).toFixed();
-        this.amount = new BigNumber(this.args[1]).dividedBy(1e8).toFixed();
-        break;
-      case 4:
-      case 5:
-        this.voteList = this.args[0].split(',');
-        break;
-      case 100:
-        this.username = this.args[0];
-        this.desc = this.args[1];
-        break;
-      case 101:
-        this.username = this.args[0];
-        this.desc = JSON.stringify(this.args[1]);
-        this.maximum = new BigNumber(this.args[2]).dividedBy(1e8).toFixed();
-        this.precision = this.args[3];
-        break;
-      case 102:
-        this.currency = this.args[0];
-        this.amount = new BigNumber(this.args[1]).dividedBy(1e8).toFixed();
-        break;
-      case 103:
-        this.currency = this.args[0];
-
-        const username = (await connection.api.Account.getAccountByAddress(this.transaction.senderId)).account.username;
-        const name = this.username + '.' + this.currency;
-        const precisionRaw = (await connection.api.Uia.getAsset(name)).precision;
-        const precision = Math.pow(10, precisionRaw);
-
-        this.amount = new BigNumber(this.args[1]).dividedBy(precision).toFixed();
-        this.recipientId = this.args[2];
-        break;
-    }
-
-    this.transaction.fee = new BigNumber(this.transaction.fee).dividedBy(1e8).toFixed();
-
-    try {
-      const currentHeight = (await connection.api.Block.getHeight()).height;
-      this.confirmation = new BigNumber(currentHeight).minus(this.transaction.height).toFixed();
-
-      if (this.confirmation === '1') {
-        this.confirmationText = ' confirmation';
-      } else {
-        this.confirmationText = ' confirmations';
-      }
-    } catch (error) {
-      console.log(error.message);
-      // error({ statusCode: 404, message: 'Oops...' });
-    }
+    await this.updatePage(id);
+    
   }
 }
 </script>
