@@ -66,59 +66,71 @@ const connection = new gnyClient.Connection(
 );
 
 export default {
-    data() {
-      return {
-        asset: {},
-        assetIssuerId: '',
-        assetTid: '',
-        issuer: {},
-      }
-    },
-
-    methods: {
-      makeAssetPretty: function(asset) {
-        const prec = Math.pow(10, asset.precision);
-        const difference = new BigNumber(asset.maximum)
-          .minus(asset.quantity)
-          .toFixed();
-
-        console.log(`asset-raw: ${JSON.stringify(asset, null, 2)}`);
-        const one = {
-          tid: asset.tid,
-          name: asset.name,
-          precision: asset.precision,
-          maximum: asset.maximum,
-          maximumPretty: new BigNumber(asset.maximum).dividedBy(prec).toFixed(),
-          quantity: asset.quantity,
-          quantityPretty: new BigNumber(asset.quantity).dividedBy(prec).toFixed(),
-          leftToIssue: difference,
-          leftToIssuePretty: new BigNumber(difference).dividedBy(prec).toFixed(),
-          desc: asset.desc,
-          issuerId: asset.issuerId,
-        };
-        return one;
-      },
-    },
-
-    async mounted() {
-      const assetName = this.$route.query.assetName;
-
-      try {
-        const result = this.makeAssetPretty(
-          (await connection.api.Uia.getAsset(assetName)).asset
-        );
-        console.log(`result: ${JSON.stringify(result, null, 2)}`)
-        this.asset = result;
-        this.assetIssuerId = result.issuerId.slice(0, 12);
-        this.assetTid = result.tid.slice(0, 12);
-
-        const issuerName = result.name.split('.')[0];
-        const issuer = (await connection.api.Uia.getIssuer(issuerName)).issuer;
-        this.issuer = issuer;
-      } catch (err) {
-        console.log(err);
-      }
+  watch: { 
+    '$route.query.assetName': async function(assetName) {
+      console.log(assetName);
+      await this.updatePage(assetName);
     }
+  },
+
+  data() {
+    return {
+      asset: {},
+      assetIssuerId: '',
+      assetTid: '',
+      issuer: {},
+    }
+  },
+
+  methods: {
+    makeAssetPretty: function(asset) {
+      const prec = Math.pow(10, asset.precision);
+      const difference = new BigNumber(asset.maximum)
+        .minus(asset.quantity)
+        .toFixed();
+
+      console.log(`asset-raw: ${JSON.stringify(asset, null, 2)}`);
+      const one = {
+        tid: asset.tid,
+        name: asset.name,
+        precision: asset.precision,
+        maximum: asset.maximum,
+        maximumPretty: new BigNumber(asset.maximum).dividedBy(prec).toFixed(),
+        quantity: asset.quantity,
+        quantityPretty: new BigNumber(asset.quantity).dividedBy(prec).toFixed(),
+        leftToIssue: difference,
+        leftToIssuePretty: new BigNumber(difference).dividedBy(prec).toFixed(),
+        desc: asset.desc,
+        issuerId: asset.issuerId,
+      };
+      return one;
+    },
+
+    updatePage: async function (assetName) {
+      try {
+      const result = this.makeAssetPretty(
+        (await connection.api.Uia.getAsset(assetName)).asset
+      );
+      console.log(`result: ${JSON.stringify(result, null, 2)}`)
+      this.asset = result;
+      this.assetIssuerId = result.issuerId.slice(0, 12);
+      this.assetTid = result.tid.slice(0, 12);
+
+      const issuerName = result.name.split('.')[0];
+      const issuer = (await connection.api.Uia.getIssuer(issuerName)).issuer;
+      this.issuer = issuer;
+    } catch (error) {
+      console.log(error.message);
+      error({ statusCode: 404, message: 'Oops...' })
+    }
+
+    }
+  },
+
+  async mounted() {
+    const assetName = this.$route.query.assetName;
+    await this.updatePage(assetName);
+  }
 };
 
 </script>

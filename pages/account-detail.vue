@@ -83,51 +83,59 @@ const connection = new gnyClient.Connection(
 );
 
 export default {
-    data() {
-      return {
-        account: {},
-        transactions: [],
-        balances: [],
-        address: '',
-        publicKey: '',
-        balance: '',
-        loaded: 0,
-      }
+  watch: { 
+    '$route.query.username': async function(username) {
+      console.log(username);
+      await this.updatePage(username, null);
     },
 
-    methods: {
-      rowClick: function(row) {
-          console.log(row.id);
-          this.$router.push({name: 'transaction-detail', query: { id: row.id }});
-      },
-  
-      subSenderId: function (row, column) {0
-        return row.senderId.slice(0,8);
-      },
-  
-      timestamp2date: function (row, column) {
-        return moment(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD hh:mm:ss');
-      },
+    '$route.query.address': async function(address) {
+      console.log(address);
+      await this.updatePage(null, address);
+    }
+  },
+
+  data() {
+    return {
+      account: {},
+      transactions: [],
+      balances: [],
+      address: '',
+      publicKey: '',
+      balance: '',
+      loaded: 0,
+    }
+  },
+
+  methods: {
+    rowClick: function(row) {
+        console.log(row.id);
+        this.$router.push({name: 'transaction-detail', query: { id: row.id }});
     },
 
-    async mounted() {
-      const address = this.$route.query.address;
-      const username = this.$route.query.username;
+    subSenderId: function (row, column) {0
+      return row.senderId.slice(0,8);
+    },
 
+    timestamp2date: function (row, column) {
+      return moment(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD hh:mm:ss');
+    },
+
+    updatePage: async function (username, address) {
       try {
         let account = null;
         if (address) {
-            const result = await connection.api.Account.getAccountByAddress(address);
-            if (result.success === true) {
-                account = result.account;
-            }
+          const result = await connection.api.Account.getAccountByAddress(address);
+          if (result.success === true) {
+            account = result.account;
+          }
         }
 
         if (username) {
-            const result = await connection.api.Account.getAccountByUsername(username);
-            if (result.success === true) {
-                account = result;
-            }
+          const result = await connection.api.Account.getAccountByUsername(username);
+          if (result.success === true) {
+            account = result;
+          }
         }
 
         this.account = account;
@@ -155,7 +163,16 @@ export default {
         console.log(error && error.response && error.response.data);
         // error({ statusCode: 404, message: 'Oops...' })
       }
+
     }
+  },
+
+  async mounted() {
+    const address = this.$route.query.address;
+    const username = this.$route.query.username;
+
+    await this.updatePage(username, address);
+  }
 };
 
 </script>

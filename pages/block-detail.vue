@@ -77,6 +77,13 @@ const connection = new gnyClient.Connection(
 
 
 export default {
+  watch: { 
+    '$route.query.height': async function(height) {
+      console.log(height);
+      await this.updatePage(height);
+    }
+  },
+
   data() {
     return {
       block: {},
@@ -104,11 +111,9 @@ export default {
     timestamp2date: function (row, column) {
       return moment(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD hh:mm:ss');
     },
-  },
 
-  async mounted() {
-    const height = this.$route.query.height;
-    try {
+    updatePage: async function (height) {
+      try {
       const block = (await connection.api.Block.getBlockByHeight(height)).block;
       const transactions = (await connection.api.Transaction.getTransactions({
           height: height,
@@ -121,8 +126,16 @@ export default {
       this.transactions = transactions;
       this.delegateID = this.block.delegate.slice(0, 8);
     } catch (error) {
+      console.log(error.message);
       error({ statusCode: 404, message: 'Oops...' })
     }
+
+    }
+  },
+
+  async mounted() {
+    const height = this.$route.query.height;
+    await this.updatePage(height);
   }
 }
 </script>
