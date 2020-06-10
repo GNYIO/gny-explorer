@@ -20,7 +20,8 @@
       <h1>Connected Nodes</h1>
       <el-table :data="allNodes" stripe style="width: 100%">
         <el-table-column prop="ip" label="IP" width="300"></el-table-column>
-        <el-table-column prop="version" label="Version" ></el-table-column>
+        <el-table-column prop="version" label="Version" width="300"></el-table-column>
+        <el-table-column prop="height" label="Height" ></el-table-column>
         </el-table>
     </el-card>
   </el-container>
@@ -41,10 +42,14 @@ export default {
     getPeersIP: async function (ipList) {
       let peersList = [];
       for (const ip of ipList) {
-        console.log({ip});
+        // console.log({ip});
         const connection = new gnyClient.Connection(ip, 4096, process.env['GNY_NETWORK'], false);
-        const version = (await connection.api.System.getSystemInfo()).version;
-        peersList.push({ip, version});
+        const systemInfo = (await connection.api.System.getSystemInfo());
+        const version = systemInfo.version;
+        const height = systemInfo.lastBlock.height;
+
+        peersList.push({ip, version, height});
+        console.log(`${ip}: ${JSON.stringify({ip, version, height}, null, 2)}`);
       }
 
       return peersList;
@@ -67,6 +72,16 @@ export default {
 
   async mounted() {
     try {
+      const peersWrapper = await connection.api.Peer.getPeers();
+      this.count = peersWrapper.count + 1;
+
+      // Peers
+      const ipList = peersWrapper.peers.map(peer => peer.simple.host);
+      const peersIPList = await this.getPeersIP(ipList);
+
+      console.log({peersIPList});
+
+       // current node info
       const systemWrapper = await connection.api.System.getSystemInfo();
       console.log(`system: ${JSON.stringify(systemWrapper, null, 2)}`);
 
@@ -76,25 +91,15 @@ export default {
       const peersInfo = await connection.api.Peer.getInfo();
       console.log(`peersInfo: ${JSON.stringify(peersInfo, null, 2)}`);
       
-
       this.systemVersion = systemWrapper.version;
       this.height = systemWrapper.lastBlock.height;
 
-      // current node info
+      this.allNodes = peersIPList;
       this.allNodes.push({
         ip: peersInfo.publicIp,
-        version: versionWrapper.version
+        version: versionWrapper.version,
+        height: this.height
       })
-
-      const peersWrapper = await connection.api.Peer.getPeers();
-      this.count = peersWrapper.count + 1;
-
-      const ipList = peersWrapper.peers.map(peer => peer.simple.host);
-      const peersIPList = await this.getPeersIP(ipList);
-
-      console.log({peersIPList});
-
-      this.allNodes = this.allNodes.concat(peersIPList);
 
       for (const node of this.allNodes) {
         if (this.versionCount.hasOwnProperty(node.version)) {
@@ -104,31 +109,6 @@ export default {
         }
       }
 
-      this.versionCount['1.0.27'] = 1;
-
-      // for (const ip of ipList) {
-      //   console.log({ip});
-      //   const connection = new gnyClient.Connection(ip, 4096, process.env['GNY_NETWORK'], false);
-      //   const version = (await connection.api.System.getSystemInfo()).version;
-      //   this.allNodes.push({ip, version});
-        
-      //   if (this.versionCount.hasOwnProperty(version)) {
-      //     this.versionCount[version][0] += 1;
-      //   } else {
-      //     this.versionCount[version] = [1];
-      //     this.versionCount[version].push('Node');
-      //   }
-
-      //   if (this.versionCount[version][0] > 1) {
-      //     this.versionCount[version][1] = 'Nodes';
-      //   }
-      // }
-
-
-
-      // ipList.forEach(async ip => {
-        
-      // });
       
     } catch (err) {
       console.log(err.message);
