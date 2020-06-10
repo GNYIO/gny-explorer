@@ -21,8 +21,14 @@
       <el-table :data="allNodes" stripe style="width: 100%">
         <el-table-column prop="ip" label="IP" width="300"></el-table-column>
         <el-table-column prop="version" label="Version" width="300"></el-table-column>
-        <el-table-column prop="height" label="Height" ></el-table-column>
+        <el-table-column prop="height" label="Height" >
+        </el-table-column>
         </el-table>
+    </el-card>
+
+    <el-card>
+    <d3-network :net-nodes="graphNodes" :net-links="links" :options="options">
+    </d3-network>
     </el-card>
   </el-container>
 </template>
@@ -67,6 +73,16 @@ export default {
 
       versionCount: {},
 
+      graphNodes: [],
+      links: [],
+
+      options: {
+        force: 3000,
+        nodeSize: 20,
+        nodeLabels: true,
+        linkWidth: 3,
+      }
+
     };
   },
 
@@ -94,12 +110,39 @@ export default {
       this.systemVersion = systemWrapper.version;
       this.height = systemWrapper.lastBlock.height;
 
-      this.allNodes = peersIPList;
+      this.allNodes = this.allNodes.concat(peersIPList);
+
       this.allNodes.push({
         ip: peersInfo.publicIp,
         version: versionWrapper.version,
         height: this.height
-      })
+      });
+
+      this.graphNodes.push({
+        id: 1,
+        name: peersInfo.publicIp,
+      });
+
+      console.log(JSON.stringify(peersIPList, null, 2));
+
+      for (const [i, node] of peersIPList.entries()) {
+        this.graphNodes.push({
+          id: i+2,
+          name: node.ip,
+        });
+        this.links.push(
+          {
+            sid: 1,
+            tid: i+2,
+            _color: '#acacac',
+          }
+        )
+      }
+      
+      console.log(JSON.stringify(this.graphNodes, null, 2));
+
+      console.log(JSON.stringify(this.links, null, 2));
+
 
       for (const node of this.allNodes) {
         if (this.versionCount.hasOwnProperty(node.version)) {
@@ -108,6 +151,7 @@ export default {
           this.versionCount[node.version] = 1;
         }
       }
+
 
       
     } catch (err) {
