@@ -10,7 +10,7 @@
         <el-col :span="16">
           System versions:
           <p v-for="(count, version) in versionCount">
-            {{version}} ({{count[0]}} {{count[1]}})
+            {{version}} ({{count}} <span v-if="count > 1">Nodes</span> <span v-else>Node</span>) 
           </p>
         </el-col>
 
@@ -38,7 +38,20 @@ import { BigNumber } from 'bignumber.js';
 
 export default {
   methods: {
+    getPeersIP: async function (ipList) {
+      let peersList = [];
+      for (const ip of ipList) {
+        console.log({ip});
+        const connection = new gnyClient.Connection(ip, 4096, process.env['GNY_NETWORK'], false);
+        const version = (await connection.api.System.getSystemInfo()).version;
+        peersList.push({ip, version});
+      }
+
+      return peersList;
+    }
+
   },
+
   data() {
     return {
       count: 0,
@@ -51,6 +64,7 @@ export default {
 
     };
   },
+
   async mounted() {
     try {
       const systemWrapper = await connection.api.System.getSystemInfo();
@@ -72,31 +86,49 @@ export default {
         version: versionWrapper.version
       })
 
-      // {'1.0.28': [1, 'Node'], '1.0.27': [2, 'Nodes']} 
-      this.versionCount[versionWrapper.version] = [1];
-      this.versionCount[versionWrapper.version].push('Node');
-
       const peersWrapper = await connection.api.Peer.getPeers();
       this.count = peersWrapper.count + 1;
 
       const ipList = peersWrapper.peers.map(peer => peer.simple.host);
+      const peersIPList = await this.getPeersIP(ipList);
 
-      ipList.forEach(async ip => {
-        const connection = new gnyClient.Connection(ip, 4096, process.env['GNY_NETWORK'], process.env['GNY_HTTPS']);
-        const version = (await connection.api.System.getSystemInfo()).version;
-        this.allNodes.push({ip, version});
-        
-        if (this.versionCount.hasOwnProperty(version)) {
-          this.versionCount[version][0] += 1;
+      console.log({peersIPList});
+
+      this.allNodes = this.allNodes.concat(peersIPList);
+
+      for (const node of this.allNodes) {
+        if (this.versionCount.hasOwnProperty(node.version)) {
+          this.versionCount[node.version] += 1;
         } else {
-          this.versionCount[version] = [1];
-          this.versionCount[version].push('Node');
+          this.versionCount[node.version] = 1;
         }
+      }
 
-        if (this.versionCount[version][0] > 1) {
-          this.versionCount[version][1] = 'Nodes';
-        }
-      });
+      this.versionCount['1.0.27'] = 1;
+
+      // for (const ip of ipList) {
+      //   console.log({ip});
+      //   const connection = new gnyClient.Connection(ip, 4096, process.env['GNY_NETWORK'], false);
+      //   const version = (await connection.api.System.getSystemInfo()).version;
+      //   this.allNodes.push({ip, version});
+        
+      //   if (this.versionCount.hasOwnProperty(version)) {
+      //     this.versionCount[version][0] += 1;
+      //   } else {
+      //     this.versionCount[version] = [1];
+      //     this.versionCount[version].push('Node');
+      //   }
+
+      //   if (this.versionCount[version][0] > 1) {
+      //     this.versionCount[version][1] = 'Nodes';
+      //   }
+      // }
+
+
+
+      // ipList.forEach(async ip => {
+        
+      // });
       
     } catch (err) {
       console.log(err.message);
