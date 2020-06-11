@@ -139,7 +139,7 @@ export default {
         }
 
         this.account = account;
-        this.balance = new BigNumber(account.balance).dividedBy(1e8).toFixed();
+        this.balance = new BigNumber(account.gny).dividedBy(1e8).toFixed();
 
         if (account.publicKey) {
           this.publicKey = account.publicKey.slice(0, 8);
