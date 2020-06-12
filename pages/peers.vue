@@ -59,8 +59,17 @@ export default {
       }
 
       return peersList;
-    }
+    },
 
+    getPeerList: async function (ip) {
+      const connection = new gnyClient.Connection(ip, 4096, process.env['GNY_NETWORK'], false);
+      const peersWrapper = await connection.api.Peer.getPeers();
+      const ipList = peersWrapper.peers.map(peer => peer.simple.host);
+
+      const peersIPList = await this.getPeersIP(ipList);
+
+      return ipList;
+    },
   },
 
   data() {
@@ -77,7 +86,7 @@ export default {
       links: [],
 
       options: {
-        force: 3000,
+        force: 4000,
         nodeSize: 20,
         nodeLabels: true,
         linkWidth: 3,
@@ -121,6 +130,7 @@ export default {
       this.graphNodes.push({
         id: 1,
         name: peersInfo.publicIp,
+        _color: '#67a8af'
       });
 
       console.log(JSON.stringify(peersIPList, null, 2));
@@ -129,6 +139,7 @@ export default {
         this.graphNodes.push({
           id: i+2,
           name: node.ip,
+          _color: '#67a8af'
         });
         this.links.push(
           {
@@ -142,7 +153,6 @@ export default {
       console.log(JSON.stringify(this.graphNodes, null, 2));
 
       console.log(JSON.stringify(this.links, null, 2));
-
 
       for (const node of this.allNodes) {
         if (this.versionCount.hasOwnProperty(node.version)) {
