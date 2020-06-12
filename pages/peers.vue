@@ -22,6 +22,11 @@
         <el-table-column prop="ip" label="IP" width="300"></el-table-column>
         <el-table-column prop="version" label="Version" width="300"></el-table-column>
         <el-table-column prop="height" label="Height" >
+          <template slot-scope="scope">
+            <el-tag :type="scope.row.height === height ? 'success' : 'danger'" disable-transitions>
+              {{scope.row.height}}
+            </el-tag>
+          </template>
         </el-table-column>
         </el-table>
     </el-card>
@@ -85,6 +90,7 @@ export default {
       graphNodes: [],
       links: [],
 
+      // settings for peer graph
       options: {
         force: 4000,
         nodeSize: 20,
@@ -100,7 +106,7 @@ export default {
       const peersWrapper = await connection.api.Peer.getPeers();
       this.count = peersWrapper.count + 1;
 
-      // Peers
+      // Peers nodes list
       const ipList = peersWrapper.peers.map(peer => peer.simple.host);
       const peersIPList = await this.getPeersIP(ipList);
 
@@ -117,16 +123,21 @@ export default {
       console.log(`peersInfo: ${JSON.stringify(peersInfo, null, 2)}`);
       
       this.systemVersion = systemWrapper.version;
+
+      // latest block
       this.height = systemWrapper.lastBlock.height;
 
       this.allNodes = this.allNodes.concat(peersIPList);
 
+      // push current node to the end
       this.allNodes.push({
         ip: peersInfo.publicIp,
         version: versionWrapper.version,
-        height: this.height
+        height: systemWrapper.lastBlock.height
       });
 
+      // Peer Graph
+      // set id = 1 to current node
       this.graphNodes.push({
         id: 1,
         name: peersInfo.publicIp,
@@ -135,6 +146,7 @@ export default {
 
       console.log(JSON.stringify(peersIPList, null, 2));
 
+      // set peer nodes id from 2 and links to current node (id = 1)
       for (const [i, node] of peersIPList.entries()) {
         this.graphNodes.push({
           id: i+2,
@@ -151,9 +163,9 @@ export default {
       }
       
       console.log(JSON.stringify(this.graphNodes, null, 2));
-
       console.log(JSON.stringify(this.links, null, 2));
-
+      
+      // count versions number
       for (const node of this.allNodes) {
         if (this.versionCount.hasOwnProperty(node.version)) {
           this.versionCount[node.version] += 1;
@@ -161,8 +173,6 @@ export default {
           this.versionCount[node.version] = 1;
         }
       }
-
-
       
     } catch (err) {
       console.log(err.message);
