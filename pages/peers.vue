@@ -7,10 +7,16 @@
           All Nodes:
           <p>{{count}}</p>
         </el-col>
-        <el-col :span="16">
-          System versions:
-          <p v-for="(count, version) in versionCount">
-            {{version}} ({{count}} <span v-if="count > 1">Nodes</span> <span v-else>Node</span>) 
+        <el-col :span="8">
+          System version:
+          <p >
+            {{systemVersion}}
+          </p>
+        </el-col>
+        <el-col :span="8">
+          Last block height:
+          <p >
+            {{height}}
           </p>
         </el-col>
 
@@ -20,15 +26,8 @@
       <h1>Connected Nodes</h1>
       <el-table :data="allNodes" stripe style="width: 100%">
         <el-table-column prop="ip" label="IP" width="300"></el-table-column>
-        <el-table-column prop="version" label="Version" width="300"></el-table-column>
-        <el-table-column prop="height" label="Height" >
-          <template slot-scope="scope">
-            <el-tag :type="scope.row.height === height ? 'success' : 'danger'" disable-transitions>
-              {{scope.row.height}}
-            </el-tag>
-          </template>
-        </el-table-column>
-        </el-table>
+        <el-table-column prop="id" label="ID" ></el-table-column>
+      </el-table>
     </el-card>
 
     <el-card>
@@ -106,11 +105,16 @@ export default {
       const peersWrapper = await connection.api.Peer.getPeers();
       this.count = peersWrapper.count + 1;
 
-      // Peers nodes list
-      const ipList = peersWrapper.peers.map(peer => peer.simple.host);
-      const peersIPList = await this.getPeersIP(ipList);
+      console.log(`peersWrapper: ${JSON.stringify(peersWrapper, null, 2)}`)
 
-      console.log({peersIPList});
+      // Peers nodes list
+      const peersList = peersWrapper.peers.map(peer => {
+        return {
+          ip: peer.simple.host,
+          id: peer.id.id,
+        }
+      });
+
 
        // current node info
       const systemWrapper = await connection.api.System.getSystemInfo();
@@ -127,13 +131,12 @@ export default {
       // latest block
       this.height = systemWrapper.lastBlock.height;
 
-      this.allNodes = this.allNodes.concat(peersIPList);
+      this.allNodes = this.allNodes.concat(peersList);
 
       // push current node to the end
       this.allNodes.push({
         ip: peersInfo.publicIp,
-        version: versionWrapper.version,
-        height: systemWrapper.lastBlock.height
+        id: peersInfo.id,
       });
 
       // Peer Graph
@@ -144,13 +147,11 @@ export default {
         _color: '#67a8af'
       });
 
-      console.log(JSON.stringify(peersIPList, null, 2));
-
       // set peer nodes id from 2 and links to current node (id = 1)
-      for (const [i, node] of peersIPList.entries()) {
+      for (const [i, peer] of peersList.entries()) {
         this.graphNodes.push({
           id: i+2,
-          name: node.ip,
+          name: peer.ip,
           _color: '#67a8af'
         });
         this.links.push(
@@ -164,15 +165,6 @@ export default {
       
       console.log(JSON.stringify(this.graphNodes, null, 2));
       console.log(JSON.stringify(this.links, null, 2));
-      
-      // count versions number
-      for (const node of this.allNodes) {
-        if (this.versionCount.hasOwnProperty(node.version)) {
-          this.versionCount[node.version] += 1;
-        } else {
-          this.versionCount[node.version] = 1;
-        }
-      }
       
     } catch (err) {
       console.log(err.message);
