@@ -9,6 +9,7 @@
           <nuxt-link to="/transactions" class="second-link">TRANSACTIONS</nuxt-link>
           <nuxt-link to="/delegates" class="second-link">DELEGATES</nuxt-link>
           <nuxt-link to="/assets" class="second-link">ASSETS</nuxt-link>
+          <nuxt-link to="/peers" class="second-link">PEERS</nuxt-link>
           <Search />
         </nav>
       </el-header>
