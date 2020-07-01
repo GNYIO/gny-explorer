@@ -101,6 +101,11 @@ export default {
   },
 
   async mounted() {
+
+    const request = await this.$axios.get('http://localhost:8888/.netlify/functions/serverless-http');
+    console.log(`data: ${JSON.stringify(request.data.transactions)}`);
+
+
     try {
       const peersWrapper = await connection.api.Peer.getPeers();
       this.count = peersWrapper.count + 1;
