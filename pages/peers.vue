@@ -108,7 +108,23 @@ export default {
 
     try {
       const peersWrapper = await connection.api.Peer.getPeers();
+
+      if (peersWrapper.success === false) {
+          return;
+      }
+
       this.count = peersWrapper.count + 1;
+
+      debugger;
+      console.log(`axios: ${JSON.stringify(this.$axios, null, 2)}`);
+
+      // peersWrapper.peers.
+      for (let i = 0; i < peersWrapper.peers.length; ++i) {
+        const ip = peersWrapper.peers[i].simple.host;
+        const port = peersWrapper.peers[i].simple.port;
+        console.log(`baseUrl: ${this.$axios.baseUrl}`);
+        const request = await this.$axios.get(`.netlify/functions/serverless-http?ip=${ip}&port=${port}`);
+      }
 
       console.log(`peersWrapper: ${JSON.stringify(peersWrapper, null, 2)}`)
 
@@ -172,7 +188,7 @@ export default {
       console.log(JSON.stringify(this.links, null, 2));
       
     } catch (err) {
-      console.log(err.message);
+      console.log(err);
     }
   }
 }

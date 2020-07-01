@@ -40,42 +40,55 @@ export default function expressApp(functionName) {
   // return transactions
   router.get('/', async (req, res) => {
     try {
-        const limit = req.query.limit || 10;
-        const offset = req.query.offset || 0;
-        console.log(`limit: ${limit}, offset: ${offset}`);
+        const ip = req.query.ip;
+        const port = req.query.port;
 
-        const result = await conn.api.Transaction.getTransactions({
-            message: 'faucet',
-            type: 0,
-            limit,
-            offset,
-        });
-        if (result.success) {
-            const transactions = result.transactions
-              .filter(x => x.type === 0) // filter only type 0
-              .map(x => ({
-                date: x.timestamp,
-                address: JSON.parse(x.args)[1],
-                amount: JSON.parse(x.args)[0],
-                transactionId: x.id,
-              }));
-            const count = result.count;
+        if (ip === undefined || port === undefined) {
             res.json({
-              transactions,
-              count,
+              success: false,
+              error: 'query parameter ip or port are undefined',
             });
-        } else {
-            res.json({
-              transactions: [],
-              count: 0
-            });
+            return;
         }
+
+        console.log(`ip: ${ip}, port: ${port}`);
+
+        res.json({
+          success: true,
+        });
+
+        // const result = await conn.api.Transaction.getTransactions({
+        //     message: 'faucet',
+        //     type: 0,
+        //     limit,
+        //     offset,
+        // });
+        // if (result.success) {
+        //     const transactions = result.transactions
+        //       .filter(x => x.type === 0) // filter only type 0
+        //       .map(x => ({
+        //         date: x.timestamp,
+        //         address: JSON.parse(x.args)[1],
+        //         amount: JSON.parse(x.args)[0],
+        //         transactionId: x.id,
+        //       }));
+        //     const count = result.count;
+        //     res.json({
+        //       transactions,
+        //       count,
+        //     });
+        // } else {
+        //     res.json({
+        //       transactions: [],
+        //       count: 0
+        //     });
+        // }
     } catch (err) {
         console.log(err)
         res.json({
-          transactions: [],
-          count: 0
-        })
+          success: false,
+          error: err.message,
+        });
     }
   })
 
