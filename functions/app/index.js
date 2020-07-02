@@ -4,27 +4,7 @@ import bodyParser from 'body-parser';
 import compression from 'compression';
 import customLogger from '../utils/logger';
 import { Connection } from '@gny/client';
-import { isAddress } from '@gny/utils';
 
-
-// TARGET_IP (without http|https)
-// TARGET_PORT
-// TARGET_NETWORK_TYPE
-// TARGET_HTTPS
-const targetIp = process.env.TARGET_IP;
-const targetPort = Number(process.env.TARGET_PORT);
-const targetNetworkType = process.env.TARGET_NETWORK_TYPE;
-const targetHttps = process.env.TARGET_HTTPS || false;
-
-const magic = process.env.TARGET_HTTP_MAGIC;
-const senderSecret = process.env.SENDER_SECRET;
-
-const conn = new Connection(
-  targetIp,
-  targetPort,
-  targetNetworkType,
-  targetHttps
-);
 
 /* My express App */
 export default function expressApp(functionName) {
@@ -42,47 +22,39 @@ export default function expressApp(functionName) {
     try {
         const ip = req.query.ip;
         const port = req.query.port;
+        const networkType = req.query.networkType;
 
-        if (ip === undefined || port === undefined) {
+        if (ip === undefined || port === undefined || networkType === undefined) {
             res.json({
               success: false,
-              error: 'query parameter ip or port are undefined',
+              error: 'query parameter ip, port or networkType are undefined',
             });
             return;
         }
 
-        console.log(`ip: ${ip}, port: ${port}`);
+        console.log(`ip: ${ip}, port: ${port}, networkType: ${networkType}`);
+
+        const conn = new Connection(
+            ip,
+            port,
+            networkType,
+            false
+        );
+
+        const peers = await conn.api.Peer.getPeers();
 
         res.json({
-          success: true,
+            success: true,
+            peers: peers.peers
         });
 
-        // const result = await conn.api.Transaction.getTransactions({
-        //     message: 'faucet',
-        //     type: 0,
-        //     limit,
-        //     offset,
+
+        // res.json({
+        //   success: true,
+        //   peers: peers.peers,
         // });
-        // if (result.success) {
-        //     const transactions = result.transactions
-        //       .filter(x => x.type === 0) // filter only type 0
-        //       .map(x => ({
-        //         date: x.timestamp,
-        //         address: JSON.parse(x.args)[1],
-        //         amount: JSON.parse(x.args)[0],
-        //         transactionId: x.id,
-        //       }));
-        //     const count = result.count;
-        //     res.json({
-        //       transactions,
-        //       count,
-        //     });
-        // } else {
-        //     res.json({
-        //       transactions: [],
-        //       count: 0
-        //     });
-        // }
+        // return;
+       
     } catch (err) {
         console.log(err)
         res.json({

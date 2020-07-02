@@ -102,10 +102,6 @@ export default {
 
   async mounted() {
 
-    const request = await this.$axios.get('http://localhost:8888/.netlify/functions/serverless-http');
-    console.log(`data: ${JSON.stringify(request.data.transactions)}`);
-
-
     try {
       const peersWrapper = await connection.api.Peer.getPeers();
 
@@ -115,15 +111,13 @@ export default {
 
       this.count = peersWrapper.count + 1;
 
-      debugger;
-      console.log(`axios: ${JSON.stringify(this.$axios, null, 2)}`);
-
       // peersWrapper.peers.
       for (let i = 0; i < peersWrapper.peers.length; ++i) {
         const ip = peersWrapper.peers[i].simple.host;
-        const port = peersWrapper.peers[i].simple.port;
-        console.log(`baseUrl: ${this.$axios.baseUrl}`);
-        const request = await this.$axios.get(`.netlify/functions/serverless-http?ip=${ip}&port=${port}`);
+        const port = Number(peersWrapper.peers[i].simple.port) - 1;
+        const request = await this.$axios.get(`.netlify/functions/serverless-http?ip=${ip}&port=${port}&networkType=localnet`);
+
+        console.log(`response(${ip}): ${JSON.stringify(request.data, null, 2)}`);
       }
 
       console.log(`peersWrapper: ${JSON.stringify(peersWrapper, null, 2)}`)
