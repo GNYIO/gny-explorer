@@ -65,6 +65,7 @@ module.exports = {
     '@nuxtjs/dotenv',
     'nuxt-clipboard2',
     '@aceforth/nuxt-netlify',
+    'bootstrap-vue/nuxt',
   ],
   /*
   ** Axios module configuration
