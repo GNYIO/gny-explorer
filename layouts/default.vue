@@ -8,7 +8,7 @@
             </nuxt-link>
           </b-navbar-brand>
 
-          <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
+          <b-navbar-toggle target="nav_collapse" ></b-navbar-toggle>
 
           <b-collapse is-nav id="nav_collapse">
             <b-navbar-nav>
@@ -68,12 +68,15 @@ body {
   -webkit-text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
 }
-b-navbar {
-  max-width: 1000px;
-}
 
 a {
   text-decoration: none;
+}
+
+@media (max-width: 999px) {
+  #nav_collapse {
+    background-color: #F8F9FA;
+  }
 }
 
 .header {
