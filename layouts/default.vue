@@ -1,14 +1,14 @@
 <template>
   <el-container >
     <el-header class="header">
-        <b-navbar toggleable="lg" fixed="top" type="light" variant="secondary" class="bg-light">
+        <b-navbar toggleable="lg" variant="secondary" class="bg-transparent">
           <b-navbar-brand>
             <nuxt-link to="/">
               <img src="../assets/logo.png" alt="logo" class="logo">
             </nuxt-link>
           </b-navbar-brand>
 
-          <b-navbar-toggle target="nav_collapse" />
+          <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
 
           <b-collapse is-nav id="nav_collapse">
             <b-navbar-nav>
@@ -69,8 +69,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 b-navbar {
-
-
+  max-width: 1000px;
 }
 
 a {

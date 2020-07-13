@@ -1,6 +1,6 @@
 <template>
   <el-card>
-    <h1>Basic</h1>
+    <h4>Basic</h4>
     <el-row class="basic">
       <el-col :span="8" >
         Blocks:

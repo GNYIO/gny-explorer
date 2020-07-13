@@ -1,6 +1,6 @@
 <template>
   <el-card>
-    <h2>Latest Blocks</h2>
+    <h4>Latest Blocks</h4>
     <el-table :data="blocks" stripe style="width: 95%; margin: auto;">
       <el-table-column prop="height" align="center" label="Height" width="150">
         <template v-slot:default="table">

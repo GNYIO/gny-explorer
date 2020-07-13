@@ -1,7 +1,7 @@
 <template>
   <el-container direction="vertical">
     <el-card>
-      <h2>Block</h2>
+      <h4>Block</h4>
       <el-row>
         <el-col :span="8" >
           Height
@@ -39,7 +39,7 @@
       </el-row>
     </el-card>
     <el-card>
-      <h3>Transactions included in this Block</h3>
+      <h4>Transactions included in this Block</h4>
       
       <el-table :data="transactions" stripe style="width: 95%; margin: auto;">
         <el-table-column prop="id" align="center" label="Transaction ID" width="150">

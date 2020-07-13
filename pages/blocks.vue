@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <el-card>
-      <h2>Blocks</h2>
+      <h4>Blocks</h4>
       <el-table :data="blocks" stripe style="width: 100%; margin: auto;" height="500">
         <el-table-column prop="height" align="center" label="Height" width="80">
           <template v-slot:default="table">
