@@ -4,7 +4,7 @@ import bodyParser from 'body-parser';
 import compression from 'compression';
 import customLogger from '../utils/logger';
 import { Connection } from '@gny/client';
-
+import got from 'got';
 
 /* My express App */
 export default function expressApp(functionName) {
@@ -32,6 +32,16 @@ export default function expressApp(functionName) {
             return;
         }
 
+        // test connection timeout
+        const url = `http://${ip}:${port}/api/system`;
+        console.log(`url: ${url}`);
+        await got(url, {
+            timeout: {
+                connect: 500,
+                lookup: 500,
+            }
+        });
+
         console.log(`ip: ${ip}, port: ${port}, networkType: ${networkType}`);
 
         const conn = new Connection(
@@ -52,14 +62,16 @@ export default function expressApp(functionName) {
             peersInfo: peersInfo,
             system: system,
         });
+        return;
 
        
     } catch (err) {
-        console.log(err)
+        console.log(err);
         res.json({
           success: false,
           error: err.message,
         });
+        return;
     }
   })
 
