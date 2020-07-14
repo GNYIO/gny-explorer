@@ -38,6 +38,12 @@
 </template>
 
 <script>
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+
 import * as gnyClient from '@gny/client';
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],
@@ -111,16 +117,50 @@ export default {
 
       this.count = peersWrapper.count + 1;
 
-      // peersWrapper.peers.
-      for (let i = 0; i < peersWrapper.peers.length; ++i) {
-        const ip = peersWrapper.peers[i].simple.host;
-        const port = Number(peersWrapper.peers[i].simple.port) - 1;
-        const request = await this.$axios.get(`.netlify/functions/serverless-http?ip=${ip}&port=${port}&networkType=localnet`);
+    //   const result = {};
+    //   console.log(`peersWrapper: ${JSON.stringify(peersWrapper, null, 2)}`);
+    //   // peersWrapper.peers.
+    //   for (let i = 0; i < peersWrapper.peers.length; ++i) {
+        
+    //     const ip = peersWrapper.peers[i].simple.host;
+    //     const port = Number(peersWrapper.peers[i].simple.port) - 1;
+    //     const url = `.netlify/functions/serverless-http?ip=${ip}&port=${port}&networkType=localnet`;
+    //     console.log(`[${ip}] URL(top) ${url}`);
 
-        console.log(`response(${ip}): ${JSON.stringify(request.data, null, 2)}`);
-      }
+    //     let request = null;
+    //     try {
+    //         request = await this.$axios.get(url);
+    //         result[ip] = request.data;
+    //     } catch (err) {
+    //         console.log(`request failed for (top): [${ip}]`);
+    //     }
 
-      console.log(`peersWrapper: ${JSON.stringify(peersWrapper, null, 2)}`)
+    //     for (let k = 0; k < request.data.peers.length; ++k) {
+    //         const peer = request.data.peers[k];
+    //         const peerIp = peer.simple.host;
+    //         const peerPort = Number(peer.simple.port) - 1;
+
+    //         if (!result[peerIp]) {
+    //             console.log(`[${peerIp}] is NOT here`);
+
+    //             const x = `.netlify/functions/serverless-http?ip=${peerIp}&port=${peerPort}&networkType=localnet`;
+    //             console.log(`[${ip} URL(child) ${x}`);
+
+    //             try {
+    //                 const newRequest = await this.$axios.get(x);
+
+    //                 result[peerIp] = newRequest.data;
+    //             } catch (err) {
+    //                 console.log(`request failed for (child): [${peerIp}]`)
+    //             }
+
+    //         } else {
+    //             console.log(`[${peerIp}] is already fetched`);
+    //         }
+
+    //         await sleep(1000);
+    //     }
+    //   }
 
       // Peers nodes list
       const peersList = peersWrapper.peers.map(peer => {

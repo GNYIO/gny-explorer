@@ -41,19 +41,18 @@ export default function expressApp(functionName) {
             false
         );
 
+        const system = await conn.api.System.getSystemInfo();
+        const peersInfo = await conn.api.Peer.getInfo();
         const peers = await conn.api.Peer.getPeers();
+
 
         res.json({
             success: true,
-            peers: peers.peers
+            peers: peers.peers,
+            peersInfo: peersInfo,
+            system: system,
         });
 
-
-        // res.json({
-        //   success: true,
-        //   peers: peers.peers,
-        // });
-        // return;
        
     } catch (err) {
         console.log(err)
