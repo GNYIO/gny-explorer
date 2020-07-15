@@ -1,7 +1,6 @@
 <template>
   <el-container direction="vertical">
-    <b-card class="shadow">
-      <h2>Account info</h2>
+    <b-card title="Account info" class="shadow">
       <el-row>
         <el-col :span="10">
           Address
@@ -32,9 +31,7 @@
     </b-card>
 
     <!-- v-if="balances.length > 0" -->
-    <b-card class="shadow mt-4">
-      <h2>Assets</h2>
-
+    <b-card title="Assets" class="shadow mt-4">
       <el-table class="clickable-rows" :data="balances" stripe style="width: 95%;">
         <el-table-column prop="currency" align="center" label="Currency" ></el-table-column>
         <el-table-column prop="balance" align="center" label="Balance" width="300"></el-table-column>
@@ -42,9 +39,7 @@
       </el-table>
     </b-card>
 
-    <b-card class="shadow mt-4">
-      <h2>Transactions</h2>
-      
+    <b-card title="Transactions" class="shadow mt-4">
       <el-table @row-click="rowClick" :data="transactions" stripe style="width: 95%;">
         <el-table-column prop="height" align="center" label="Height" width="150">
           <template v-slot:default="table">

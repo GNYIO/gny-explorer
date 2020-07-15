@@ -1,7 +1,6 @@
 <template>
   <el-container>
-    <b-card class="shadow">
-      <h4>Blocks</h4>
+    <b-card title="Blocks" class="shadow">
       <el-table :data="blocks" stripe style="width: 100%; margin: auto;" height="500">
         <el-table-column prop="height" align="center" label="Height" width="80">
           <template v-slot:default="table">

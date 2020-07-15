@@ -1,6 +1,5 @@
 <template>
-  <b-card class="shadow mt-4">
-    <h4>Latest Transactions</h4>
+  <b-card title="Latest Transactions" class="shadow mt-4">
     <el-table :data="transactions" stripe style="width: 95%; margin: auto;">
       <el-table-column prop="id" align="center" label="Transaction ID">
         <template v-slot:default="table">

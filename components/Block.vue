@@ -1,6 +1,5 @@
 <template>
-  <b-card class="shadow mt-4">
-    <h4>Latest Blocks</h4>
+  <b-card title="Latest Blocks" class="shadow mt-4">
     <el-table :data="blocks" stripe style="width: 95%; margin: auto;">
       <el-table-column prop="height" align="center" label="Height" width="150">
         <template v-slot:default="table">

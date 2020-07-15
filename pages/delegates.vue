@@ -1,7 +1,6 @@
 <template>
   <el-container direction="vertical">
-    <b-card class="shadow">
-        <h1>Delegates</h1>
+    <b-card title="Delegates" class="shadow">
         <el-row>
             <el-col :span="8">
             All Delegates

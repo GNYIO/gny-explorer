@@ -1,7 +1,6 @@
 <template>
   <el-container direction="vertical">
-    <b-card class="shadow">
-      <h2>Asset Info</h2>
+    <b-card title="Asset Info" class="shadow">
       <el-row>
         <el-col :span="6" >
           Name

@@ -1,7 +1,6 @@
 <template>
   <el-container direction="vertical">
-    <b-card class="shadow">
-      <h4>Block</h4>
+    <b-card title="Block" class="shadow">
       <el-row>
         <el-col :span="8" >
           Height
@@ -38,9 +37,7 @@
         </el-col>
       </el-row>
     </b-card>
-    <b-card class="shadow mt-4">
-      <h4>Transactions included in this Block</h4>
-      
+    <b-card title="Transactions included in this Block" class="shadow mt-4">
       <el-table :data="transactions" stripe style="width: 95%; margin: auto;">
         <el-table-column prop="id" align="center" label="Transaction ID" width="150">
           <template v-slot:default="table">

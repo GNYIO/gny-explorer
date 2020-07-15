@@ -21,8 +21,7 @@
 
       </el-row>
     </b-card>
-    <b-card class="shadow mt-4">
-      <h1>Connected Nodes</h1>
+    <b-card title="Connected Nodes" class="shadow mt-4">
       <el-table :data="allNodes" stripe style="width: 100%">
         <el-table-column prop="ip" label="IP" width="300"></el-table-column>
         <el-table-column prop="id" label="ID" ></el-table-column>
