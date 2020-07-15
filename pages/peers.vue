@@ -1,39 +1,38 @@
 <template>
   <el-container direction="vertical">
-    <el-card>
-      <h1>Peers</h1>
+    <b-card title="Peers" class="shadow">
       <el-row>
         <el-col :span="8">
-          All Nodes:
+          All Nodes
           <p>{{count}}</p>
         </el-col>
         <el-col :span="8">
-          System version:
+          System version
           <p >
             {{systemVersion}}
           </p>
         </el-col>
         <el-col :span="8">
-          Last block height:
+          Last block height
           <p >
             {{height}}
           </p>
         </el-col>
 
       </el-row>
-    </el-card>
-    <el-card>
+    </b-card>
+    <b-card class="shadow mt-4">
       <h1>Connected Nodes</h1>
       <el-table :data="allNodes" stripe style="width: 100%">
         <el-table-column prop="ip" label="IP" width="300"></el-table-column>
         <el-table-column prop="id" label="ID" ></el-table-column>
       </el-table>
-    </el-card>
+    </b-card>
 
-    <el-card>
+    <b-card class="shadow mt-4">
     <d3-network :net-nodes="graphNodes" :net-links="links" :options="options">
     </d3-network>
-    </el-card>
+    </b-card>
   </el-container>
 </template>
 

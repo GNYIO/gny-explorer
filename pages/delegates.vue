@@ -1,28 +1,28 @@
 <template>
   <el-container direction="vertical">
-    <el-card>
+    <b-card class="shadow">
         <h1>Delegates</h1>
         <el-row>
             <el-col :span="8">
-            All Delegates:
+            All Delegates
             <p>{{count}}</p>
             </el-col>
             <el-col :span="8">
-              Most Produced Blocks:
+              Most Produced Blocks
               <p>{{mostProducedBlocks}}</p>
             </el-col>
             <el-col :span="8">
-                Highest Approval:
+                Highest Approval
                 <p>{{highestApproval}} %</p>
             </el-col>
         </el-row>
         <el-row>
             <el-col :span="8">
-                Forging Delegates:
+                Forging Delegates
                 <p>101</p>
             </el-col>
             <el-col :span="8">
-                Most Produced Blocks Delegate:
+                Most Produced Blocks Delegate
                 <p>
                   <nuxt-link class="nuxt-link" :to="{ name: 'delegate-detail', query: { username: mostProducedBlocksDelegate }}">
                   {{mostProducedBlocksDelegate}}
@@ -30,7 +30,7 @@
                 </p>
             </el-col>
             <el-col :span="8">
-                Highest Approval Name:
+                Highest Approval Name
                 <p>
                    <nuxt-link class="nuxt-link" :to="{ name: 'delegate-detail', query: { username: highestApprovalDelegate }}">
                     {{highestApprovalDelegate}}
@@ -39,8 +39,8 @@
             </el-col>
         </el-row>
 
-    </el-card>
-    <el-card>
+    </b-card>
+    <b-card class="shadow mt-4">
       <el-table :data="allDelegates" stripe style="width: 100%">
           <el-table-column prop="rate" label="Rank" width="100"></el-table-column>
           <el-table-column
@@ -70,7 +70,7 @@
           ></el-table-column>
           <el-table-column prop="approval" label="Approval %" width="100"></el-table-column>
         </el-table>
-    </el-card>
+    </b-card>
   </el-container>
 </template>
 

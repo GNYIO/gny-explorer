@@ -1,6 +1,6 @@
 <template>
   <el-container>
-    <el-card>
+    <b-card class="shadow">
       <h2>Assets</h2>
       <el-table :data="assets" stripe style="width: 100%; margin: auto;" height="500">
         <el-table-column prop="name" align="center" label="Name" width="110">
@@ -28,7 +28,7 @@
         </infinite-loading>
 
       </el-table>
-    </el-card>
+    </b-card>
   </el-container>
 </template>
 

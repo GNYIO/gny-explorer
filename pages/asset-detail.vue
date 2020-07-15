@@ -1,6 +1,6 @@
 <template>
   <el-container direction="vertical">
-    <el-card>
+    <b-card class="shadow">
       <h2>Asset Info</h2>
       <el-row>
         <el-col :span="6" >
@@ -47,7 +47,7 @@
           </p>
         </el-col> 
       </el-row>
-    </el-card>
+    </b-card>
 
   </el-container>
 </template>

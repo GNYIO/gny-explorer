@@ -1,5 +1,5 @@
 <template>
-  <el-card>
+  <b-card class="shadow mt-4">
     <h4>Latest Blocks</h4>
     <el-table :data="blocks" stripe style="width: 95%; margin: auto;">
       <el-table-column prop="height" align="center" label="Height" width="150">
@@ -29,7 +29,7 @@
     <nuxt-link to="blocks">
       Explore more Blocks →
     </nuxt-link>
-  </el-card>
+  </b-card>
 </template>
 
 <script>
@@ -75,11 +75,6 @@ export default {
 </script>
 
 <style scoped>
-
-.el-card {
-  margin-top: 20px;
-}
-
 .nuxt-link {
   color:#2475ba;
   cursor: pointer;

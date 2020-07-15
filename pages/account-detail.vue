@@ -1,6 +1,6 @@
 <template>
   <el-container direction="vertical">
-    <el-card>
+    <b-card class="shadow">
       <h2>Account info</h2>
       <el-row>
         <el-col :span="10">
@@ -29,10 +29,10 @@
           <p v-else>False</p>
         </el-col>
       </el-row>
-    </el-card>
+    </b-card>
 
     <!-- v-if="balances.length > 0" -->
-    <el-card>
+    <b-card class="shadow mt-4">
       <h2>Assets</h2>
 
       <el-table class="clickable-rows" :data="balances" stripe style="width: 95%;">
@@ -40,9 +40,9 @@
         <el-table-column prop="balance" align="center" label="Balance" width="300"></el-table-column>
         <el-table-column prop="flag" align="center" label="Flag" width="300"></el-table-column>
       </el-table>
-    </el-card>
+    </b-card>
 
-    <el-card>
+    <b-card class="shadow mt-4">
       <h2>Transactions</h2>
       
       <el-table @row-click="rowClick" :data="transactions" stripe style="width: 95%;">
@@ -64,7 +64,7 @@
         <el-table-column prop="senderId" align="center" label="Sender" width="200" :formatter="subSenderId"></el-table-column>
 
       </el-table>
-    </el-card>
+    </b-card>
 
   </el-container>
 </template>
