@@ -57,6 +57,7 @@ const connection = new gnyClient.Connection(
   process.env['GNY_HTTPS']|| false,
 );
 import { BigNumber } from 'bignumber.js';
+import { getAllPeers } from '../helpers/getAllPeers';
 
 export default {
 
@@ -103,15 +104,16 @@ export default {
   },
 
   async mounted() {
+    await getAllPeers();
 
-    try {
-      const peersWrapper = await connection.api.Peer.getPeers();
+    // try {
+    //   const peersWrapper = await connection.api.Peer.getPeers();
 
-      if (peersWrapper.success === false) {
-          return;
-      }
+    //   if (peersWrapper.success === false) {
+    //       return;
+    //   }
 
-      this.count = peersWrapper.count + 1;
+    //   this.count = peersWrapper.count + 1;
 
     //   const result = {};
     //   console.log(`peersWrapper: ${JSON.stringify(peersWrapper, null, 2)}`);
@@ -159,69 +161,69 @@ export default {
     //   }
 
       // Peers nodes list
-      const peersList = peersWrapper.peers.map(peer => {
-        return {
-          ip: peer.simple.host,
-          id: peer.id.id,
-        }
-      });
+    //   const peersList = peersWrapper.peers.map(peer => {
+    //     return {
+    //       ip: peer.simple.host,
+    //       id: peer.id.id,
+    //     }
+    //   });
 
 
        // current node info
-      const systemWrapper = await connection.api.System.getSystemInfo();
-      console.log(`system: ${JSON.stringify(systemWrapper, null, 2)}`);
+    //   const systemWrapper = await connection.api.System.getSystemInfo();
+    //   console.log(`system: ${JSON.stringify(systemWrapper, null, 2)}`);
 
-      const versionWrapper = await connection.api.Peer.getVersion();
-      console.log(`version: ${JSON.stringify(versionWrapper, null, 2)}`);
+    //   const versionWrapper = await connection.api.Peer.getVersion();
+    //   console.log(`version: ${JSON.stringify(versionWrapper, null, 2)}`);
 
-      const peersInfo = await connection.api.Peer.getInfo();
-      console.log(`peersInfo: ${JSON.stringify(peersInfo, null, 2)}`);
+    //   const peersInfo = await connection.api.Peer.getInfo();
+    //   console.log(`peersInfo: ${JSON.stringify(peersInfo, null, 2)}`);
       
-      this.systemVersion = systemWrapper.version;
+    //   this.systemVersion = systemWrapper.version;
 
-      // latest block
-      this.height = systemWrapper.lastBlock.height;
+    //   // latest block
+    //   this.height = systemWrapper.lastBlock.height;
 
-      this.allNodes = this.allNodes.concat(peersList);
+    //   this.allNodes = this.allNodes.concat(peersList);
 
-      // push current node to the end
-      this.allNodes.push({
-        ip: peersInfo.publicIp,
-        id: peersInfo.id,
-      });
+    //   // push current node to the end
+    //   this.allNodes.push({
+    //     ip: peersInfo.publicIp,
+    //     id: peersInfo.id,
+    //   });
 
       // Peer Graph
       // set id = 1 to current node
-      this.graphNodes.push({
-        id: peersInfo.publicIp,
-        name: peersInfo.publicIp,
-        _color: '#67a8af'
-      });
+    //   this.graphNodes.push({
+    //     id: peersInfo.publicIp,
+    //     name: peersInfo.publicIp,
+    //     _color: '#67a8af'
+    //   });
 
-      // set peer nodes id from 2 and links to current node (id = 1)
-      for (const [i, peer] of peersList.entries()) {
-        this.graphNodes.push({
-          id: peer.ip,
-          name: peer.ip,
-          _color: '#67a8af',
-          label: peer.ip
-        });
-        this.links.push(
-          {
-            id: i,
-            from: peersInfo.publicIp,
-            to: peer.ip,
-            _color: '#acacac',
-          }
-        )
-      }
+    //   // set peer nodes id from 2 and links to current node (id = 1)
+    //   for (const [i, peer] of peersList.entries()) {
+    //     this.graphNodes.push({
+    //       id: peer.ip,
+    //       name: peer.ip,
+    //       _color: '#67a8af',
+    //       label: peer.ip
+    //     });
+    //     this.links.push(
+    //       {
+    //         id: i,
+    //         from: peersInfo.publicIp,
+    //         to: peer.ip,
+    //         _color: '#acacac',
+    //       }
+    //     )
+    //   }
       
-      console.log(JSON.stringify(this.graphNodes, null, 2));
-      console.log(JSON.stringify(this.links, null, 2));
+    //   console.log(JSON.stringify(this.graphNodes, null, 2));
+    //   console.log(JSON.stringify(this.links, null, 2));
       
-    } catch (err) {
-      console.log(err);
-    }
+    // } catch (err) {
+    //   console.log(err);
+    // }
   }
 }
 </script>
