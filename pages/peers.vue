@@ -112,6 +112,17 @@ export default {
               enabled: true,
             }
           }
+        },
+
+        nodes: {
+          shape: 'dot',
+          scaling: {
+            customScalingFunction: function (min,max,total,value) {
+              return value/total;
+            },
+            min:5,
+            max:150
+          }
         }
       }
 
@@ -209,7 +220,7 @@ export default {
       // Peer Graph
       // set id = 1 to current node
       this.graphNodes.push({
-        id: 1,
+        id: peersInfo.publicIp,
         name: peersInfo.publicIp,
         _color: '#67a8af'
       });
@@ -217,15 +228,16 @@ export default {
       // set peer nodes id from 2 and links to current node (id = 1)
       for (const [i, peer] of peersList.entries()) {
         this.graphNodes.push({
-          id: i+2,
+          id: peer.ip,
           name: peer.ip,
-          _color: '#67a8af'
+          _color: '#67a8af',
+          label: peer.ip
         });
         this.links.push(
           {
             id: i,
-            from: 1,
-            to: i+2,
+            from: peersInfo.publicIp,
+            to: peer.ip,
             _color: '#acacac',
           }
         )
