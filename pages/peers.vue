@@ -31,8 +31,13 @@
     </el-card>
 
     <el-card>
-    <d3-network :net-nodes="graphNodes" :net-links="links" :options="options">
-    </d3-network>
+    <!-- <d3-network :net-nodes="graphNodes" :net-links="links" :options="options">
+    </d3-network> -->
+      <network
+        :nodes="graphNodes"
+        :edges="links"
+        :options="options">
+      </network>
     </el-card>
   </el-container>
 </template>
@@ -97,10 +102,17 @@ export default {
 
       // settings for peer graph
       options: {
-        force: 4000,
-        nodeSize: 20,
-        nodeLabels: true,
-        linkWidth: 3,
+        autoResize: true,
+        height: '500px',
+        width: '100%',
+
+        edges: {
+          arrows: {
+            to: {
+              enabled: true,
+            }
+          }
+        }
       }
 
     };
@@ -211,8 +223,9 @@ export default {
         });
         this.links.push(
           {
-            sid: 1,
-            tid: i+2,
+            id: i,
+            from: 1,
+            to: i+2,
             _color: '#acacac',
           }
         )

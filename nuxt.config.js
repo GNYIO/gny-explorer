@@ -37,7 +37,7 @@ module.exports = {
   plugins: [
     '@/plugins/element-ui',
     { src: '~/plugins/infinite-loading', ssr: false },
-    '@/plugins/vue-d3-network',
+    '@/plugins/vue-vis-network',
   ],
   /*element-theme-chalk
   ** Nuxt.js dev-modules
