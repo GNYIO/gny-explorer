@@ -59,33 +59,6 @@ const connection = new gnyClient.Connection(
 import { BigNumber } from 'bignumber.js';
 
 export default {
-  methods: {
-    getPeersIP: async function (ipList) {
-      let peersList = [];
-      for (const ip of ipList) {
-        // console.log({ip});
-        const connection = new gnyClient.Connection(ip, 4096, process.env['GNY_NETWORK'], false);
-        const systemInfo = (await connection.api.System.getSystemInfo());
-        const version = systemInfo.version;
-        const height = systemInfo.lastBlock.height;
-
-        peersList.push({ip, version, height});
-        console.log(`${ip}: ${JSON.stringify({ip, version, height}, null, 2)}`);
-      }
-
-      return peersList;
-    },
-
-    getPeerList: async function (ip) {
-      const connection = new gnyClient.Connection(ip, 4096, process.env['GNY_NETWORK'], false);
-      const peersWrapper = await connection.api.Peer.getPeers();
-      const ipList = peersWrapper.peers.map(peer => peer.simple.host);
-
-      const peersIPList = await this.getPeersIP(ipList);
-
-      return ipList;
-    },
-  },
 
   data() {
     return {
