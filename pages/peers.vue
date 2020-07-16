@@ -104,7 +104,10 @@ export default {
   },
 
   async mounted() {
-    await getAllPeers();
+    const result = await getAllPeers();
+    console.log(`result: ${JSON.stringify(result, null, 2)}`);
+
+    this.graphNodes.push(...result.visNodes);
 
     // try {
     //   const peersWrapper = await connection.api.Peer.getPeers();
