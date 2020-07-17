@@ -108,6 +108,7 @@ export default {
     console.log(`result: ${JSON.stringify(result, null, 2)}`);
 
     this.graphNodes.push(...result.visNodes);
+    this.links.push(...result.visEdges);
 
     // try {
     //   const peersWrapper = await connection.api.Peer.getPeers();

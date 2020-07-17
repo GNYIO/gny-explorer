@@ -18,23 +18,63 @@ export async function getNode(ip, port, network)  {
     return request.data;
 }
 
-export async function getRoot() {
-    const root = await getNode(ip, port, network);
+function isNodeAlreadyHere(node) {
+    const available = result.visNodes.filter(x => x.id === node.peersInfo.publicIp);
+    if (available == null) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
-    if (root.success) {
+function isEdgeAlreadyHere(edgeId) {
+    // debug;
+    const available = result.visEdges.filter(x => x.id === edgeId);
+    if (available == null) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function stripInfo(node) {
+    if (node.success) {
+        console.log('works');
         result.visNodes.push({
-            id: root.peersInfo.publicIp,
-            name: root.peersInfo.publicIp,
+            id: node.peersInfo.publicIp,
             _color: '#67a8af',
-            label: root.peersInfo.publicIp,
+            label: node.peersInfo.publicIp,
         });
 
-        for (let i = 0; i < root.peers.length; ++i) {
-            // result.visNodes({
-            //     id: 
-            // })
+        for (let i = 0; i < node.peers.length; ++i) {
+            const one = node.peers[i];
+            console.log('node ' + i);
+
+            console.log('works(child-node) ' + i);
+
+            result.visNodes.push({
+                id: one.simple.host,
+                _color: '#67a8af',
+                label: one.simple.host,
+            });
+
+            const edgeId = `${node.peersInfo.publicIp}-${one.simple.host}`;
+            console.log('works(child-edge) ' + i);
+
+            result.visEdges.push({
+                id: edgeId,
+                from: node.peersInfo.publicIp,
+                to: one.simple.host,
+                _color: '#acacac',
+            });
         }
+
     }
+}
+
+export async function getRoot() {
+    const root = await getNode(ip, port, network);
+    stripInfo(root);
 }
 
 
