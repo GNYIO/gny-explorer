@@ -1,7 +1,6 @@
 <template>
   <el-container direction="vertical">
-    <el-card>
-      <h2>Delegate</h2>
+    <b-card title="Delegate" class="shadow">
       <el-row>
         <el-col :span="8" >
           Username
@@ -61,7 +60,7 @@
           </p>
         </el-col>
       </el-row>
-    </el-card>
+    </b-card>
 
   </el-container>
 </template>

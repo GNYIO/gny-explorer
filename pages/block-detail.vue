@@ -1,7 +1,6 @@
 <template>
   <el-container direction="vertical">
-    <el-card>
-      <h2>Block</h2>
+    <b-card title="Block" class="shadow">
       <el-row>
         <el-col :span="8" >
           Height
@@ -37,10 +36,8 @@
           <p v-if="block.height === '0'">{{delegateID}}</p>
         </el-col>
       </el-row>
-    </el-card>
-    <el-card>
-      <h3>Transactions included in this Block</h3>
-      
+    </b-card>
+    <b-card title="Transactions included in this Block" class="shadow mt-4">
       <el-table :data="transactions" stripe style="width: 95%; margin: auto;">
         <el-table-column prop="id" align="center" label="Transaction ID" width="150">
           <template v-slot:default="table">
@@ -59,7 +56,7 @@
         </el-table-column>
         <el-table-column prop="fee" align="center" label="Fee" width="120"></el-table-column>
       </el-table>
-    </el-card>
+    </b-card>
   </el-container>
 </template>
 
