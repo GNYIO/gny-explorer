@@ -19,8 +19,9 @@ export async function getNode(ip, port, network)  {
 }
 
 function isNodeAlreadyHere(node) {
-    const available = result.visNodes.filter(x => x.id === node.peersInfo.publicIp);
-    if (available == null) {
+    console.log(`isNodeAlreadyHere() node: ${JSON.stringify(node, null, 2)}`);
+    const available = result.visNodes.find(x => x.id === node.simple.host);
+    if (available) {
         return true;
     } else {
         return false;
@@ -28,9 +29,8 @@ function isNodeAlreadyHere(node) {
 }
 
 function isEdgeAlreadyHere(edgeId) {
-    // debug;
-    const available = result.visEdges.filter(x => x.id === edgeId);
-    if (available == null) {
+    const available = result.visEdges.find(x => x.id === edgeId);
+    if (available) {
         return true;
     } else {
         return false;
@@ -40,33 +40,38 @@ function isEdgeAlreadyHere(edgeId) {
 function stripInfo(node) {
     if (node.success) {
         console.log('works');
-        result.visNodes.push({
-            id: node.peersInfo.publicIp,
-            _color: '#67a8af',
-            label: node.peersInfo.publicIp,
-        });
+        if (!isNodeAlreadyHere(node)) {
+            result.visNodes.push({
+                id: node.peersInfo.publicIp,
+                _color: '#67a8af',
+                label: node.peersInfo.publicIp,
+            });
+        }
 
         for (let i = 0; i < node.peers.length; ++i) {
             const one = node.peers[i];
             console.log('node ' + i);
 
             console.log('works(child-node) ' + i);
-
-            result.visNodes.push({
-                id: one.simple.host,
-                _color: '#67a8af',
-                label: one.simple.host,
-            });
+            if (!isNodeAlreadyHere(one)) {
+                result.visNodes.push({
+                    id: one.simple.host,
+                    _color: '#67a8af',
+                    label: one.simple.host,
+                });
+            }
 
             const edgeId = `${node.peersInfo.publicIp}-${one.simple.host}`;
             console.log('works(child-edge) ' + i);
 
-            result.visEdges.push({
-                id: edgeId,
-                from: node.peersInfo.publicIp,
-                to: one.simple.host,
-                _color: '#acacac',
-            });
+            if (!isEdgeAlreadyHere({ id: edgeId })) {
+                result.visEdges.push({
+                    id: edgeId,
+                    from: node.peersInfo.publicIp,
+                    to: one.simple.host,
+                    _color: '#acacac',
+                });
+            }
         }
 
     }
