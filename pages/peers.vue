@@ -90,6 +90,8 @@ export default {
 
         nodes: {
           shape: 'dot',
+          size: 10,
+
           scaling: {
             customScalingFunction: function (min,max,total,value) {
               return value/total;
@@ -105,7 +107,6 @@ export default {
 
   async mounted() {
     const result = await getAllPeers();
-    console.log(`result: ${JSON.stringify(result, null, 2)}`);
 
     this.graphNodes.push(...result.visNodes);
     this.links.push(...result.visEdges);
