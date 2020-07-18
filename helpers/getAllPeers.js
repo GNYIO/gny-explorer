@@ -49,6 +49,10 @@ function isEdgeAlreadyHere(edge) {
 
 function stripInfo(node) {
     if (node.success) {
+        // make the peersList
+        result.peersList.push(node);
+
+
         if (!isNodeAlreadyHere(node)) {
             result.visNodes.push({
                 id: node.peersInfo.publicIp,
@@ -69,7 +73,6 @@ function stripInfo(node) {
             }
 
             const edgeId = `${node.peersInfo.publicIp}-${one.simple.host}`;
-            // console.log(`edgeId: ${edgeId}`);
 
             if (!isEdgeAlreadyHere({ id: edgeId })) {
                 result.visEdges.push({
@@ -100,6 +103,7 @@ function changeNodeColor(ip, color) {
         node.color = color;
     }
 }
+
 
 export async function getAllPeers() {
     await getRoot();
