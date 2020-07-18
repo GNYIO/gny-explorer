@@ -116,7 +116,7 @@ export default {
 
 <style scoped>
 .el-input {
-  width: 250px;
+  width: 200px;
   margin-right: 0;
   float: right;
 }

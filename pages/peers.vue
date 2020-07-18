@@ -1,24 +1,23 @@
 <template>
   <el-container direction="vertical">
-    <el-card>
-      <h1>Connected Nodes</h1>
+
+    <b-card title="Connected Nodes" class="shadow mt-4">
       <el-table :data="allNodes" stripe style="width: 100%">
         <el-table-column prop="peersInfo.publicIp" label="IP"></el-table-column>
         <el-table-column prop="system.version" label="version" ></el-table-column>
         <el-table-column prop="system.lastBlock.height" label="height"></el-table-column>
         <el-table-column prop="system.lastBlock.behind" label="behind"></el-table-column>
       </el-table>
-    </el-card>
+    </b-card>
 
-    <el-card>
-    <!-- <d3-network :net-nodes="graphNodes" :net-links="links" :options="options">
-    </d3-network> -->
+    <b-card class="shadow mt-4">
       <network
         :nodes="graphNodes"
         :edges="links"
         :options="options">
       </network>
-    </el-card>
+    </b-card>
+
   </el-container>
 </template>
 

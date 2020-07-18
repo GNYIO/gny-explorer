@@ -1,7 +1,6 @@
 <template>
   <el-container direction="vertical">
-    <el-card>
-      <h2>Transaction</h2>
+    <b-card title="Transaction" class="shadow">
       <el-row>
         <el-col :span="8">
           Block height
@@ -178,10 +177,7 @@
           </p>
         </el-col>
       </el-row>
-
-
-
-    </el-card>
+    </b-card>
   </el-container>
 </template>
 

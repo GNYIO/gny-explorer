@@ -1,6 +1,5 @@
 <template>
-  <el-card>
-    <h2>Latest Transactions</h2>
+  <b-card title="Latest Transactions" class="shadow mt-4">
     <el-table :data="transactions" stripe style="width: 95%; margin: auto;">
       <el-table-column prop="id" align="center" label="Transaction ID">
         <template v-slot:default="table">
@@ -29,7 +28,7 @@
     <nuxt-link to="transactions">
       Explore more Transactions →
     </nuxt-link>
-  </el-card>
+  </b-card>
 </template>
 
 <script>
@@ -75,10 +74,6 @@ export default {
 </script>
 
 <style scoped>
-.el-card {
-  margin-top: 20px;
-}
-
 .el-row {
   margin-bottom: 20px;
 }

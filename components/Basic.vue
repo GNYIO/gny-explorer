@@ -1,31 +1,31 @@
 <template>
-  <el-card>
-    <h1>Basic</h1>
+  <b-card title="Basic" class="shadow">
+    <!-- <h4>Basic</h4> -->
     <el-row class="basic">
       <el-col :span="8" >
-        Blocks:
+        Blocks
         <p v-if="blocks">{{blocks}}</p>
       </el-col>
       <el-col :span="8" >
-        Transactions:
+        Transactions
         <p v-if="transactions">{{transactions}}</p>
       </el-col>
       <el-col :span="8" >
-        Delegates:
+        Delegates
         <p v-if="dalegates">{{dalegates}}</p>
       </el-col>
     </el-row>
     <el-row class="statics">
       <el-col :span="8" >
-        Accounts:
+        Accounts
         <p v-if="size">{{accounts}}</p>
       </el-col>
       <el-col :span="16" >
-        Latest block height:
+        Latest block height
         <p v-if="latestHeight">{{latestHeight}}</p>
       </el-col>
     </el-row>
-  </el-card>
+  </b-card>
 </template>
 
 <script>
