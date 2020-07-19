@@ -17,3 +17,24 @@ $ npm run start
 # generate static project
 $ npm run generate
 ```
+
+
+# Local Function Development
+
+```bash
+npm install --global netlify-cli
+
+# build functions -> functions-build
+NODE_ENV=dev netlify functions:build --src=functions --functions=functions-build
+
+
+# build the vue.js app into -> dist
+npm run generate
+
+
+# serve (the static)
+#    dist/
+#    functions-build/
+netlify dev --dir=dist --functions=functions-build
+```
+

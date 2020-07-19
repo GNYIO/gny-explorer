@@ -1,41 +1,33 @@
 <template>
   <el-container direction="vertical">
-    <b-card title="Peers" class="shadow">
-      <el-row>
-        <el-col :span="8">
-          All Nodes
-          <p>{{count}}</p>
-        </el-col>
-        <el-col :span="8">
-          System version
-          <p >
-            {{systemVersion}}
-          </p>
-        </el-col>
-        <el-col :span="8">
-          Last block height
-          <p >
-            {{height}}
-          </p>
-        </el-col>
 
-      </el-row>
-    </b-card>
     <b-card title="Connected Nodes" class="shadow mt-4">
       <el-table :data="allNodes" stripe style="width: 100%">
-        <el-table-column prop="ip" label="IP" width="300"></el-table-column>
-        <el-table-column prop="id" label="ID" ></el-table-column>
+        <el-table-column prop="peersInfo.publicIp" label="IP"></el-table-column>
+        <el-table-column prop="system.version" label="version" ></el-table-column>
+        <el-table-column prop="system.lastBlock.height" label="height"></el-table-column>
+        <el-table-column prop="system.lastBlock.behind" label="behind"></el-table-column>
       </el-table>
     </b-card>
 
     <b-card class="shadow mt-4">
-    <d3-network :net-nodes="graphNodes" :net-links="links" :options="options">
-    </d3-network>
+      <network
+        :nodes="graphNodes"
+        :edges="links"
+        :options="options">
+      </network>
     </b-card>
+
   </el-container>
 </template>
 
 <script>
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+
 import * as gnyClient from '@gny/client';
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],
@@ -44,35 +36,9 @@ const connection = new gnyClient.Connection(
   process.env['GNY_HTTPS']|| false,
 );
 import { BigNumber } from 'bignumber.js';
+import { getAllPeers } from '../helpers/getAllPeers';
 
 export default {
-  methods: {
-    getPeersIP: async function (ipList) {
-      let peersList = [];
-      for (const ip of ipList) {
-        // console.log({ip});
-        const connection = new gnyClient.Connection(ip, 4096, process.env['GNY_NETWORK'], false);
-        const systemInfo = (await connection.api.System.getSystemInfo());
-        const version = systemInfo.version;
-        const height = systemInfo.lastBlock.height;
-
-        peersList.push({ip, version, height});
-        console.log(`${ip}: ${JSON.stringify({ip, version, height}, null, 2)}`);
-      }
-
-      return peersList;
-    },
-
-    getPeerList: async function (ip) {
-      const connection = new gnyClient.Connection(ip, 4096, process.env['GNY_NETWORK'], false);
-      const peersWrapper = await connection.api.Peer.getPeers();
-      const ipList = peersWrapper.peers.map(peer => peer.simple.host);
-
-      const peersIPList = await this.getPeersIP(ipList);
-
-      return ipList;
-    },
-  },
 
   data() {
     return {
@@ -89,84 +55,43 @@ export default {
 
       // settings for peer graph
       options: {
-        force: 4000,
-        nodeSize: 20,
-        nodeLabels: true,
-        linkWidth: 3,
+        autoResize: true,
+        height: '500px',
+        width: '100%',
+
+        edges: {
+          arrows: {
+            to: {
+              enabled: true,
+            }
+          }
+        },
+
+        nodes: {
+          shape: 'dot',
+          size: 10,
+
+          scaling: {
+            customScalingFunction: function (min,max,total,value) {
+              return value/total;
+            },
+            min:5,
+            max:150
+          }
+        }
       }
 
     };
   },
 
   async mounted() {
-    try {
-      const peersWrapper = await connection.api.Peer.getPeers();
-      this.count = peersWrapper.count + 1;
+    const result = await getAllPeers();
 
-      console.log(`peersWrapper: ${JSON.stringify(peersWrapper, null, 2)}`)
+    this.graphNodes.push(...result.visNodes);
+    this.links.push(...result.visEdges);
 
-      // Peers nodes list
-      const peersList = peersWrapper.peers.map(peer => {
-        return {
-          ip: peer.simple.host,
-          id: peer.id.id,
-        }
-      });
-
-
-       // current node info
-      const systemWrapper = await connection.api.System.getSystemInfo();
-      console.log(`system: ${JSON.stringify(systemWrapper, null, 2)}`);
-
-      const versionWrapper = await connection.api.Peer.getVersion();
-      console.log(`version: ${JSON.stringify(versionWrapper, null, 2)}`);
-
-      const peersInfo = await connection.api.Peer.getInfo();
-      console.log(`peersInfo: ${JSON.stringify(peersInfo, null, 2)}`);
-      
-      this.systemVersion = systemWrapper.version;
-
-      // latest block
-      this.height = systemWrapper.lastBlock.height;
-
-      this.allNodes = this.allNodes.concat(peersList);
-
-      // push current node to the end
-      this.allNodes.push({
-        ip: peersInfo.publicIp,
-        id: peersInfo.id,
-      });
-
-      // Peer Graph
-      // set id = 1 to current node
-      this.graphNodes.push({
-        id: 1,
-        name: peersInfo.publicIp,
-        _color: '#67a8af'
-      });
-
-      // set peer nodes id from 2 and links to current node (id = 1)
-      for (const [i, peer] of peersList.entries()) {
-        this.graphNodes.push({
-          id: i+2,
-          name: peer.ip,
-          _color: '#67a8af'
-        });
-        this.links.push(
-          {
-            sid: 1,
-            tid: i+2,
-            _color: '#acacac',
-          }
-        )
-      }
-      
-      console.log(JSON.stringify(this.graphNodes, null, 2));
-      console.log(JSON.stringify(this.links, null, 2));
-      
-    } catch (err) {
-      console.log(err.message);
-    }
+    console.log(`length of result.peersList ${result.peersList.length}`);
+    this.allNodes.push(...result.peersList);
   }
 }
 </script>

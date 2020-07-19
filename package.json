@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon server/index.js --watch server",
     "build": "nuxt build",
+    "build:functions": "netlify-lambda build functions",
     "start": "cross-env NODE_ENV=production node server/index.js",
     "generate": "nuxt generate --spa"
   },
@@ -17,24 +18,32 @@
     "@nuxtjs/axios": "^5.3.6",
     "@nuxtjs/dotenv": "^1.4.0",
     "bignumber.js": "^8.1.1",
+    "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
     "bootstrap-vue": "^2.15.0",
     "cors": "^2.8.5",
     "cross-env": "^5.2.0",
     "element-theme-chalk": "^2.13.0",
     "element-ui": "^2.4.11",
-    "express": "^4.16.4",
+    "express": "^4.17.1",
+    "got": "^11.5.0",
     "moment": "^2.24.0",
     "net": "^1.0.2",
     "nuxt": "^2.12.0",
     "nuxt-clipboard2": "^0.2.1",
-    "vue-d3-network": "^0.1.28",
-    "vue-infinite-loading": "^2.4.5"
+    "serverless-http": "^1.10.1",
+    "vis-data": "^6.6.1",
+    "vis-network": "^7.10.0",
+    "vis-util": "^4.3.2",
+    "vue-infinite-loading": "^2.4.5",
+    "vue-vis-network": "^1.0.2"
   },
   "devDependencies": {
     "@aceforth/nuxt-netlify": "^1.0.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-prettier": "^3.1.2",
+    "netlify-lambda": "^1.6.3",
     "nodemon": "^2.0.2",
     "prettier": "^1.19.1"
   }
