@@ -24,6 +24,7 @@
           slot="append"
           @infinite="infiniteHandler"
           force-use-infinite-wrapper=".el-table__body-wrapper">
+          <div slot="no-more"></div>
         </infinite-loading>
 
       </el-table>
