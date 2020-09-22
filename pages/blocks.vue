@@ -18,8 +18,8 @@
         </el-table-column>
         <el-table-column prop="timestamp" align="center" label="Forged Time" width="160" :formatter="timestamp2date"></el-table-column>
         <el-table-column prop="count" align="center" label="Transactions" width="110"></el-table-column>
-        <el-table-column prop="fees" align="center" label="Fees" width="130"></el-table-column>
-        <el-table-column prop="reward" align="center" label="Reward" width="100"></el-table-column>
+        <el-table-column prop="fees" align="center" label="Fees" width="130" :formatter="formatFees"></el-table-column>
+        <el-table-column prop="reward" align="center" label="Reward" width="100" :formatter="formatReward"> </el-table-column>
         <el-table-column prop="delegate" align="center" label="Delegate" width="150">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'delegate-detail', query: { publicKey: table.row.delegate }}">
@@ -44,6 +44,8 @@
 import moment from 'moment';
 import * as gnyClient from '@gny/client';
 import { slots } from '@gny/utils';
+import { BigNumber } from 'bignumber.js';
+
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],
   Number(process.env['GNY_PORT']),
@@ -70,6 +72,14 @@ export default {
 
     timestamp2date: function (row, column) {
       return moment(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD hh:mm:ss');
+    },
+
+    formatReward: function (row, column) {
+      return new BigNumber(row.reward).dividedBy(1e8).toFixed();
+    },
+
+    formatFees: function (row, column) {
+      return new BigNumber(row.fees).dividedBy(1e8).toFixed();
     },
 
     infiniteHandler: function ($state) {
