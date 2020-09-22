@@ -62,6 +62,7 @@
             prop="rewards"
             label="Rewards"
             width="140"
+            :formatter="formatRewards"
           ></el-table-column>
           <el-table-column
             prop="productivity"
@@ -88,6 +89,10 @@ export default {
     handleCurrentChange: function(row) {
       console.log(row.username);
       this.$router.push({name: 'delegate-detail', query: { username: row.username }});
+    },
+
+    formatRewards: function (row, column) {
+      return new BigNumber(row.rewards).dividedBy(1e8).toFixed();
     },
   },
   data() {
