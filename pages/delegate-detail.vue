@@ -31,7 +31,7 @@
         </el-col>
         <el-col :span="8" >
           Rewards
-          <p >{{delegate.rewards}} GNY</p>
+          <p >{{rewards}} GNY</p>
         </el-col>
       </el-row>
 
@@ -67,6 +67,8 @@
 
 <script>
 import * as gnyClient from '@gny/client';
+import BigNumber from 'bignumber.js';
+
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],
   Number(process.env['GNY_PORT']),
@@ -92,6 +94,7 @@ export default {
       delegate: {},
       publicKey: '',
       trs: '',
+      rewards: '',
     }
   },
 
@@ -117,6 +120,7 @@ export default {
       this.delegate = delegate;
       this.publicKey = delegate.publicKey.slice(0, 8);
       this.trs = delegate.tid.slice(0, 8);
+      this.rewards = new BigNumber(delegate.rewards).dividedBy(1e8).toFixed();
       } catch (error) {
         console.log(`error(delegate-detail): ${JSON.stringify(error && error.response && error.response.data, null, 2)}`);
         error({ statusCode: 404, message: 'Oops...' })
