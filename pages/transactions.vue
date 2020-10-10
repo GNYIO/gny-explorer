@@ -24,7 +24,7 @@
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="fee" label="Fee"></el-table-column>
+        <el-table-column prop="fee" label="Fee" :formatter="formatFee"></el-table-column>
 
         <infinite-loading
           slot="append"
@@ -63,6 +63,10 @@ export default {
 
     timestamp2date: function (row, column) {
       return moment(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD hh:mm:ss');
+    },
+
+    formatFee: function (row, column) {
+      return new BigNumber(row.fee).dividedBy(1e8).toFixed();
     },
 
     infiniteHandler: function ($state) {
