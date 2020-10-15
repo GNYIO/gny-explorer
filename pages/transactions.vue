@@ -40,6 +40,7 @@
 
 
 <script>
+import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import * as gnyClient from '@gny/client';
 import { slots } from '@gny/utils';
