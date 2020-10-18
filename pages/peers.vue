@@ -2,7 +2,7 @@
   <el-container direction="vertical">
 
     <b-card title="Connected Nodes" class="shadow mt-4">
-      <el-table :data="allNodes" stripe style="width: 100%">
+      <el-table :data="allNodes" stripe style="width: 100%" v-loading="loading">
         <el-table-column prop="peersInfo.publicIp" label="IP"></el-table-column>
         <el-table-column prop="system.version" label="version" ></el-table-column>
         <el-table-column prop="system.lastBlock.height" label="height"></el-table-column>
@@ -78,7 +78,9 @@ export default {
             min:5,
             max:150
           }
-        }
+        },
+
+        loading: true
       }
 
     };
@@ -92,6 +94,9 @@ export default {
 
     console.log(`length of result.peersList ${result.peersList.length}`);
     this.allNodes.push(...result.peersList);
+    if (this.allNodes.length > 0) {
+      this.loading = false;
+    }
   }
 }
 </script>

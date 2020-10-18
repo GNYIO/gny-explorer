@@ -51,7 +51,7 @@
 
     </b-card>
     <b-card class="shadow mt-4">
-      <el-table :data="allDelegates" stripe style="width: 100%">
+      <el-table :data="allDelegates" stripe style="width: 100%" v-loading="loading">
           <el-table-column prop="rate" label="Rank" width="100"></el-table-column>
           <el-table-column
             prop="username"
@@ -116,6 +116,7 @@ export default {
 
       highestApproval: '',
       highestApprovalDelegate: '',
+      loading: true,
     };
   },
   async mounted() {
@@ -174,6 +175,9 @@ export default {
         this.mostProducedBlocks = mostProducedBlocks.producedBlocks;
         this.mostProducedBlocksDelegate = mostProducedBlocks.username;
 
+        if (this.allDelegates.length > 0) {
+          this.loading = false;
+        }
       } else {
         this.allDelegates = [];
       }
