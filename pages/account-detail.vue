@@ -8,6 +8,8 @@
         </el-col>
         <el-col :span="7">
           GNY Balance
+          <br v-if="balance === ''">
+          <i v-if="balance === ''"  class="el-icon-loading"></i>
           <p >{{balance}}</p>
         </el-col>
         <el-col :span="7">
