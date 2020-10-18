@@ -1,6 +1,6 @@
 <template>
   <b-card title="Latest Transactions" class="shadow mt-4">
-    <el-table :data="transactions" stripe style="width: 95%; margin: auto;">
+    <el-table :data="transactions" stripe style="width: 95%; margin: auto;" v-loading="loading">
       <el-table-column prop="id" align="center" label="Transaction ID">
         <template v-slot:default="table">
           <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: table.row.id }}">
@@ -55,6 +55,7 @@ export default {
   data() {
     return {
       transactions: null,
+      loading: true,
     }
   },
 
@@ -69,6 +70,9 @@ export default {
     })).transactions;
 
     this.transactions = result;
+    if (this.transactions.length > 0) {
+      this.loading = false;
+    }
   },
 }
 </script>

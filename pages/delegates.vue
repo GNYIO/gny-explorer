@@ -9,14 +9,14 @@
             <el-col :span="8">
               Most Produced Blocks
               <p v-if="mostProducedBlocks">{{mostProducedBlocks}}</p>
-              <br v-if="mostProducedBlocks == ''">
-              <i v-if="mostProducedBlocks == ''"  class="el-icon-loading"></i>
+              <br v-if="mostProducedBlocks === ''">
+              <i v-if="mostProducedBlocks === ''"  class="el-icon-loading"></i>
               
             </el-col>
             <el-col :span="8">
                 Highest Approval
-                <br v-if="highestApproval == ''">
-                <i v-if="highestApproval == ''"  class="el-icon-loading"></i>
+                <br v-if="highestApproval === ''">
+                <i v-if="highestApproval === ''"  class="el-icon-loading"></i>
                 <p>{{highestApproval}}</p>
             </el-col>
         </el-row>
@@ -27,8 +27,8 @@
             </el-col>
             <el-col :span="8">
                 Most Produced Blocks Delegate
-                <br v-if="mostProducedBlocksDelegate == ''">
-                <i v-if="mostProducedBlocksDelegate == ''"  class="el-icon-loading"></i>
+                <br v-if="mostProducedBlocksDelegate === ''">
+                <i v-if="mostProducedBlocksDelegate === ''"  class="el-icon-loading"></i>
                 <p>
                   <nuxt-link class="nuxt-link" :to="{ name: 'delegate-detail', query: { username: mostProducedBlocksDelegate }}">
                   {{mostProducedBlocksDelegate}}
@@ -38,8 +38,8 @@
             </el-col>
             <el-col :span="8">
                 Highest Approval Name
-                <br v-if="highestApprovalDelegate == ''">
-                <i v-if="highestApprovalDelegate == ''"  class="el-icon-loading"></i>
+                <br v-if="highestApprovalDelegate === ''">
+                <i v-if="highestApprovalDelegate === ''"  class="el-icon-loading"></i>
                 <p>
                    <nuxt-link class="nuxt-link" :to="{ name: 'delegate-detail', query: { username: highestApprovalDelegate }}">
                     {{highestApprovalDelegate}}
