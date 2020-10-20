@@ -4,24 +4,34 @@
     <el-row class="basic">
       <el-col :span="8" >
         Blocks
+        <br v-if="blocks === ''">
+        <i v-if="blocks === ''"  class="el-icon-loading"></i>
         <p v-if="blocks">{{blocks}}</p>
       </el-col>
       <el-col :span="8" >
         Transactions
+        <br v-if="transactions === ''">
+        <i v-if="transactions === ''"  class="el-icon-loading"></i>
         <p v-if="transactions">{{transactions}}</p>
       </el-col>
       <el-col :span="8" >
         Delegates
+        <br v-if="dalegates === ''">
+        <i v-if="dalegates === ''"  class="el-icon-loading"></i>
         <p v-if="dalegates">{{dalegates}}</p>
       </el-col>
     </el-row>
     <el-row class="statics">
       <el-col :span="8" >
         Accounts
+        <br v-if="accounts === ''">
+        <i v-if="accounts === ''"  class="el-icon-loading"></i>
         <p v-if="size">{{accounts}}</p>
       </el-col>
       <el-col :span="16" >
         Latest block height
+        <br v-if="latestHeight === ''">
+        <i v-if="latestHeight === ''"  class="el-icon-loading"></i>
         <p v-if="latestHeight">{{latestHeight}}</p>
       </el-col>
     </el-row>

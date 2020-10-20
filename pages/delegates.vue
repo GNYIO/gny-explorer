@@ -8,11 +8,16 @@
             </el-col>
             <el-col :span="8">
               Most Produced Blocks
-              <p>{{mostProducedBlocks}}</p>
+              <p v-if="mostProducedBlocks">{{mostProducedBlocks}}</p>
+              <br v-if="mostProducedBlocks === ''">
+              <i v-if="mostProducedBlocks === ''"  class="el-icon-loading"></i>
+              
             </el-col>
             <el-col :span="8">
                 Highest Approval
-                <p>{{highestApproval}} %</p>
+                <br v-if="highestApproval === ''">
+                <i v-if="highestApproval === ''"  class="el-icon-loading"></i>
+                <p>{{highestApproval}}</p>
             </el-col>
         </el-row>
         <el-row>
@@ -22,25 +27,31 @@
             </el-col>
             <el-col :span="8">
                 Most Produced Blocks Delegate
+                <br v-if="mostProducedBlocksDelegate === ''">
+                <i v-if="mostProducedBlocksDelegate === ''"  class="el-icon-loading"></i>
                 <p>
                   <nuxt-link class="nuxt-link" :to="{ name: 'delegate-detail', query: { username: mostProducedBlocksDelegate }}">
                   {{mostProducedBlocksDelegate}}
                   </nuxt-link>
                 </p>
+                
             </el-col>
             <el-col :span="8">
                 Highest Approval Name
+                <br v-if="highestApprovalDelegate === ''">
+                <i v-if="highestApprovalDelegate === ''"  class="el-icon-loading"></i>
                 <p>
                    <nuxt-link class="nuxt-link" :to="{ name: 'delegate-detail', query: { username: highestApprovalDelegate }}">
                     {{highestApprovalDelegate}}
                    </nuxt-link>
                 </p>
+                
             </el-col>
         </el-row>
 
     </b-card>
     <b-card class="shadow mt-4">
-      <el-table :data="allDelegates" stripe style="width: 100%">
+      <el-table :data="allDelegates" stripe style="width: 100%" v-loading="loading">
           <el-table-column prop="rate" label="Rank" width="100"></el-table-column>
           <el-table-column
             prop="username"
@@ -105,6 +116,7 @@ export default {
 
       highestApproval: '',
       highestApprovalDelegate: '',
+      loading: true,
     };
   },
   async mounted() {
@@ -140,7 +152,7 @@ export default {
             return 0;
         })[0];
 
-        this.highestApproval = highestApproval.approval;
+        this.highestApproval = highestApproval.approval + ' %';
         this.highestApprovalDelegate = highestApproval.username;
 
 
@@ -163,6 +175,9 @@ export default {
         this.mostProducedBlocks = mostProducedBlocks.producedBlocks;
         this.mostProducedBlocksDelegate = mostProducedBlocks.username;
 
+        if (this.allDelegates.length > 0) {
+          this.loading = false;
+        }
       } else {
         this.allDelegates = [];
       }

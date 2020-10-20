@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <b-card title="Blocks" class="shadow">
-      <el-table :data="blocks" stripe style="width: 100%; margin: auto;" height="500">
+      <el-table :data="blocks" stripe style="width: 100%; margin: auto;" height="500" v-loading="loading">
         <el-table-column prop="height" align="center" label="Height" width="80">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
@@ -58,6 +58,7 @@ export default {
     return {
       blocks: [],
       loaded: 0,
+      loading: true,
     }
   },
 
@@ -105,6 +106,9 @@ export default {
 
     this.blocks = (await connection.api.Block.getBlocks(offset, limit, orderBy)).blocks;
     this.loaded = limit;
+    if (this.blocks.length > 0) {
+      this.loading = false;
+    }
   },
 }
 </script>

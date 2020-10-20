@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <b-card title="Assets" class="shadow">
-      <el-table :data="assets" stripe style="width: 100%; margin: auto;" height="500">
+      <el-table :data="assets" stripe style="width: 100%; margin: auto;" height="500" v-loading="loading">
         <el-table-column prop="name" align="center" label="Name" width="110">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'asset-detail', query: { assetName: table.row.name }}">
@@ -49,6 +49,7 @@ export default {
     return {
       assets: [],
       loaded: 0,
+      loading: true,
     }
   },
 
@@ -114,6 +115,10 @@ export default {
 
     this.assets = result;
     this.loaded = 10;
+
+    if (this.assets.length > 0) {
+      this.loading = false;
+    }
   },
 }
 </script>
