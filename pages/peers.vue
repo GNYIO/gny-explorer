@@ -79,10 +79,8 @@ export default {
             max:150
           }
         },
-
-        loading: true
-      }
-
+      },
+      loading: true
     };
   },
 
