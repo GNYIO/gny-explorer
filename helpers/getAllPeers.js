@@ -3,6 +3,7 @@ import axios from 'axios';
 const ip = process.env['GNY_ENDPOINT'];
 const port = Number(process.env['GNY_PORT']);
 const network = process.env['GNY_NETWORK'];
+const https = JSON.parse(process.env['GNY_HTTPS'] || false);
 
 const result = {
     visNodes: [],
@@ -11,7 +12,7 @@ const result = {
 };
 
 export async function getNode(ip, port, network) {
-    const url = `.netlify/functions/serverless-http?ip=${ip}&port=${port}&networkType=${network}`;
+    const url = `.netlify/functions/serverless-http?ip=${ip}&port=${port}&networkType=${network}&https=${https}`;
     console.log(`getNode() url: ${url}`);
     const request = await axios.get(url);
 
@@ -98,12 +99,12 @@ function stripInfo(node) {
 }
 
 export async function getRoot() {
-    const root = await getNode(ip, port, network);
+    const root = await getNode(ip, port, network, https);
     stripInfo(root);
 
     for (let i = 0; i < root.peers.length; ++i) {
         const one = root.peers[i];
-        const request = await getNode(one.simple.host, Number(one.simple.port) -1, network);
+        const request = await getNode(one.simple.host, Number(one.simple.port) -1, network, false);
         stripInfo(request);
     }
 }

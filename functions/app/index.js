@@ -23,24 +23,33 @@ export default function expressApp(functionName) {
         const ip = req.query.ip;
         const port = req.query.port;
         const networkType = req.query.networkType;
+        const https = req.query.https;
 
-        if (ip === undefined || port === undefined || networkType === undefined) {
+        if (ip === undefined || port === undefined || networkType === undefined || https === undefined) {
             res.json({
               success: false,
-              error: 'query parameter ip, port or networkType are undefined',
+              error: 'query parameter ip, port, networkType or https are undefined',
             });
             return;
         }
 
-        // test connection timeout
-        const url = `http://${ip}:${port}/api/system`;
-        console.log(`url: ${url}`);
-        await got(url, {
-            timeout: {
-                connect: 500,
-                lookup: 500,
-            }
-        });
+        try {
+            // test connection timeout
+            const url = `${https === true ? 'https' : 'http'}://${ip}${port === 80 ? '' : ':' + port}/api/system`;
+            console.log(`url: ${url}`);
+            await got(url, {
+                timeout: {
+                    connect: 500,
+                    lookup: 500,
+                }
+            });
+        } catch (err) {
+            console.log('failed to test connection timeout');
+            return res.json({
+                success: false,
+                error: err.message,
+            });
+        } 
 
         console.log(`ip: ${ip}, port: ${port}, networkType: ${networkType}`);
 
