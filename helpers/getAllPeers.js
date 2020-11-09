@@ -47,11 +47,22 @@ function isEdgeAlreadyHere(edge) {
     }
 }
 
+function isAlreadyInPeersList(node) {
+    const one = result.peersList.find(x => x.peersInfo.publicIp === node.peersInfo.publicIp);
+    if (one === undefined) {
+        false;
+    } else {
+        return true;
+    }
+}
+
 function stripInfo(node) {
     if (node.success) {
-        // make the peersList
-        result.peersList.push(node);
 
+        if (!isAlreadyInPeersList(node)) {
+            // make the peersList
+            result.peersList.push(node);
+        }
 
         if (!isNodeAlreadyHere(node)) {
             result.visNodes.push({

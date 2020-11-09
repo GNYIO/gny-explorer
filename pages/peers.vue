@@ -33,7 +33,7 @@ const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],
   Number(process.env['GNY_PORT']),
   process.env['GNY_NETWORK'],
-  process.env['GNY_HTTPS']|| false,
+  JSON.parse(process.env['GNY_HTTPS'] || false),
 );
 import { BigNumber } from 'bignumber.js';
 import { getAllPeers } from '../helpers/getAllPeers';
@@ -79,10 +79,8 @@ export default {
             max:150
           }
         },
-
-        loading: true
-      }
-
+      },
+      loading: true
     };
   },
 
