@@ -23,7 +23,7 @@ export default function expressApp(functionName) {
         const ip = req.query.ip;
         const port = req.query.port;
         const networkType = req.query.networkType;
-        const https = req.query.https;
+        const https = JSON.parse(req.query.https);
 
         if (ip === undefined || port === undefined || networkType === undefined || https === undefined) {
             res.json({
@@ -51,13 +51,13 @@ export default function expressApp(functionName) {
             });
         } 
 
-        console.log(`ip: ${ip}, port: ${port}, networkType: ${networkType}`);
+        console.log(`ip: ${ip}, port: ${port}, networkType: ${networkType}, https: ${https}`);
 
         const conn = new Connection(
             ip,
             port,
             networkType,
-            false
+            https
         );
 
         const system = await conn.api.System.getSystemInfo();

@@ -1,4 +1,3 @@
-import axios from 'axios';
 
 const ip = process.env['GNY_ENDPOINT'];
 const port = Number(process.env['GNY_PORT']);
@@ -11,7 +10,7 @@ const result = {
     peersList: [],
 };
 
-export async function getNode(ip, port, network) {
+export async function getNode(axios, ip, port, network) {
     const url = `.netlify/functions/serverless-http?ip=${ip}&port=${port}&networkType=${network}&https=${https}`;
     console.log(`getNode() url: ${url}`);
     const request = await axios.get(url);
@@ -98,13 +97,13 @@ function stripInfo(node) {
     }
 }
 
-export async function getRoot() {
-    const root = await getNode(ip, port, network, https);
+export async function getRoot(axios) {
+    const root = await getNode(axios, ip, port, network, https);
     stripInfo(root);
 
     for (let i = 0; i < root.peers.length; ++i) {
         const one = root.peers[i];
-        const request = await getNode(one.simple.host, Number(one.simple.port) -1, network, false);
+        const request = await getNode(axios, one.simple.host, Number(one.simple.port) -1, network, false);
         stripInfo(request);
     }
 }
@@ -117,8 +116,8 @@ function changeNodeColor(ip, color) {
 }
 
 
-export async function getAllPeers() {
-    await getRoot();
+export async function getAllPeers(axios) {
+    await getRoot(axios);
 
     changeNodeColor(ip, 'lawngreen');
 
