@@ -85,7 +85,8 @@ export default {
   },
 
   async mounted() {
-    const result = await getAllPeers();
+
+    const result = await getAllPeers(this.$axios);
 
     this.graphNodes.push(...result.visNodes);
     this.links.push(...result.visEdges);
