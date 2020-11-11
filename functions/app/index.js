@@ -21,7 +21,7 @@ export default function expressApp(functionName) {
   router.get('/', async (req, res) => {
     try {
         const ip = req.query.ip;
-        const port = req.query.port;
+        const port = Number(req.query.port);
         const networkType = req.query.networkType;
         const https = JSON.parse(req.query.https);
 
@@ -35,7 +35,7 @@ export default function expressApp(functionName) {
 
         try {
             // test connection timeout
-            const url = `${https === true ? 'https' : 'http'}://${ip}${port === 80 ? '' : ':' + port}/api/system`;
+            const url = `${https === true ? 'https' : 'http'}://${ip}${port == 80 ? '' : ':' + port}/api/system`;
             console.log(`url: ${url}`);
             await got(url, {
                 timeout: {
