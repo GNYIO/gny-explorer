@@ -177,6 +177,15 @@
           </p>
         </el-col>
       </el-row>
+
+      <el-row v-if="!!message">
+        <el-col :span="8">
+          Message
+          <el-tooltip class="item" effect="light" :content="message" placement="bottom">
+            <p>{{message | truncate(25)}}</p> 
+          </el-tooltip>
+        </el-col>
+      </el-row>
     </b-card>
   </el-container>
 </template>
@@ -225,6 +234,7 @@ export default {
       currency: '',
       recipientId: '',
       secondPublicKey: '',
+      message: '',
     }
   },
 
@@ -253,6 +263,8 @@ export default {
       this.date = moment(slots.getRealTime(this.transaction.timestamp)).format('YYYY-MM-DD hh:mm:ss');
 
       this.args = JSON.parse(this.transaction.args);
+      this.message = this.transaction.message;
+      console.log(this.message);
 
       switch (this.transaction.type) {
         case 0:
