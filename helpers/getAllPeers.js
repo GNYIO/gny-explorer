@@ -10,7 +10,7 @@ const result = {
     peersList: [],
 };
 
-export async function getNode(axios, ip, port, network) {
+export async function getNode(axios, ip, port, network, https) {
     const url = `.netlify/functions/serverless-http?ip=${ip}&port=${port}&networkType=${network}&https=${https}`;
     console.log(`getNode() url: ${url}`);
     const request = await axios.get(url);
