@@ -302,8 +302,8 @@ export default {
           this.currency = this.args[0];
 
           const username = (await connection.api.Account.getAccountByAddress(this.transaction.senderId)).account.username;
-          const name = this.username + '.' + this.currency;
-          const precisionRaw = (await connection.api.Uia.getAsset(name)).precision;
+          const name = this.currency;
+          const precisionRaw = (await connection.api.Uia.getAsset(name)).asset.precision;
           const precision = Math.pow(10, precisionRaw);
 
           this.amount = new BigNumber(this.args[1]).dividedBy(precision).toFixed();
