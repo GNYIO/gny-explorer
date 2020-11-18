@@ -37,15 +37,102 @@
           Left to Issue
           <p>{{asset.leftToIssuePretty}}</p>
         </el-col>
-        <el-col :span="6" >
+        <el-col :span="6">
           TransactionId
           <p>
             <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: asset.tid }}">
               {{assetTid}}
             </nuxt-link>
           </p>
-        </el-col> 
+        </el-col>
       </el-row>
+    </b-card>
+
+    <b-card title="Issuer Transaction" class="shadow mt-4">
+
+      <el-table :data="issuerTransactions" stripe style="width: 100%; margin: auto;"  v-loading="issuerLoading">
+        <el-table-column prop="id" align="center" width="200" label="Transaction ID">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: table.row.id }}" tag="span">
+              {{table.row.id.slice(0,8)}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+        <el-table-column prop="height" align="center" label="Block Height" width="120">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
+              {{table.row.height}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+        <el-table-column prop="timestamp" align="center" label="Forged Time" width="200" :formatter="timestamp2date"></el-table-column>
+        <el-table-column prop="senderId" align="center" label="Sender" width="200" :formatter="subSenderId">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.senderId }}" tag="span">
+              {{table.row.senderId.slice(0,8)}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+        <el-table-column prop="fee" label="Fee" :formatter="formatFee"></el-table-column>
+      </el-table>
+    </b-card>
+
+    <b-card title="Asset Transaction" class="shadow mt-4">
+
+      <el-table :data="assetTransactions" stripe style="width: 100%; margin: auto;"  v-loading="assetLoading">
+        <el-table-column prop="id" align="center" width="200" label="Transaction ID">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: table.row.id }}" tag="span">
+              {{table.row.id.slice(0,8)}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+        <el-table-column prop="height" align="center" label="Block Height" width="120">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
+              {{table.row.height}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+        <el-table-column prop="timestamp" align="center" label="Forged Time" width="200" :formatter="timestamp2date"></el-table-column>
+        <el-table-column prop="senderId" align="center" label="Sender" width="200" :formatter="subSenderId">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.senderId }}" tag="span">
+              {{table.row.senderId.slice(0,8)}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+        <el-table-column prop="fee" label="Fee" :formatter="formatFee"></el-table-column>
+      </el-table>
+    </b-card>
+
+    <b-card title="Issue Transactions" class="shadow mt-4">
+
+      <el-table :data="issueTransactions" stripe style="width: 100%; margin: auto;"  v-loading="issueLoading">
+        <el-table-column prop="id" align="center" width="200" label="Transaction ID">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: table.row.id }}" tag="span">
+              {{table.row.id.slice(0,8)}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+        <el-table-column prop="height" align="center" label="Block Height" width="120">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
+              {{table.row.height}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+        <el-table-column prop="timestamp" align="center" label="Forged Time" width="200" :formatter="timestamp2date"></el-table-column>
+        <el-table-column prop="senderId" align="center" label="Sender" width="200" :formatter="subSenderId">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.senderId }}" tag="span">
+              {{table.row.senderId.slice(0,8)}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+        <el-table-column prop="fee" label="Fee" :formatter="formatFee"></el-table-column>
+      </el-table>
     </b-card>
 
   </el-container>
@@ -78,10 +165,33 @@ export default {
       assetIssuerId: '',
       assetTid: '',
       issuer: {},
+      issuerTransactions: [],
+      assetTransactions: [],
+      issueTransactions: [],
+      issuerLoading: true,
+      assetLoading: true,
+      issueLoading: true,
     }
   },
 
   methods: {
+    rowClick: function(row) {
+      console.log(row.id);
+      this.$router.push({name: 'transaction-detail', query: { id: row.id }});
+    },
+
+    subSenderId: function (row, column) {
+      return row.senderId.slice(0,8);
+    },
+
+    timestamp2date: function (row, column) {
+      return moment(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD hh:mm:ss');
+    },
+
+    formatFee: function (row, column) {
+      return new BigNumber(row.fee).dividedBy(1e8).toFixed();
+    },
+
     makeAssetPretty: function(asset) {
       const prec = Math.pow(10, asset.precision);
       const difference = new BigNumber(asset.maximum)
@@ -118,12 +228,31 @@ export default {
       const issuerName = result.name.split('.')[0];
       const issuer = (await connection.api.Uia.getIssuer(issuerName)).issuer;
       this.issuer = issuer;
+
+      this.issuerTransactions = (await connection.api.Transaction.getTransactions({senderId: result.issuerId, type: 100})).transactions;
+      
+      if (this.issuerTransactions.length > 0) {
+      this.issuerLoading = false;
+      }
+
+      this.assetTransactions = (await connection.api.Transaction.getTransactions({senderId: result.issuerId, type: 101})).transactions;
+      
+      if (this.assetTransactions.length > 0) {
+      this.assetLoading = false;
+      }
+
+      this.issueTransactions = (await connection.api.Transaction.getTransactions({senderId: result.issuerId, type: 102})).transactions;
+      
+      if (this.issueTransactions.length > 0) {
+        this.issueLoading = false;
+      }
+
     } catch (error) {
       console.log(error.message);
       error({ statusCode: 404, message: 'Oops...' })
     }
 
-    }
+    },
   },
 
   async mounted() {
