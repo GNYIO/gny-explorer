@@ -135,6 +135,35 @@
       </el-table>
     </b-card>
 
+    <b-card title="Transfers" class="shadow mt-4">
+
+      <el-table :data="transfers" stripe style="width: 100%; margin: auto;"  v-loading="transferLoading">
+        <el-table-column prop="id" align="center" width="200" label="Transaction ID">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: table.row.id }}" tag="span">
+              {{table.row.id.slice(0,8)}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+        <el-table-column prop="height" align="center" label="Block Height" width="120">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
+              {{table.row.height}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+        <el-table-column prop="timestamp" align="center" label="Forged Time" width="200" :formatter="timestamp2date"></el-table-column>
+        <el-table-column prop="senderId" align="center" label="Sender" width="200" :formatter="subSenderId">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.senderId }}" tag="span">
+              {{table.row.senderId.slice(0,8)}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+        <el-table-column prop="fee" label="Fee" :formatter="formatFee"></el-table-column>
+      </el-table>
+    </b-card>
+
   </el-container>
 </template>
 
@@ -168,9 +197,11 @@ export default {
       issuerTransactions: [],
       assetTransactions: [],
       issueTransactions: [],
+      transfers: [],
       issuerLoading: true,
       assetLoading: true,
       issueLoading: true,
+      transferLoading: true,
     }
   },
 
@@ -245,6 +276,18 @@ export default {
       
       if (this.issueTransactions.length > 0) {
         this.issueLoading = false;
+      }
+
+      const allTransfers = (await connection.api.Transaction.getTransactions({type: 103})).transactions;
+
+      console.log({allTransfers});
+      this.transfers = allTransfers.filter(function(transfer) {
+        console.log(transfer.args[0]);
+        return JSON.parse(transfer.args)[0] === result.name;
+      })
+      
+      if (this.transfers.length > 0) {
+        this.transferLoading = false;
       }
 
     } catch (error) {
