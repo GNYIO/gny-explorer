@@ -87,11 +87,11 @@ export default {
       setTimeout(async () => {
         const limit = 50;
         const offset = this.loaded;
-        const orderBy = 'height:desc'
-        const newBlocks = (await connection.api.Block.getBlocks(offset, limit, orderBy)).blocks
+        const orderBy = 'height:desc';
+        const newBlocks = (await connection.api.Block.getBlocks(offset, limit, orderBy)).blocks;
         this.blocks.push(...newBlocks);
         this.loaded += limit;
-        $state.loaded()
+        $state.loaded();
         if (newBlocks.length === 0) {
           $state.complete();
         }
