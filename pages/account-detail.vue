@@ -35,7 +35,13 @@
     <!-- v-if="balances.length > 0" -->
     <b-card title="Assets" class="shadow mt-4">
       <el-table class="clickable-rows" :data="balances" stripe style="width: 95%;">
-        <el-table-column prop="currency" align="center" label="Currency" ></el-table-column>
+        <el-table-column prop="currency" align="center" label="Currency" >
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{name: 'asset-detail', query: { assetName: table.row.currency }}" tag="span">
+              {{table.row.currency}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
         <el-table-column prop="balance" align="center" label="Balance" width="300"></el-table-column>
         <el-table-column prop="flag" align="center" label="Flag" width="300"></el-table-column>
       </el-table>
