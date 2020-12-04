@@ -65,14 +65,6 @@
         </el-table-column>
         <el-table-column prop="timestamp" align="center" label="Forged Time" width="200" :formatter="timestamp2date"></el-table-column>
         <el-table-column prop="senderId" align="center" label="Sender" width="200" :formatter="subSenderId"></el-table-column>
-        
-        <infinite-loading
-          slot="append"
-          @infinite="infiniteHandler"
-          force-use-infinite-wrapper=".el-table__body-wrapper">
-          <div slot="no-more"></div>
-        </infinite-loading>
-
       </el-table>
     </b-card>
 
@@ -131,27 +123,6 @@ export default {
       return moment(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD hh:mm:ss');
     },
 
-    infiniteHandler: function ($state) {
-      setTimeout(async () => {
-        const limit = 5;
-        const offset = this.loaded;
-        const senderId = this.account.address;
-        const query = {
-          limit,
-          offset,
-          senderId,
-        }
-
-        const newTransactions = (await connection.api.Transaction.getTransactions(query)).transactions;
-        this.transactions.push(...newTransactions);
-        this.loaded += limit;
-        $state.loaded();
-        if (newTransactions.length === 0) {
-          $state.complete();
-        }
-      }, 100);
-    },
-
     updatePage: async function (username, address) {
       try {
         let account = null;
@@ -176,18 +147,13 @@ export default {
           this.publicKey = account.publicKey.slice(0, 8);
         }
 
-        const limit = 5;
-        const offset = 0;
         const senderId = account.address;
 
         const query = {
-          limit,
-          offset,
           senderId,
         }
 
-        this.transactions = (await connection.api.Transaction.getTransactions(query)).transactions;
-        this.loaded = 5;
+        this.transactions = (await connection.api.Transaction.getTransactions(query)).transactions.reverse();
 
         this.balances = (await connection.api.Uia.getBalances(senderId)).balances;
       } catch (error) {
