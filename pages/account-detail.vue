@@ -76,15 +76,15 @@
         <el-table-column prop="amount" align="center" label="Amount" :formatter="prettyPrintAmount"></el-table-column>
         <el-table-column prop="height" align="center" label="Height"></el-table-column>
       </el-table>
-      <div class="block">
-        <el-pagination
-          @current-change="handleCurrentChange"
-          :current-page="currentPage"
-          :page-size="10"
-          layout="prev, pager, next"
-          :total="transfersCount"
-        ></el-pagination>
-      </div>
+      <el-pagination
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="10"
+        layout="prev, pager, next"
+        :total="transfersCount"
+        align="center"
+      ></el-pagination>
+
     </b-card>
 
   </el-container>
