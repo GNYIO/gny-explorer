@@ -68,6 +68,25 @@
       </el-table>
     </b-card>
 
+     <b-card title="Past Transfers" class="shadow mt-4">
+      <el-table @row-click="rowClick" :data="currentTransfers" style="width: 100%">
+        <el-table-column prop="senderId" label="Sender" align="center" width="200" :formatter="prettyPrintSenderAddress"></el-table-column>
+        <el-table-column prop="recipientId" label="Recipient" align="center" width="200" :formatter="prettyPrintRecipientAddress"></el-table-column>
+        <el-table-column prop="currency" align="center" label="Currency"></el-table-column>
+        <el-table-column prop="amount" align="center" label="Amount" :formatter="prettyPrintAmount"></el-table-column>
+        <el-table-column prop="height" align="center" label="Height"></el-table-column>
+      </el-table>
+      <div class="block">
+        <el-pagination
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-size="10"
+          layout="prev, pager, next"
+          :total="transfersCount"
+        ></el-pagination>
+      </div>
+    </b-card>
+
   </el-container>
 </template>
 
@@ -106,6 +125,11 @@ export default {
       publicKey: '',
       balance: '',
       loaded: 0,
+      transfers: [],
+      transfersCount: 0,
+      currentTransfers: [],
+      currentPage: 1,
+      pageSize: 10,
     }
   },
 
@@ -115,12 +139,32 @@ export default {
         this.$router.push({name: 'transaction-detail', query: { id: row.id }});
     },
 
-    subSenderId: function (row, column) {0
+    subSenderId: function (row, column) {
       return row.senderId.slice(0,8);
     },
 
     timestamp2date: function (row, column) {
       return moment(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD hh:mm:ss');
+    },
+
+    prettyPrintSenderAddress: function(row, column) {
+      if (row.senderId === this.address) {
+        return 'Me';
+      }
+
+      return row.senderId.slice(0,8);
+    },
+
+    prettyPrintRecipientAddress: function(row, column) {
+      if (row.recipientId === this.address) {
+        return 'Me';
+      }
+
+      return row.recipientId.slice(0,8);
+    },
+
+    prettyPrintAmount: function (row, column) {
+      return new BigNumber(row.amount).dividedBy(1e8).toFixed();
     },
 
     updatePage: async function (username, address) {
@@ -156,19 +200,43 @@ export default {
         this.transactions = (await connection.api.Transaction.getTransactions(query)).transactions.reverse();
 
         this.balances = (await connection.api.Uia.getBalances(senderId)).balances;
+
+        this.transfersResult = await connection.api.Transfer.getRoot({
+          ownerId: senderId
+        });
+
+        this.transfers = this.transfersResult.transfers;
+        this.transfersCount = this.transfersResult.count;
+        
       } catch (error) {
         console.log(error && error.response && error.response.data);
         // error({ statusCode: 404, message: 'Oops...' })
       }
+    },
 
-    }
+    handleCurrentChange(currentPage) {
+      this.currentPage = currentPage;
+      this.changePage(this.transfers, currentPage);
+    },
+
+    changePage(list, currentPage) {
+      let from = (currentPage - 1) * this.pageSize;
+      let to = currentPage * this.pageSize;
+      this.currentTransfers = [];
+      for (; from < to; from++) {
+        if (list[from]) {
+          this.currentTransfers.push(list[from]);
+        }
+      }
+    },
   },
 
   async mounted() {
-    const address = this.$route.query.address;
+    this.address = this.$route.query.address;
     const username = this.$route.query.username;
 
-    await this.updatePage(username, address);
+    await this.updatePage(username, this.address);
+    this.handleCurrentChange(1);
   }
 };
 
