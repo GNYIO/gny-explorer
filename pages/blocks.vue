@@ -57,8 +57,11 @@ export default {
   data() {
     return {
       blocks: [],
+      limit: 50,
+      offset: 0,
       loaded: 0,
       loading: true,
+      orderBy: 'height:desc',
     }
   },
 
@@ -85,30 +88,33 @@ export default {
 
     infiniteHandler: function ($state) {
       setTimeout(async () => {
-        const limit = 50;
-        const offset = this.loaded;
-        const orderBy = 'height:desc'
-        const newBlocks = (await connection.api.Block.getBlocks(offset, limit, orderBy)).blocks
-        this.blocks.push(...newBlocks);
-        this.loaded += limit;
-        $state.loaded()
-        if (newBlocks.length === 0) {
+        this.offset = this.loaded;
+
+        console.log('offset', this.offset);
+   
+        try {
+          const newBlocks = (await connection.api.Block.getBlocks(this.offset, this.limit, this.orderBy)).blocks;
+          this.blocks.push(...newBlocks);
+
+          if (this.blocks.length > 0) {
+            this.loading = false;
+          }
+
+          this.loaded += newBlocks.length;
+          $state.loaded();
+          if (newBlocks.length === 0) {
+            $state.complete();
+          }
+        } catch (error) {
+          console.log(error.message);
           $state.complete();
         }
+        
       }, 100);
     },
   },
 
   async mounted() {
-    const limit = 50;
-    const offset = 0;
-    const orderBy = 'height:desc';
-
-    this.blocks = (await connection.api.Block.getBlocks(offset, limit, orderBy)).blocks;
-    this.loaded = limit;
-    if (this.blocks.length > 0) {
-      this.loading = false;
-    }
   },
 }
 </script>
