@@ -164,6 +164,21 @@
       </el-table>
     </b-card>
 
+    <b-card title="Holders" class="shadow mt-4">
+
+      <el-table :data="holders" stripe style="width: 100%; margin: auto;"  v-loading="holdersLoading">
+        <el-table-column prop="address" align="center" label="Address">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.address }}" tag="span">
+              {{table.row.address}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+        <el-table-column prop="currency" align="center" label="Currency"></el-table-column>
+        <el-table-column prop="balance" label="Balance" :formatter="formatBalance"></el-table-column>
+      </el-table>
+    </b-card>
+
   </el-container>
 </template>
 
@@ -198,10 +213,12 @@ export default {
       assetTransactions: [],
       issueTransactions: [],
       transfers: [],
+      holders: [],
       issuerLoading: true,
       assetLoading: true,
       issueLoading: true,
       transferLoading: true,
+      holdersLoading: true,
     }
   },
 
@@ -221,6 +238,10 @@ export default {
 
     formatFee: function (row, column) {
       return new BigNumber(row.fee).dividedBy(1e8).toFixed();
+    },
+
+    formatBalance: function (row, column) {
+      return new BigNumber(row.balance).dividedBy(1e8).toFixed();
     },
 
     makeAssetPretty: function(asset) {
@@ -280,15 +301,20 @@ export default {
 
       const allTransfers = (await connection.api.Transaction.getTransactions({type: 103})).transactions;
 
-      console.log({allTransfers});
       this.transfers = allTransfers.filter(function(transfer) {
-        console.log(transfer.args[0]);
         return JSON.parse(transfer.args)[0] === result.name;
       })
       
       if (this.transfers.length > 0) {
         this.transferLoading = false;
       }
+
+      this.holders = (await connection.api.Uia.getHolders(assetName)).holders;
+
+      if (this.holders.length > 0) {
+        this.holdersLoading = false;
+      }
+      
 
     } catch (error) {
       console.log(error.message);
