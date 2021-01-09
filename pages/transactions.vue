@@ -72,16 +72,23 @@ export default {
 
     infiniteHandler: function ($state) {
       setTimeout(async () => {
+        if (this.count === 0) {
+          this.count = (await connection.api.Transaction.getTransactions({offset})).count;
+        }
         const limit = 50;
-        const offset = this.loaded;
-        const orderBy = 'height:desc'
+        const offset = this.count - this.loaded - limit;
         const newTransactions = (await connection.api.Transaction.getTransactions({
           limit,
           offset,
-        })).transactions
+        })).transactions.reverse();
         this.transactions.push(...newTransactions);
         this.loaded += limit;
         $state.loaded()
+        
+        if (this.transactions.length > 0) {
+          this.loading = false;
+        }
+
         if (newTransactions.length === 0) {
           $state.complete();
         }
@@ -91,24 +98,13 @@ export default {
   data() {
     return {
       transactions: [],
+      count: 0,
       loaded: 0,
       loading: true
     }
   },
 
   async mounted() {
-    const limit = 50;
-    const offset = 0;
-    const result = (await connection.api.Transaction.getTransactions({
-      limit,
-      offset,
-    })).transactions;
-
-    this.transactions = result;
-    this.loaded = limit;
-    if (this.transactions.length > 0) {
-      this.loading = false;
-    }
   },
 }
 </script>

@@ -16,10 +16,10 @@
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="timestamp" align="center" label="Forged Time" width="160" :formatter="timestamp2date"></el-table-column>
+        <el-table-column prop="timestamp" align="center" label="Forged Time" width="170" :formatter="timestamp2date"></el-table-column>
         <el-table-column prop="count" align="center" label="Transactions" width="110"></el-table-column>
         <el-table-column prop="fees" align="center" label="Fees" width="130" :formatter="formatFees"></el-table-column>
-        <el-table-column prop="reward" align="center" label="Reward" width="100" :formatter="formatReward"> </el-table-column>
+        <el-table-column prop="reward" align="center" label="Reward" width="90" :formatter="formatReward"> </el-table-column>
         <el-table-column prop="delegate" align="center" label="Delegate" width="150">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'delegate-detail', query: { publicKey: table.row.delegate }}">

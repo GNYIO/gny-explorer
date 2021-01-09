@@ -40,7 +40,7 @@
 
     </el-main>
     <el-footer>
-      © 2020 by gny.io Limited
+      © 2021 by gny.io Limited
     </el-footer>
   </el-container>
 

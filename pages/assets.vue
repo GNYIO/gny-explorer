@@ -1,33 +1,33 @@
 <template>
   <el-container>
     <b-card title="Assets" class="shadow">
-      <el-table :data="assets" stripe style="width: 100%; margin: auto;" height="500" v-loading="loading">
-        <el-table-column prop="name" align="center" label="Name" width="110">
+      <el-table :data="currentAssets" stripe style="width: 100%; margin: auto;" height="500" v-loading="loading">
+        <el-table-column prop="name" align="center" label="Name" width="160">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'asset-detail', query: { assetName: table.row.name }}">
               {{table.row.name}}
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="desc" align="center" label="Description" width="130"></el-table-column>
+        <el-table-column prop="desc" align="center" label="Description" width="180"></el-table-column>
         <el-table-column prop="timestamp" align="center" label="Timestamp" width="180" :formatter="timestamp2date"></el-table-column>
         <el-table-column prop="leftToIssuePretty" align="center" label="Left To Issue" width="180"></el-table-column>
-        <el-table-column prop="issuerId" align="center" label="Issuer" width="220" :formatter="subIssuerId">
+        <el-table-column prop="issuerId" align="center" label="Issuer" width="120" :formatter="subIssuerId">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.issuerId }}">
               {{subIssuerId(table.row.issuerId)}}
             </nuxt-link>
           </template>
         </el-table-column>
-
-        <infinite-loading
-          slot="append"
-          @infinite="infiniteHandler"
-          force-use-infinite-wrapper=".el-table__body-wrapper">
-          <div slot="no-more"></div>
-        </infinite-loading>
-
       </el-table>
+      <el-pagination
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-size="10"
+          layout="prev, pager, next"
+          :total="assetsCount"
+          align="center"
+        ></el-pagination>
     </b-card>
   </el-container>
 </template>
@@ -48,6 +48,10 @@ export default {
   data() {
     return {
       assets: [],
+      assetsCount: 0,
+      currentAssets: [],
+      currentPage: 1,
+      pageSize: 10,
       loaded: 0,
       loading: true,
     }
@@ -88,33 +92,32 @@ export default {
       return one;
     },
 
-    infiniteHandler: function ($state) {
-      setTimeout(async () => {
-        const limit = 10;
-        const offset = this.loaded
-        const newAssets = (await connection.api.Uia.getAssets(limit, offset))
-          .assets
-          .map(x => this.makeAssetPretty(x))
-        this.assets.push(...newAssets)
-        this.loaded += limit;
-        $state.loaded()
-        if (newAssets.length === 0) {
-          $state.complete();
+    handleCurrentChange(currentPage) {
+      this.currentPage = currentPage;
+      this.changePage(this.assets, currentPage);
+    },
+
+    changePage(list, currentPage) {
+      let from = (currentPage - 1) * this.pageSize;
+      let to = currentPage * this.pageSize;
+      this.currentAssets = [];
+      for (; from < to; from++) {
+        if (list[from]) {
+          this.currentAssets.push(list[from]);
         }
-      }, 100);
+      }
     },
   },
 
   async mounted() {
-    const limit = 10;
-    const offset = 0;
-
-    const result = (await connection.api.Uia.getAssets(limit, offset))
+    const result = (await connection.api.Uia.getAssets())
       .assets
       .map(x => this.makeAssetPretty(x));
 
     this.assets = result;
-    this.loaded = 10;
+
+    this.assetsCount = this.assets.length;
+    this.handleCurrentChange(1);
 
     if (this.assets.length > 0) {
       this.loading = false;

@@ -72,14 +72,14 @@
           <el-table-column
             prop="rewards"
             label="Rewards"
-            width="140"
+            width="130"
             :formatter="formatRewards"
           ></el-table-column>
           <el-table-column
             prop="productivity"
             label="Productivity"
           ></el-table-column>
-          <el-table-column prop="approval" label="Approval %" width="100"></el-table-column>
+          <el-table-column prop="approval" label="Approval %" width="110"></el-table-column>
         </el-table>
     </b-card>
   </el-container>
