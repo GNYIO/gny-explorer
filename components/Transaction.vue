@@ -54,19 +54,21 @@ export default {
   },
   data() {
     return {
+      count: 0,
       transactions: null,
       loading: true,
     }
   },
 
   async mounted() {
+    const count = (await connection.api.Transaction.getTransactions({offset})).count;
+    
     const limit = 5;
-    const offset = 0;
-    const orderBy = 'height:desc';
+    const offset = count - 5;
+
     const result = (await connection.api.Transaction.getTransactions({
       limit,
       offset,
-      orderBy,
     })).transactions;
 
     this.transactions = result;
