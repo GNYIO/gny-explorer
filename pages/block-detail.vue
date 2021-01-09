@@ -2,17 +2,29 @@
   <el-container direction="vertical">
     <b-card title="Block" class="shadow">
       <el-row>
+        <el-col :span="24" >
+          Block ID
+          <p>
+            {{block.id}}
+          </p>
+        </el-col>
+      </el-row>
+      <el-row>
         <el-col :span="8" >
           Height
-          <p >{{block.height}}</p>
+          <p>{{block.height}}</p>
         </el-col>
         <el-col :span="8" >
-          ID
-          <p >{{id}}</p>
+          Previous block
+          <p>
+            <nuxt-link class="nuxt-link" :to="{ name: 'block-detail', query: { height: block.height - 1 }}">
+              {{prevId}}
+            </nuxt-link>
+          </p>
         </el-col>
         <el-col :span="8" >
           Date
-          <p >{{date}}</p>
+          <p>{{date}}</p>
         </el-col>
       </el-row>
 
@@ -84,7 +96,7 @@ export default {
   data() {
     return {
       block: {},
-      id: '',
+      prevId: '',
       date: '',
       delegateID: '',
       transactions: [],
@@ -118,7 +130,7 @@ export default {
 
       console.log(`block-detail: ${JSON.stringify(block, null, 2)}`);
       this.block = block
-      this.id = this.block.id.slice(0, 8);
+      this.prevId = this.block.prevBlockId.slice(0, 8);
       this.date = moment(slots.getRealTime(this.block.timestamp)).format('YYYY-MM-DD hh:mm:ss');
       this.transactions = transactions;
       this.delegateID = this.block.delegate.slice(0, 8);
