@@ -1,8 +1,8 @@
-import axios from 'axios';
 
 const ip = process.env['GNY_ENDPOINT'];
 const port = Number(process.env['GNY_PORT']);
 const network = process.env['GNY_NETWORK'];
+const https = JSON.parse(process.env['GNY_HTTPS'] || false);
 
 const result = {
     visNodes: [],
@@ -10,8 +10,8 @@ const result = {
     peersList: [],
 };
 
-export async function getNode(ip, port, network) {
-    const url = `.netlify/functions/serverless-http?ip=${ip}&port=${port}&networkType=${network}`;
+export async function getNode(axios, ip, port, network, https) {
+    const url = `.netlify/functions/serverless-http?ip=${ip}&port=${port}&networkType=${network}&https=${https}`;
     console.log(`getNode() url: ${url}`);
     const request = await axios.get(url);
 
@@ -47,11 +47,22 @@ function isEdgeAlreadyHere(edge) {
     }
 }
 
+function isAlreadyInPeersList(node) {
+    const one = result.peersList.find(x => x.peersInfo.publicIp === node.peersInfo.publicIp);
+    if (one === undefined) {
+        false;
+    } else {
+        return true;
+    }
+}
+
 function stripInfo(node) {
     if (node.success) {
-        // make the peersList
-        result.peersList.push(node);
 
+        if (!isAlreadyInPeersList(node)) {
+            // make the peersList
+            result.peersList.push(node);
+        }
 
         if (!isNodeAlreadyHere(node)) {
             result.visNodes.push({
@@ -86,13 +97,13 @@ function stripInfo(node) {
     }
 }
 
-export async function getRoot() {
-    const root = await getNode(ip, port, network);
+export async function getRoot(axios) {
+    const root = await getNode(axios, ip, port, network, https);
     stripInfo(root);
 
     for (let i = 0; i < root.peers.length; ++i) {
         const one = root.peers[i];
-        const request = await getNode(one.simple.host, Number(one.simple.port) -1, network);
+        const request = await getNode(axios, one.simple.host, Number(one.simple.port) -1, network, false);
         stripInfo(request);
     }
 }
@@ -105,8 +116,8 @@ function changeNodeColor(ip, color) {
 }
 
 
-export async function getAllPeers() {
-    await getRoot();
+export async function getAllPeers(axios) {
+    await getRoot(axios);
 
     changeNodeColor(ip, 'lawngreen');
 

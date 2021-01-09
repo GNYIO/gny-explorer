@@ -1,6 +1,21 @@
 # gny-explorer
 
 
+## Configure Endpoint
+
+Create `.env` variable
+```bash
+touch .env
+```
+
+Insert the following values into `.env`
+```bash
+GNY_ENDPOINT=45.76.215.117
+GNY_NETWORK=localnet
+GNY_PORT=4096
+GNY_HTTPS=false
+```
+
 ## Build Setup
 
 ``` bash
