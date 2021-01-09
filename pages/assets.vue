@@ -2,17 +2,17 @@
   <el-container>
     <b-card title="Assets" class="shadow">
       <el-table :data="currentAssets" stripe style="width: 100%; margin: auto;" height="500" v-loading="loading">
-        <el-table-column prop="name" align="center" label="Name" width="110">
+        <el-table-column prop="name" align="center" label="Name" width="160">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'asset-detail', query: { assetName: table.row.name }}">
               {{table.row.name}}
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="desc" align="center" label="Description" width="130"></el-table-column>
+        <el-table-column prop="desc" align="center" label="Description" width="180"></el-table-column>
         <el-table-column prop="timestamp" align="center" label="Timestamp" width="180" :formatter="timestamp2date"></el-table-column>
         <el-table-column prop="leftToIssuePretty" align="center" label="Left To Issue" width="180"></el-table-column>
-        <el-table-column prop="issuerId" align="center" label="Issuer" width="220" :formatter="subIssuerId">
+        <el-table-column prop="issuerId" align="center" label="Issuer" width="120" :formatter="subIssuerId">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.issuerId }}">
               {{subIssuerId(table.row.issuerId)}}
