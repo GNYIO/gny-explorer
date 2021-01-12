@@ -14,13 +14,17 @@
           Height
           <p>{{block.height}}</p>
         </el-col>
-        <el-col :span="8" >
+        <el-col :span="8" v-if="prevId">
           Previous block
           <p>
             <nuxt-link class="nuxt-link" :to="{ name: 'block-detail', query: { height: block.height - 1 }}">
               {{prevId}}
             </nuxt-link>
           </p>
+        </el-col>
+        <el-col :span="8" v-if="!prevId">
+          Previous block
+          <p>-</p>
         </el-col>
         <el-col :span="8" >
           Date
@@ -130,7 +134,13 @@ export default {
 
       console.log(`block-detail: ${JSON.stringify(block, null, 2)}`);
       this.block = block
-      this.prevId = this.block.prevBlockId.slice(0, 8);
+
+      if (this.block.height > 0) {
+        this.prevId = this.block.prevBlockId.slice(0, 8);
+      } else {
+        this.prevId = null;
+      }
+      
       this.date = moment(slots.getRealTime(this.block.timestamp)).format('YYYY-MM-DD hh:mm:ss');
       this.transactions = transactions;
       this.delegateID = this.block.delegate.slice(0, 8);
