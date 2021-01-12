@@ -77,6 +77,7 @@
 </template>
 
 <script>
+import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import * as gnyClient from '@gny/client';
 import { slots } from '@gny/utils';
@@ -135,7 +136,7 @@ export default {
       console.log(`block-detail: ${JSON.stringify(block, null, 2)}`);
       this.block = block
 
-      if (this.block.height > 0) {
+      if (new BigNumber(this.block.height).isGreaterThan(0)) {
         this.prevId = this.block.prevBlockId.slice(0, 8);
       } else {
         this.prevId = null;
