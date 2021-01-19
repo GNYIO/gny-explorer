@@ -228,6 +228,7 @@ export default {
       assetIssuerId: '',
       assetTid: '',
       issuer: {},
+      precision: '',
       issuerTransactions: [],
       assetTransactions: [],
       issueTransactions: [],
@@ -263,11 +264,11 @@ export default {
     },
 
     formatFee: function (row, column) {
-      return new BigNumber(row.fee).dividedBy(1e8).toFixed();
+      return new BigNumber(row.fee).dividedBy(this.precision).toFixed();
     },
 
     formatBalance: function (row, column) {
-      return new BigNumber(row.balance).dividedBy(1e8).toFixed();
+      return new BigNumber(row.balance).dividedBy(this.precision).toFixed();
     },
 
     makeAssetPretty: function(asset) {
@@ -302,6 +303,7 @@ export default {
         this.asset = result;
         this.assetIssuerId = result.issuerId.slice(0, 12);
         this.assetTid = result.tid.slice(0, 12);
+        this.precision = Math.pow(10, result.precision);
 
         const issuerName = result.name.split('.')[0];
         const issuer = (await connection.api.Uia.getIssuer(issuerName)).issuer;
