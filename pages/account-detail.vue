@@ -18,6 +18,20 @@
           <p v-else>Not set</p>
         </el-col>
       </el-row>
+      <el-row v-if="account.isLocked"> 
+        <el-col :span="10">
+          Locked
+          <p>True</p>
+        </el-col> 
+        <el-col :span="7">
+          Lock Height
+          <p>{{account.lockHeight}}</p>
+        </el-col>
+        <el-col :span="7">
+          Lock Amount
+          <p>{{lockAmount}}</p>
+        </el-col>
+      </el-row>
       <el-row>
         <el-col :span="10">
           Public Key
@@ -124,6 +138,7 @@ export default {
       address: '',
       publicKey: '',
       balance: '',
+      lockAmount: '',
       loaded: 0,
       transfers: [],
       transfersCount: 0,
@@ -186,6 +201,10 @@ export default {
 
         this.account = account;
         this.balance = new BigNumber(this.account.gny || this.account.balance).dividedBy(1e8).toFixed();
+
+        if (account.isLocked) {
+          this.lockAmount = new BigNumber(account.lockAmount).dividedBy(1e8).toFixed();
+        }
 
         if (account.publicKey) {
           this.publicKey = account.publicKey.slice(0, 8);
