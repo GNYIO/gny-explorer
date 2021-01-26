@@ -1,39 +1,42 @@
 <template>
-  <el-container >
+  <el-container>
+    <el-row class="nerwork-header">
+      <el-col :span="4" :offset="20"><span>{{network}}</span></el-col>
+    </el-row>
     <el-header class="header">
-        <b-navbar toggleable="lg" variant="secondary" class="bg-transparent">
-          <b-navbar-brand>
-            <nuxt-link to="/">
-              <img src="../assets/logo.png" alt="logo" class="logo">
-            </nuxt-link>
-          </b-navbar-brand>
+      <b-navbar toggleable="lg" variant="secondary" class="bg-transparent">
+        <b-navbar-brand>
+          <nuxt-link to="/">
+            <img src="../assets/logo.png" alt="logo" class="logo">
+          </nuxt-link>
+        </b-navbar-brand>
 
-          <b-navbar-toggle target="nav_collapse" ></b-navbar-toggle>
+        <b-navbar-toggle target="nav_collapse" ></b-navbar-toggle>
 
-          <b-collapse is-nav id="nav_collapse">
-            <b-navbar-nav>
-              <b-nav-item>
-                <nuxt-link to="/blocks" class="second-link">BLOCKS</nuxt-link>
-              </b-nav-item>
-              <b-nav-item>
-                <nuxt-link to="/transactions" class="second-link">TRANSACTIONS</nuxt-link>
-              </b-nav-item>
-              <b-nav-item>
-                <nuxt-link to="/delegates" class="second-link">DELEGATES</nuxt-link>
-              </b-nav-item>
-              <b-nav-item>
-                <nuxt-link to="/assets" class="second-link">ASSETS</nuxt-link>
-              </b-nav-item>
-              <b-nav-item>
-                <nuxt-link to="/peers" class="second-link">PEERS</nuxt-link>
-              </b-nav-item>
-            </b-navbar-nav>
+        <b-collapse is-nav id="nav_collapse">
+          <b-navbar-nav>
+            <b-nav-item>
+              <nuxt-link to="/blocks" class="second-link">BLOCKS</nuxt-link>
+            </b-nav-item>
+            <b-nav-item>
+              <nuxt-link to="/transactions" class="second-link">TRANSACTIONS</nuxt-link>
+            </b-nav-item>
+            <b-nav-item>
+              <nuxt-link to="/delegates" class="second-link">DELEGATES</nuxt-link>
+            </b-nav-item>
+            <b-nav-item>
+              <nuxt-link to="/assets" class="second-link">ASSETS</nuxt-link>
+            </b-nav-item>
+            <b-nav-item>
+              <nuxt-link to="/peers" class="second-link">PEERS</nuxt-link>
+            </b-nav-item>
+          </b-navbar-nav>
 
-            <b-navbar-nav class="ml-auto">
-              <Search />
-            </b-navbar-nav>
-          </b-collapse>
-        </b-navbar>
+          <b-navbar-nav class="ml-auto">
+            <Search />
+          </b-navbar-nav>
+        </b-collapse>
+      </b-navbar>
     </el-header>
     <el-main>
       <nuxt />
@@ -50,11 +53,24 @@
 import Logo from '~/components/Logo.vue';
 import Search from '~/components/Search.vue';
 
+
 export default {
+  data() {
+    return {
+      network: '',
+    }
+  },
+
+  mounted() {
+    const networkEnv = process.env['GNY_NETWORK'];
+    this.network = networkEnv.charAt(0).toUpperCase() + networkEnv.slice(1);
+  },
+
   components: {
     Logo,
     Search
-  }
+  },
+  
 }
 </script>
 
@@ -82,6 +98,11 @@ a {
 .header {
   z-index: 999;
   height: 50px;
+}
+
+.nerwork-header {
+  z-index: 999;
+  height: 20px;
 }
 
 .inner {
