@@ -180,7 +180,8 @@ export default {
     },
 
     prettyPrintAmount: function (row, column) {
-      return new BigNumber(row.amount).dividedBy(1e8).toFixed();
+      const prec = Math.pow(10, row.precision);
+      return new BigNumber(row.amount).dividedBy(prec).toFixed();
     },
 
     prettyPrintAssetAmount: function (row, column) {
@@ -227,20 +228,36 @@ export default {
         this.balances = (await connection.api.Uia.getBalances(senderId)).balances;
 
         for (let i = 0; i < this.balances.length; i++) {
-          console.log(this.balances[i]);
           const currency = this.balances[i].currency;
           const asset = (await connection.api.Uia.getAsset(currency)).asset;
-          console.log({asset});
           const precision = asset.precision;
+
           this.assets.push({...this.balances[i], ...{precision}});
         }
+
+        console.log(this.assets);
 
         this.transfersResult = await connection.api.Transfer.getRoot({
           ownerId: senderId
         });
 
         this.transfers = this.transfersResult.transfers;
+        console.log(this.transfers.length);
+
+        for (let i = 0; i < this.transfers.length; i++) {
+          const currency = this.transfers[i].currency;
+          if (currency === 'GNY') {
+            this.transfers[i]['precision'] = 8;
+          } else {
+            const precision = this.assets.filter(asset => {
+              return asset.currency === currency;
+            })[0].precision;
+            this.transfers[i]['precision'] = precision;
+          }
+        }
+
         this.transfersCount = this.transfersResult.count;
+
         
       } catch (error) {
         console.log(error && error.response && error.response.data);
