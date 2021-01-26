@@ -2,7 +2,7 @@
   <el-container>
     <b-card title="Transactions" class="shadow">
       <el-table :data="transactions" stripe style="width: 100%; margin: auto;" height="500" v-loading="loading">
-        <el-table-column prop="id" align="center" width="200" label="Transaction ID">
+        <el-table-column prop="id" align="center" width="150" label="Transaction ID">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: table.row.id }}" tag="span">
               {{table.row.id.slice(0,8)}}
@@ -17,14 +17,15 @@
           </template>
         </el-table-column>
         <el-table-column prop="timestamp" align="center" label="Forged Time" width="200" :formatter="timestamp2date"></el-table-column>
-        <el-table-column prop="senderId" align="center" label="Sender" width="200" :formatter="subSenderId">
+        <el-table-column prop="senderId" align="center" label="Sender" width="100" :formatter="subSenderId">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.senderId }}" tag="span">
               {{table.row.senderId.slice(0,8)}}
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="fee" label="Fee" :formatter="formatFee"></el-table-column>
+        <el-table-column prop="fee" label="Fee" width="80" :formatter="formatFee"></el-table-column>
+        <el-table-column prop="type" label="Type" width="200" :formatter="formatType"></el-table-column>
 
         <infinite-loading
           slot="append"
@@ -44,6 +45,8 @@ import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import * as gnyClient from '@gny/client';
 import { slots } from '@gny/utils';
+import { contractMappingFilter } from '../helpers/getTransactionType';
+
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],
   Number(process.env['GNY_PORT']),
@@ -68,6 +71,10 @@ export default {
 
     formatFee: function (row, column) {
       return new BigNumber(row.fee).dividedBy(1e8).toFixed();
+    },
+
+    formatType: function (row, column) {
+      return contractMappingFilter(row.type);
     },
 
     infiniteHandler: function ($state) {
