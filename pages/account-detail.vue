@@ -48,7 +48,7 @@
 
     <!-- v-if="balances.length > 0" -->
     <b-card title="Assets" class="shadow mt-4">
-      <el-table class="clickable-rows" :data="balances" stripe style="width: 95%;">
+      <el-table class="clickable-rows" :data="assets" stripe style="width: 95%;">
         <el-table-column prop="currency" align="center" label="Currency" >
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'asset-detail', query: { assetName: table.row.currency }}" tag="span">
@@ -56,7 +56,7 @@
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="balance" align="center" label="Balance" width="300"></el-table-column>
+        <el-table-column prop="balance" align="center" label="Balance" width="300" :formatter="prettyPrintAssetAmount"></el-table-column>
         <el-table-column prop="flag" align="center" label="Flag" width="300"></el-table-column>
       </el-table>
     </b-card>
@@ -135,6 +135,7 @@ export default {
       account: {},
       transactions: [],
       balances: [],
+      assets: [],
       address: '',
       publicKey: '',
       balance: '',
@@ -182,6 +183,11 @@ export default {
       return new BigNumber(row.amount).dividedBy(1e8).toFixed();
     },
 
+    prettyPrintAssetAmount: function (row, column) {
+      const prec = Math.pow(10, row.precision);
+      return new BigNumber(row.balance).dividedBy(prec).toFixed();
+    },
+
     updatePage: async function (username, address) {
       try {
         let account = null;
@@ -219,6 +225,15 @@ export default {
         this.transactions = (await connection.api.Transaction.getTransactions(query)).transactions.reverse();
 
         this.balances = (await connection.api.Uia.getBalances(senderId)).balances;
+
+        for (let i = 0; i < this.balances.length; i++) {
+          console.log(this.balances[i]);
+          const currency = this.balances[i].currency;
+          const asset = (await connection.api.Uia.getAsset(currency)).asset;
+          console.log({asset});
+          const precision = asset.precision;
+          this.assets.push({...this.balances[i], ...{precision}});
+        }
 
         this.transfersResult = await connection.api.Transfer.getRoot({
           ownerId: senderId
