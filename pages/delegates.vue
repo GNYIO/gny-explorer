@@ -52,7 +52,7 @@
     </b-card>
     <b-card class="shadow mt-4">
       <el-table :data="allDelegates" stripe style="width: 100%" v-loading="loading">
-          <el-table-column prop="rate" label="Rank" width="100"></el-table-column>
+          <el-table-column prop="rate" label="Rank" width="60"></el-table-column>
           <el-table-column
             prop="username"
             label="Username"
@@ -67,13 +67,24 @@
           <el-table-column
             prop="producedBlocks"
             label="Produced Blocks"
-            width="140"
+            width="100"
           ></el-table-column>
           <el-table-column
             prop="rewards"
             label="Rewards"
-            width="130"
+            width="80"
             :formatter="formatRewards"
+          ></el-table-column>
+          <el-table-column
+            prop="fees"
+            label="Fees"
+            width="100"
+            :formatter="formatFees"
+          ></el-table-column>
+          <el-table-column
+            prop="missedBlocks"
+            label="Missed Blocks"
+            width="130"
           ></el-table-column>
           <el-table-column
             prop="productivity"
@@ -104,6 +115,10 @@ export default {
 
     formatRewards: function (row, column) {
       return new BigNumber(row.rewards).dividedBy(1e8).toFixed();
+    },
+
+    formatFees: function (row, column) {
+      return new BigNumber(row.fees).dividedBy(1e8).toFixed();
     },
   },
   data() {
