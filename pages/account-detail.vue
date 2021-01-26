@@ -18,6 +18,20 @@
           <p v-else>Not set</p>
         </el-col>
       </el-row>
+      <el-row v-if="account.isLocked"> 
+        <el-col :span="10">
+          Locked
+          <p>True</p>
+        </el-col> 
+        <el-col :span="7">
+          Lock Height
+          <p>{{account.lockHeight}}</p>
+        </el-col>
+        <el-col :span="7">
+          Lock Amount
+          <p>{{lockAmount}}</p>
+        </el-col>
+      </el-row>
       <el-row>
         <el-col :span="10">
           Public Key
@@ -34,7 +48,7 @@
 
     <!-- v-if="balances.length > 0" -->
     <b-card title="Assets" class="shadow mt-4">
-      <el-table class="clickable-rows" :data="balances" stripe style="width: 95%;">
+      <el-table class="clickable-rows" :data="assets" stripe style="width: 95%;">
         <el-table-column prop="currency" align="center" label="Currency" >
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'asset-detail', query: { assetName: table.row.currency }}" tag="span">
@@ -42,7 +56,7 @@
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="balance" align="center" label="Balance" width="300"></el-table-column>
+        <el-table-column prop="balance" align="center" label="Balance" width="300" :formatter="prettyPrintAssetAmount"></el-table-column>
         <el-table-column prop="flag" align="center" label="Flag" width="300"></el-table-column>
       </el-table>
     </b-card>
@@ -121,9 +135,11 @@ export default {
       account: {},
       transactions: [],
       balances: [],
+      assets: [],
       address: '',
       publicKey: '',
       balance: '',
+      lockAmount: '',
       loaded: 0,
       transfers: [],
       transfersCount: 0,
@@ -164,7 +180,13 @@ export default {
     },
 
     prettyPrintAmount: function (row, column) {
-      return new BigNumber(row.amount).dividedBy(1e8).toFixed();
+      const prec = Math.pow(10, row.precision);
+      return new BigNumber(row.amount).dividedBy(prec).toFixed();
+    },
+
+    prettyPrintAssetAmount: function (row, column) {
+      const prec = Math.pow(10, row.precision);
+      return new BigNumber(row.balance).dividedBy(prec).toFixed();
     },
 
     updatePage: async function (username, address) {
@@ -187,6 +209,10 @@ export default {
         this.account = account;
         this.balance = new BigNumber(this.account.gny || this.account.balance).dividedBy(1e8).toFixed();
 
+        if (account.isLocked) {
+          this.lockAmount = new BigNumber(account.lockAmount).dividedBy(1e8).toFixed();
+        }
+
         if (account.publicKey) {
           this.publicKey = account.publicKey.slice(0, 8);
         }
@@ -201,12 +227,37 @@ export default {
 
         this.balances = (await connection.api.Uia.getBalances(senderId)).balances;
 
+        for (let i = 0; i < this.balances.length; i++) {
+          const currency = this.balances[i].currency;
+          const asset = (await connection.api.Uia.getAsset(currency)).asset;
+          const precision = asset.precision;
+
+          this.assets.push({...this.balances[i], ...{precision}});
+        }
+
+        console.log(this.assets);
+
         this.transfersResult = await connection.api.Transfer.getRoot({
           ownerId: senderId
         });
 
         this.transfers = this.transfersResult.transfers;
+        console.log(this.transfers.length);
+
+        for (let i = 0; i < this.transfers.length; i++) {
+          const currency = this.transfers[i].currency;
+          if (currency === 'GNY') {
+            this.transfers[i]['precision'] = 8;
+          } else {
+            const precision = this.assets.filter(asset => {
+              return asset.currency === currency;
+            })[0].precision;
+            this.transfers[i]['precision'] = precision;
+          }
+        }
+
         this.transfersCount = this.transfersResult.count;
+
         
       } catch (error) {
         console.log(error && error.response && error.response.data);
