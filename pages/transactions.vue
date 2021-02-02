@@ -2,7 +2,7 @@
   <el-container>
     <b-card title="Transactions" class="shadow">
       <el-table :data="transactions" stripe style="width: 100%; margin: auto;" height="500" v-loading="loading">
-        <el-table-column prop="id" align="center" width="150" label="Transaction ID">
+        <el-table-column prop="id" align="center" width="130" label="Transaction ID">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: table.row.id }}" tag="span">
               {{table.row.id.slice(0,8)}}
@@ -24,8 +24,8 @@
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="fee" label="Fee" width="80" :formatter="formatFee"></el-table-column>
-        <el-table-column prop="type" label="Type" width="200" :formatter="formatType"></el-table-column>
+        <el-table-column prop="fee" label="Fee" width="70" :formatter="formatFee"></el-table-column>
+        <el-table-column prop="type" label="Type" width="210" :formatter="formatType"></el-table-column>
 
         <infinite-loading
           slot="append"
