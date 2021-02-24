@@ -334,7 +334,7 @@ export default {
         })
         this.transfersCount = this.transfers.length;
         
-        if (this.transfersCount > 0) {
+        if (this.transfersCount >= 0) {
           this.transferLoading = false;
         }
 
@@ -342,7 +342,7 @@ export default {
 
         this.holdersCount = this.holders.length;
 
-        if (this.holdersCount > 0) {
+        if (this.holdersCount >= 0) {
           this.holdersLoading = false;
         }
 

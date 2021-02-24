@@ -119,7 +119,7 @@ export default {
     this.assetsCount = this.assets.length;
     this.handleCurrentChange(1);
 
-    if (this.assets.length > 0) {
+    if (this.assets.length >= 0) {
       this.loading = false;
     }
   },
