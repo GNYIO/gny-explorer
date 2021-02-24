@@ -96,7 +96,7 @@ export default {
           const newBlocks = (await connection.api.Block.getBlocks(this.offset, this.limit, this.orderBy)).blocks;
           this.blocks.push(...newBlocks);
 
-          if (this.blocks.length > 0) {
+          if (this.blocks.length >= 0) {
             this.loading = false;
           }
 

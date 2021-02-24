@@ -311,19 +311,19 @@ export default {
 
         this.issuerTransactions = (await connection.api.Transaction.getTransactions({senderId: result.issuerId, type: 100})).transactions;
         
-        if (this.issuerTransactions.length > 0) {
-        this.issuerLoading = false;
+        if (this.issuerTransactions.length >= 0) {
+          this.issuerLoading = false;
         }
 
         this.assetTransactions = (await connection.api.Transaction.getTransactions({senderId: result.issuerId, type: 101})).transactions;
         
-        if (this.assetTransactions.length > 0) {
-        this.assetLoading = false;
+        if (this.assetTransactions.length >= 0) {
+          this.assetLoading = false;
         }
 
         this.issueTransactions = (await connection.api.Transaction.getTransactions({senderId: result.issuerId, type: 102})).transactions;
         
-        if (this.issueTransactions.length > 0) {
+        if (this.issueTransactions.length >= 0) {
           this.issueLoading = false;
         }
 
@@ -334,7 +334,7 @@ export default {
         })
         this.transfersCount = this.transfers.length;
         
-        if (this.transfersCount > 0) {
+        if (this.transfersCount >= 0) {
           this.transferLoading = false;
         }
 
@@ -342,7 +342,7 @@ export default {
 
         this.holdersCount = this.holders.length;
 
-        if (this.holdersCount > 0) {
+        if (this.holdersCount >= 0) {
           this.holdersLoading = false;
         }
 

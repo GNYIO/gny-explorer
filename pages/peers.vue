@@ -93,7 +93,7 @@ export default {
 
     console.log(`length of result.peersList ${result.peersList.length}`);
     this.allNodes.push(...result.peersList);
-    if (this.allNodes.length > 0) {
+    if (this.allNodes.length >= 0) {
       this.loading = false;
     }
   }
