@@ -191,7 +191,7 @@ export default {
         this.mostProducedBlocks = mostProducedBlocks.producedBlocks;
         this.mostProducedBlocksDelegate = mostProducedBlocks.username;
 
-        if (this.allDelegates.length > 0) {
+        if (this.allDelegates.length >= 0) {
           this.loading = false;
         }
       } else {

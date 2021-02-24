@@ -92,7 +92,7 @@ export default {
         this.loaded += limit;
         $state.loaded()
         
-        if (this.transactions.length > 0) {
+        if (this.transactions.length >= 0) {
           this.loading = false;
         }
 
