@@ -73,7 +73,7 @@
         <el-col :span="16">
           Recipient
           <p>
-            <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { username: args[1]}}">
+            <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: args[1]}}">
               {{args[1]}}
             </nuxt-link>
           </p>
