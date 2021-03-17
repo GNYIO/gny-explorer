@@ -10,7 +10,7 @@
         </el-col>
         <el-col :span="8" >
           Public Key
-          <p>{{publicKey}}</p>
+          <p>{{publicKey.slice(0,8)}}</p>
         </el-col>
         <el-col :span="8" >
           Address
@@ -62,6 +62,44 @@
       </el-row>
     </b-card>
 
+    <b-card title="Produced Blocks" class="shadow">
+      <el-table :data="blocks" stripe style="width: 100%; margin: auto;" height="500" v-loading="loading">
+        <el-table-column prop="height" align="center" label="Height" width="80">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
+              {{table.row.height}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+        <el-table-column prop="id" align="center" label="Block ID" width="100">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
+              {{subID(table.row.id)}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+        <el-table-column prop="timestamp" align="center" label="Forged Time" width="170" :formatter="timestamp2date"></el-table-column>
+        <el-table-column prop="count" align="center" label="Transactions" width="110"></el-table-column>
+        <el-table-column prop="fees" align="center" label="Fees" width="130" :formatter="formatFees"></el-table-column>
+        <el-table-column prop="reward" align="center" label="Reward" width="90" :formatter="formatReward"> </el-table-column>
+        <el-table-column prop="delegate" align="center" label="Delegate" width="150">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{name: 'delegate-detail', query: { publicKey: table.row.delegate }}">
+              {{subDelegate(table.row.delegate)}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+        
+        <infinite-loading
+          slot="append"
+          @infinite="infiniteHandler"
+          force-use-infinite-wrapper=".el-table__body-wrapper">
+          <div slot="no-more"></div>
+        </infinite-loading>
+
+      </el-table>
+    </b-card>
+
   </el-container>
 </template>
 
@@ -93,12 +131,72 @@ export default {
     return {
       delegate: {},
       publicKey: '',
+      username: '',
       trs: '',
       rewards: '',
+      blocks: [],
+      limit: 50,
+      offset: 0,
+      loaded: 0,
+      loading: true,
+      orderBy: 'height:desc',
     }
   },
 
   methods: {
+    subID: function (id) {
+      return id.slice(0,8);
+    },
+
+    subDelegate: function (delegate) {
+      return delegate.slice(0,8);
+    },
+
+    timestamp2date: function (row, column) {
+      return moment(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD hh:mm:ss');
+    },
+
+    formatReward: function (row, column) {
+      return new BigNumber(row.reward).dividedBy(1e8).toFixed();
+    },
+
+    formatFees: function (row, column) {
+      return new BigNumber(row.fees).dividedBy(1e8).toFixed();
+    },
+
+    infiniteHandler: function ($state) {
+      setTimeout(async () => {
+        this.offset = this.loaded;
+        const query = {
+          offset: this.offset,
+          limit: this.limit,
+          username: username,
+          publicKey: publicKey,
+        };
+
+        console.log('offset', this.offset);
+   
+        try {
+          const newBlocks = (await connection.api.Delegate.ownProducedBlocks(query)).blocks;
+          this.blocks.push(...newBlocks);
+
+          if (this.blocks.length >= 0) {
+            this.loading = false;
+          }
+
+          this.loaded += newBlocks.length;
+          $state.loaded();
+          if (newBlocks.length === 0) {
+            $state.complete();
+          }
+        } catch (error) {
+          console.log(error.message);
+          $state.complete();
+        }
+        
+      }, 100);
+    },
+    
     updatePage: async function (username, publicKey) {
       try {
         let delegate = null;
@@ -118,7 +216,7 @@ export default {
 
       console.log(`delegate: ${JSON.stringify(delegate, null, 2)}`);
       this.delegate = delegate;
-      this.publicKey = delegate.publicKey.slice(0, 8);
+      this.publicKey = delegate.publicKey;
       this.trs = delegate.tid.slice(0, 8);
       this.rewards = new BigNumber(delegate.rewards).dividedBy(1e8).toFixed();
       } catch (error) {
@@ -129,8 +227,8 @@ export default {
   },
 
   async mounted() {
-    const username = this.$route.query.username;
-    const publicKey = this.$route.query.publicKey;
+    this.username = this.$route.query.username;
+    this.publicKey = this.$route.query.publicKey;
     console.log(`publicKey: ${publicKey}`);
     
     await this.updatePage(username, publicKey);
