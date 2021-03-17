@@ -63,7 +63,7 @@
     </b-card>
 
     <b-card title="Produced Blocks" class="shadow">
-      <el-table :data="blocks" stripe style="width: 100%; margin: auto;" height="500" v-loading="loading">
+      <el-table :data="blocks" stripe style="width: 100%; margin: auto;" v-loading="loading">
         <el-table-column prop="height" align="center" label="Height" width="80">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
@@ -89,15 +89,15 @@
             </nuxt-link>
           </template>
         </el-table-column>
-        
-        <infinite-loading
-          slot="append"
-          @infinite="infiniteHandler"
-          force-use-infinite-wrapper=".el-table__body-wrapper">
-          <div slot="no-more"></div>
-        </infinite-loading>
-
       </el-table>
+      <el-pagination
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="10"
+        layout="prev, pager, next"
+        :total="blocksCount"
+        align="center"
+      ></el-pagination>
     </b-card>
 
   </el-container>
@@ -135,11 +135,12 @@ export default {
       trs: '',
       rewards: '',
       blocks: [],
-      limit: 50,
+      blocksCount: 0,
       offset: 0,
-      loaded: 0,
       loading: true,
-      orderBy: 'height:desc',
+      currentBlocks: [],
+      currentPage: 1,
+      pageSize: 10,
     }
   },
 
@@ -163,39 +164,6 @@ export default {
     formatFees: function (row, column) {
       return new BigNumber(row.fees).dividedBy(1e8).toFixed();
     },
-
-    infiniteHandler: function ($state) {
-      setTimeout(async () => {
-        this.offset = this.loaded;
-        const query = {
-          offset: this.offset,
-          limit: this.limit,
-          username: username,
-          publicKey: publicKey,
-        };
-
-        console.log('offset', this.offset);
-   
-        try {
-          const newBlocks = (await connection.api.Delegate.ownProducedBlocks(query)).blocks;
-          this.blocks.push(...newBlocks);
-
-          if (this.blocks.length >= 0) {
-            this.loading = false;
-          }
-
-          this.loaded += newBlocks.length;
-          $state.loaded();
-          if (newBlocks.length === 0) {
-            $state.complete();
-          }
-        } catch (error) {
-          console.log(error.message);
-          $state.complete();
-        }
-        
-      }, 100);
-    },
     
     updatePage: async function (username, publicKey) {
       try {
@@ -211,19 +179,47 @@ export default {
           const result = await connection.api.Delegate.getDelegateByPubKey(publicKey);
           if (result.success) {
               delegate = result.delegate;
+          }
         }
-      }
 
-      console.log(`delegate: ${JSON.stringify(delegate, null, 2)}`);
-      this.delegate = delegate;
-      this.publicKey = delegate.publicKey;
-      this.trs = delegate.tid.slice(0, 8);
-      this.rewards = new BigNumber(delegate.rewards).dividedBy(1e8).toFixed();
+        console.log(`delegate: ${JSON.stringify(delegate, null, 2)}`);
+        this.delegate = delegate;
+        this.publicKey = delegate.publicKey;
+        this.trs = delegate.tid.slice(0, 8);
+        this.rewards = new BigNumber(delegate.rewards).dividedBy(1e8).toFixed();
+
+        const query = {
+          offset: this.offset,
+          publicKey: this.publicKey,
+        }
+
+        this.blocks = (await connection.api.Delegate.ownProducedBlocks(query)).blocks;
+        this.blocksCount = this.blocks.length();
+
+        if (this.blocks.length >= 0) {
+            this.loading = false;
+        }
       } catch (error) {
         console.log(`error(delegate-detail): ${JSON.stringify(error && error.response && error.response.data, null, 2)}`);
         error({ statusCode: 404, message: 'Oops...' })
       }
-    }
+    },
+
+    handleCurrentChange(currentPage) {
+      this.currentPage = currentPage;
+      this.changePage(this.blocks, currentPage);
+    },
+
+    changePage(list, currentPage) {
+      let from = (currentPage - 1) * this.pageSize;
+      let to = currentPage * this.pageSize;
+      this.currentBlocks = [];
+      for (; from < to; from++) {
+        if (list[from]) {
+          this.currentBlocks.push(list[from]);
+        }
+      }
+    },
   },
 
   async mounted() {
@@ -232,6 +228,7 @@ export default {
     console.log(`publicKey: ${publicKey}`);
     
     await this.updatePage(username, publicKey);
+    this.handleCurrentChange(1);
   }
 };
 
