@@ -64,7 +64,7 @@
 
     <!-- <b-card :header="formatTitle" class="shadow mt-4"> -->
     <b-card :title="blockTitle" class="shadow mt-4">
-      <el-table :data="blocks" stripe style="width: 100%; margin: auto;" v-loading="loading">
+      <el-table :data="currentBlocks" stripe style="width: 100%; margin: auto;" v-loading="loading">
         <el-table-column prop="height" align="center" label="Height" width="80">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
@@ -192,6 +192,7 @@ export default {
         this.trs = delegate.tid.slice(0, 8);
         this.rewards = new BigNumber(delegate.rewards).dividedBy(1e8).toFixed();
         this.blockTitle = 'Produced Blocks ' + '(total: ' + delegate.producedBlocks + ')';
+        this.blocksCount = new BigNumber(delegate.producedBlocks).toNumber();
 
         const query = {
           offset: this.offset,
@@ -199,7 +200,6 @@ export default {
         }
 
         this.blocks = (await connection.api.Delegate.ownProducedBlocks(query)).blocks;
-        this.blocksCount = this.blocks.length;
 
         if (this.blocks.length >= 0) {
             this.loading = false;
@@ -210,8 +210,18 @@ export default {
       }
     },
 
-    handleCurrentChange(currentPage) {
+    handleCurrentChange: async function (currentPage) {
       this.currentPage = currentPage;
+      const currentFrom = (currentPage - 1) * this.pageSize;
+      while (currentFrom > this.blocks.length) {
+        const offset = this.blocks.length;
+        const query = {
+          offset: offset,
+          publicKey: this.publicKey,
+        }
+        const newBlocks = (await connection.api.Delegate.ownProducedBlocks(query)).blocks;
+        this.blocks = this.blocks.concat(newBlocks);
+      }
       this.changePage(this.blocks, currentPage);
     },
 
@@ -243,7 +253,7 @@ export default {
     }
     
     await this.updatePage(this.username, this.publicKey);
-    this.handleCurrentChange(1);
+    await this.handleCurrentChange(1);
   }
 };
 
