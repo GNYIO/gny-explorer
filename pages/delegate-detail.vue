@@ -62,7 +62,8 @@
       </el-row>
     </b-card>
 
-    <b-card :title="formatTitle" class="shadow">
+    <!-- <b-card :header="formatTitle" class="shadow mt-4"> -->
+    <b-card :title="blockTitle" class="shadow mt-4">
       <el-table :data="blocks" stripe style="width: 100%; margin: auto;" v-loading="loading">
         <el-table-column prop="height" align="center" label="Height" width="80">
           <template v-slot:default="table">
@@ -104,7 +105,9 @@
 </template>
 
 <script>
+import moment from 'moment';
 import * as gnyClient from '@gny/client';
+import { slots } from '@gny/utils';
 import BigNumber from 'bignumber.js';
 
 const connection = new gnyClient.Connection(
@@ -141,6 +144,7 @@ export default {
       currentBlocks: [],
       currentPage: 1,
       pageSize: 10,
+      blockTitle:'',
     }
   },
 
@@ -163,10 +167,6 @@ export default {
 
     formatFees: function (row, column) {
       return new BigNumber(row.fees).dividedBy(1e8).toFixed();
-    },
-
-    formatTitle: function () {
-      return 'Produced Blocks ' + '(total: ' + this.blocksCount + ')';
     },
     
     updatePage: async function (username, publicKey) {
@@ -191,6 +191,7 @@ export default {
         this.publicKey = delegate.publicKey;
         this.trs = delegate.tid.slice(0, 8);
         this.rewards = new BigNumber(delegate.rewards).dividedBy(1e8).toFixed();
+        this.blockTitle = 'Produced Blocks ' + '(total: ' + delegate.producedBlocks + ')';
 
         const query = {
           offset: this.offset,
@@ -226,12 +227,22 @@ export default {
     },
   },
 
+  computed: {
+    formatTitle() {
+      return 'Produced Blocks ' + '(total: ' + this.blocksCount + ')';
+    }
+  },
+
   async mounted() {
-    this.username = this.$route.query.username;
-    this.publicKey = this.$route.query.publicKey;
-    console.log(`publicKey: ${publicKey}`);
+    if (this.$route.query.hasOwnProperty('username')) {
+      this.username = this.$route.query.username;
+    }
+
+    if (this.$route.query.hasOwnProperty('publicKey')) {
+      this.publicKey = this.$route.query.publicKey;
+    }
     
-    await this.updatePage(username, publicKey);
+    await this.updatePage(this.username, this.publicKey);
     this.handleCurrentChange(1);
   }
 };
