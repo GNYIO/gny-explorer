@@ -62,7 +62,7 @@
       </el-row>
     </b-card>
 
-    <b-card title="Produced Blocks" class="shadow">
+    <b-card :title="formatTitle" class="shadow">
       <el-table :data="blocks" stripe style="width: 100%; margin: auto;" v-loading="loading">
         <el-table-column prop="height" align="center" label="Height" width="80">
           <template v-slot:default="table">
@@ -164,6 +164,10 @@ export default {
     formatFees: function (row, column) {
       return new BigNumber(row.fees).dividedBy(1e8).toFixed();
     },
+
+    formatTitle: function () {
+      return 'Produced Blocks ' + '(total: ' + this.blocksCount + ')';
+    },
     
     updatePage: async function (username, publicKey) {
       try {
@@ -194,7 +198,7 @@ export default {
         }
 
         this.blocks = (await connection.api.Delegate.ownProducedBlocks(query)).blocks;
-        this.blocksCount = this.blocks.length();
+        this.blocksCount = this.blocks.length;
 
         if (this.blocks.length >= 0) {
             this.loading = false;
