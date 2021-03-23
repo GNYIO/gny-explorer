@@ -62,7 +62,6 @@
       </el-row>
     </b-card>
 
-    <!-- <b-card :header="formatTitle" class="shadow mt-4"> -->
     <b-card :title="blockTitle" class="shadow mt-4">
       <el-table :data="currentBlocks" stripe style="width: 100%; margin: auto;" v-loading="loading">
         <el-table-column prop="height" align="center" label="Height" width="80">
@@ -99,6 +98,33 @@
         :total="blocksCount"
         align="center"
       ></el-pagination>
+    </b-card>
+
+    <b-card title="Voters" class="shadow mt-4">
+      <el-table :data="voters" stripe style="width: 100%; margin: auto;" v-loading="voteLoading">
+        <el-table-column prop="senderId" align="center" label="Address">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.address }}">
+              {{table.row.senderId.slice(0, 8)}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+        <el-table-column prop="lockAmount" align="center" label="Lock Amount" :formatter="formatLockAmount"></el-table-column>
+        <el-table-column prop="transactionId" align="center" label="Transaction ID">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: table.row.transactionId }}">
+              {{table.row.transactionId.slice(0, 8)}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+        <el-table-column prop="height" align="center" label="Block Height">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
+              {{table.row.height}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+      </el-table>
     </b-card>
 
   </el-container>
@@ -145,6 +171,8 @@ export default {
       currentPage: 1,
       pageSize: 10,
       blockTitle:'',
+      voters: [],
+      voteLoading: true,
     }
   },
 
@@ -167,6 +195,10 @@ export default {
 
     formatFees: function (row, column) {
       return new BigNumber(row.fees).dividedBy(1e8).toFixed();
+    },
+
+    formatLockAmount: function (row, column) {
+      return new BigNumber(row.lockAmount).dividedBy(1e8).toFixed();
     },
     
     updatePage: async function (username, publicKey) {
@@ -204,9 +236,43 @@ export default {
         if (this.blocks.length >= 0) {
             this.loading = false;
         }
+
+        const voterAccounts = (await connection.api.Delegate.getVoters(this.delegate.username)).accounts;
+
+        for (let i = 0; i < voterAccounts.length; ++i) {
+          const voter = await this.getVoterInfo(voterAccounts[i]);
+          this.voters.push(voter);
+        }
+
+        if (this.voters.length >= 0) {
+            this.voteLoading = false;
+        }
       } catch (error) {
         console.log(`error(delegate-detail): ${JSON.stringify(error && error.response && error.response.data, null, 2)}`);
         error({ statusCode: 404, message: 'Oops...' })
+      }
+    },
+
+    getVoterInfo: async function (account) {
+      let voter = {};
+      const query = {
+        senderId: account.address,
+        type: 4,
+      }
+      const transactions =  (await connection.api.Transaction.getTransactions(query)).transactions;
+
+      console.log({transactions});
+
+      for (let i = 0; i < transactions.length; ++i) {
+        const voteList = transactions[i].args;
+        if (voteList.includes(this.delegate.username)) {
+          voter['transactionId'] = transactions[i].id;
+          voter['height'] = transactions[i].height;
+          voter['senderId'] = transactions[i].senderId;
+          voter['lockAmount'] = account.lockAmount;
+
+          return voter;
+        }
       }
     },
 
