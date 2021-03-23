@@ -261,8 +261,6 @@ export default {
       }
       const transactions =  (await connection.api.Transaction.getTransactions(query)).transactions;
 
-      console.log({transactions});
-
       for (let i = 0; i < transactions.length; ++i) {
         const voteList = transactions[i].args;
         if (voteList.includes(this.delegate.username)) {
