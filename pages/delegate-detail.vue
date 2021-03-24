@@ -104,7 +104,7 @@
       <el-table :data="voters" stripe style="width: 100%; margin: auto;" v-loading="voteLoading">
         <el-table-column prop="senderId" align="center" label="Address">
           <template v-slot:default="table">
-            <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.address }}">
+            <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.senderId }}">
               {{table.row.senderId.slice(0, 8)}}
             </nuxt-link>
           </template>
