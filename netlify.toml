@@ -9,4 +9,5 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    Content-Security-Policy = "default-src 'self' *.gny.io;"
+    Content-Security-Policy = "default-src *.gny.io; img-src 'self';"
+    
