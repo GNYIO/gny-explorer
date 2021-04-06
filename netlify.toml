@@ -6,3 +6,8 @@
   # functions build directory
   functions = "functions-build"
   framework = "#custom"
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self' 'unsafe-inline' 'unsafe-eval' *.gny.io;"
+    
