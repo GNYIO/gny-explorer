@@ -70,6 +70,7 @@ export default {
     },
 
     formatFee: function (row, column) {
+      BigNumber.set({ DECIMAL_PLACES: 2 });
       return new BigNumber(row.fee).dividedBy(1e8).toFixed();
     },
 

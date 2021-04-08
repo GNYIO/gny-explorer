@@ -181,11 +181,13 @@ export default {
 
     prettyPrintAmount: function (row, column) {
       const prec = Math.pow(10, row.precision);
+      BigNumber.set({ DECIMAL_PLACES: 2 });
       return new BigNumber(row.amount).dividedBy(prec).toFixed();
     },
 
     prettyPrintAssetAmount: function (row, column) {
       const prec = Math.pow(10, row.precision);
+      BigNumber.set({ DECIMAL_PLACES: 2 });
       return new BigNumber(row.balance).dividedBy(prec).toFixed();
     },
 

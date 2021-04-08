@@ -83,6 +83,7 @@ export default {
     },
 
     formatFees: function (row, column) {
+      BigNumber.set({ DECIMAL_PLACES: 2 });
       return new BigNumber(row.fees).dividedBy(1e8).toFixed();
     },
 

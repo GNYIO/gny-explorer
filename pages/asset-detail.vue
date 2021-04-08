@@ -264,10 +264,12 @@ export default {
     },
 
     formatFee: function (row, column) {
+      BigNumber.set({ DECIMAL_PLACES: 2 });
       return new BigNumber(row.fee).dividedBy(this.precision).toFixed();
     },
 
     formatBalance: function (row, column) {
+      BigNumber.set({ DECIMAL_PLACES: 2 });
       return new BigNumber(row.balance).dividedBy(this.precision).toFixed();
     },
 
