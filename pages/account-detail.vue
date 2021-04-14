@@ -209,6 +209,8 @@ export default {
         }
 
         this.account = account;
+
+        BigNumber.set({ DECIMAL_PLACES: 4 });
         this.balance = new BigNumber(this.account.gny || this.account.balance).dividedBy(1e8).toFixed();
 
         if (account.isLocked) {

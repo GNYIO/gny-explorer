@@ -90,7 +90,7 @@
             prop="productivity"
             label="Productivity"
           ></el-table-column>
-          <el-table-column prop="approval" label="Approval %" width="110"></el-table-column>
+          <el-table-column prop="approval" label="Approval %" width="110" :formatter="roundApproval"></el-table-column>
         </el-table>
     </b-card>
   </el-container>
@@ -114,12 +114,18 @@ export default {
     },
 
     formatRewards: function (row, column) {
+      BigNumber.set({ DECIMAL_PLACES: 2 });
       return new BigNumber(row.rewards).dividedBy(1e8).toFixed();
     },
 
     formatFees: function (row, column) {
       BigNumber.set({ DECIMAL_PLACES: 2 });
       return new BigNumber(row.fees).dividedBy(1e8).toFixed();
+    },
+
+    roundApproval: function (row, column) {
+      BigNumber.set({ DECIMAL_PLACES: 4 });
+      return new BigNumber(row.approval).dividedBy(1).toFixed();
     },
   },
   data() {
