@@ -268,7 +268,7 @@ export default {
 
       switch (this.transaction.type) {
         case 0:
-          this.args[0] = new BigNumber(this.args[0]).dividedBy(1e8).toFixed();
+          this.args[0] = new BigNumber(this.args[0]).dividedBy(1e8).decimalPlaces(2).toFixed();
           break;
         case 1:
           this.username = this.args[0];
@@ -278,7 +278,7 @@ export default {
           break;
         case 3:
           this.lockHeight = new BigNumber(this.args[0]).toFixed();
-          this.amount = new BigNumber(this.args[1]).dividedBy(1e8).toFixed();
+          this.amount = new BigNumber(this.args[1]).dividedBy(1e8).decimalPlaces(2).toFixed();
           break;
         case 4:
         case 5:
@@ -291,12 +291,12 @@ export default {
         case 101:
           this.username = this.args[0];
           this.desc = JSON.stringify(this.args[1]);
-          this.maximum = new BigNumber(this.args[2]).dividedBy(1e8).toFixed();
+          this.maximum = new BigNumber(this.args[2]).dividedBy(1e8).decimalPlaces(2).toFixed();
           this.precision = this.args[3];
           break;
         case 102:
           this.currency = this.args[0];
-          this.amount = new BigNumber(this.args[1]).dividedBy(1e8).toFixed();
+          this.amount = new BigNumber(this.args[1]).dividedBy(1e8).decimalPlaces(2).toFixed();
           break;
         case 103:
           this.currency = this.args[0];
@@ -306,12 +306,12 @@ export default {
           const precisionRaw = (await connection.api.Uia.getAsset(name)).asset.precision;
           const precision = Math.pow(10, precisionRaw);
 
-          this.amount = new BigNumber(this.args[1]).dividedBy(precision).toFixed();
+          this.amount = new BigNumber(this.args[1]).dividedBy(precision).decimalPlaces(2).toFixed();
           this.recipientId = this.args[2];
           break;
       }
 
-      this.transaction.fee = new BigNumber(this.transaction.fee).dividedBy(1e8).toFixed();
+      this.transaction.fee = new BigNumber(this.transaction.fee).dividedBy(1e8).decimalPlaces(2).toFixed();
 
       try {
         const currentHeight = (await connection.api.Block.getHeight()).height;

@@ -79,12 +79,11 @@ export default {
     },
 
     formatReward: function (row, column) {
-      return new BigNumber(row.reward).dividedBy(1e8).toFixed();
+      return new BigNumber(row.reward).dividedBy(1e8).decimalPlaces(2).toFixed();
     },
 
     formatFees: function (row, column) {
-      BigNumber.set({ DECIMAL_PLACES: 2 });
-      return new BigNumber(row.fees).dividedBy(1e8).toFixed();
+      return new BigNumber(row.fees).dividedBy(1e8).decimalPlaces(2).toFixed();
     },
 
     infiniteHandler: function ($state) {

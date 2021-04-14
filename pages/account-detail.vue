@@ -181,14 +181,12 @@ export default {
 
     prettyPrintAmount: function (row, column) {
       const prec = Math.pow(10, row.precision);
-      BigNumber.set({ DECIMAL_PLACES: 2 });
-      return new BigNumber(row.amount).dividedBy(prec).toFixed();
+      return new BigNumber(row.amount).dividedBy(prec).decimalPlaces(2).toFixed();
     },
 
     prettyPrintAssetAmount: function (row, column) {
       const prec = Math.pow(10, row.precision);
-      BigNumber.set({ DECIMAL_PLACES: 2 });
-      return new BigNumber(row.balance).dividedBy(prec).toFixed();
+      return new BigNumber(row.balance).dividedBy(prec).decimalPlaces(2).toFixed();
     },
 
     updatePage: async function (username, address) {
@@ -209,12 +207,10 @@ export default {
         }
 
         this.account = account;
-
-        BigNumber.set({ DECIMAL_PLACES: 4 });
-        this.balance = new BigNumber(this.account.gny || this.account.balance).dividedBy(1e8).toFixed();
+        this.balance = new BigNumber(this.account.gny || this.account.balance).dividedBy(1e8).decimalPlaces(4).toFixed();
 
         if (account.isLocked) {
-          this.lockAmount = new BigNumber(account.lockAmount).dividedBy(1e8).toFixed();
+          this.lockAmount = new BigNumber(account.lockAmount).dividedBy(1e8).decimalPlaces(2).toFixed();
         }
 
         if (account.publicKey) {
