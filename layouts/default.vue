@@ -38,6 +38,10 @@
         </b-collapse>
       </b-navbar>
     </el-header>
+    <el-alert
+      title="Network is down."
+      type="warning" v-if="!height">
+    </el-alert>
     <el-main>
       <nuxt />
 
@@ -46,24 +50,34 @@
       © 2021 by gny.io Limited
     </el-footer>
   </el-container>
-
 </template>
 
 <script>
 import Logo from '~/components/Logo.vue';
 import Search from '~/components/Search.vue';
+import * as gnyClient from '@gny/client';
+
+const connection = new gnyClient.Connection(
+  process.env['GNY_ENDPOINT'],
+  Number(process.env['GNY_PORT']),
+  process.env['GNY_NETWORK'],
+  JSON.parse(process.env['GNY_HTTPS'] || false),
+);
+
 
 
 export default {
   data() {
     return {
       network: '',
+      height: '',
     }
   },
 
-  mounted() {
+  async mounted() {
     const networkEnv = process.env['GNY_NETWORK'];
     this.network = networkEnv.charAt(0).toUpperCase() + networkEnv.slice(1);
+    this.height = (await connection.api.Block.getHeight()).height;
   },
 
   components: {
