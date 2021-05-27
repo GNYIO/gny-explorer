@@ -55,7 +55,7 @@ export default {
 
       // settings for peer graph
       options: {
-        autoResize: true,
+        autoResize: false,
         height: '500px',
         width: '100%',
 
