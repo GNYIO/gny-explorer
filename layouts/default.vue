@@ -40,7 +40,9 @@
     </el-header>
     <el-alert
       title="Network is down."
-      type="warning" v-if="!height">
+      type="warning" 
+      v-if="!height"
+      show-icon>
     </el-alert>
     <el-main>
       <nuxt />
@@ -135,6 +137,13 @@ a {
   margin-right: 30px;
   display: inline-block;
   vertical-align: middle;
+}
+
+.el-alert {
+  position: fixed;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40%;
 }
 
 .el-footer {
