@@ -62,7 +62,7 @@
     </b-card>
 
     <b-card title="Transactions" class="shadow mt-4">
-      <el-table @row-click="rowClick" :data="transactions" stripe style="width: 95%;">
+      <el-table @row-click="transactionRowClick" :data="transactions" stripe style="width: 95%;">
         <el-table-column prop="height" align="center" label="Height" width="150">
           <template v-slot:default="table">
              <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}" tag="span">
@@ -150,6 +150,11 @@ export default {
   },
 
   methods: {
+    transactionRowClick: function(row) {
+        console.log(row.id);
+        this.$router.push({name: 'transaction-detail', query: { id: row.id }});
+    },
+
     rowClick: function(row) {
         console.log(row.id);
         this.$router.push({name: 'transaction-detail', query: { id: row.tid }});
