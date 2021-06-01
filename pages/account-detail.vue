@@ -152,7 +152,7 @@ export default {
   methods: {
     rowClick: function(row) {
         console.log(row.id);
-        this.$router.push({name: 'transaction-detail', query: { id: row.id }});
+        this.$router.push({name: 'transaction-detail', query: { id: row.tid }});
     },
 
     subSenderId: function (row, column) {
