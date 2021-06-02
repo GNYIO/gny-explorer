@@ -55,7 +55,7 @@ export default {
 
       // settings for peer graph
       options: {
-        autoResize: false,
+        autoResize: true,
         height: '500px',
         width: '100%',
 
@@ -64,7 +64,8 @@ export default {
             to: {
               enabled: true,
             }
-          }
+          },
+          physics: false,
         },
 
         nodes: {
@@ -89,17 +90,10 @@ export default {
     const result = await getAllPeers(this.$axios);
 
     this.graphNodes.push(...result.visNodes);
-    console.log(JSON.stringify(this.graphNodes));
-
-    
 
     this.links.push(...result.visEdges);
-    console.log(JSON.stringify(this.links));
-
     console.log(`length of result.peersList ${result.peersList.length}`);
     this.allNodes.push(...result.peersList);
-    
-    console.log(JSON.stringify(this.allNodes));
     
     if (this.allNodes.length >= 0) {
       this.loading = false;
