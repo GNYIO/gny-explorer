@@ -89,15 +89,17 @@ export default {
     const result = await getAllPeers(this.$axios);
 
     this.graphNodes.push(...result.visNodes);
-    console.log(this.graphNodes);
+    console.log(JSON.stringify(this.graphNodes));
+
+    
 
     this.links.push(...result.visEdges);
-    console.log(this.links);
-    
+    console.log(JSON.stringify(this.links));
+
     console.log(`length of result.peersList ${result.peersList.length}`);
     this.allNodes.push(...result.peersList);
-
-    console.log(this.allNodes);
+    
+    console.log(JSON.stringify(this.allNodes));
     
     if (this.allNodes.length >= 0) {
       this.loading = false;
