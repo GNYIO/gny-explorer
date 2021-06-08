@@ -146,6 +146,8 @@ export default {
       currentTransfers: [],
       currentPage: 1,
       pageSize: 10,
+      limit: 100,
+      offset: 0,
     }
   },
 
@@ -243,26 +245,33 @@ export default {
         console.log(this.assets);
 
         this.transfersResult = await connection.api.Transfer.getRoot({
-          ownerId: senderId
+          ownerId: senderId,
+          limit: this.limit,
+          offset: this.offset,
         });
 
         this.transfers = this.transfersResult.transfers;
-        console.log(this.transfers.length);
+        this.transfersCount = this.transfersResult.count;
+        
 
-        for (let i = 0; i < this.transfers.length; i++) {
-          const currency = this.transfers[i].currency;
-          if (currency === 'GNY') {
-            this.transfers[i]['precision'] = 8;
-          } else {
-            const precision = this.assets.filter(asset => {
-              return asset.currency === currency;
-            })[0].precision;
-            this.transfers[i]['precision'] = precision;
-          }
+        let totalCount = this.transfers.length;
+        let newTransfers = [];
+ 
+        while (totalCount < this.transfersCount) {
+          this.offset += this.limit;
+
+          newTransfers = (await connection.api.Transfer.getRoot({
+            ownerId: senderId,
+            limit: this.limit,
+            offset: this.offset,
+          })).transfers;
+
+          this.transfers.push(...newTransfers);
+          totalCount += newTransfers.length;
+
         }
 
-        this.transfersCount = this.transfersResult.count;
-
+        this.transfers = this.addPrecision(this.transfers);
         
       } catch (error) {
         console.log(error && error.response && error.response.data);
@@ -284,6 +293,22 @@ export default {
           this.currentTransfers.push(list[from]);
         }
       }
+    },
+
+    addPrecision(list) {
+      for (let i = 0; i < list.length; i++) {
+        const currency = list[i].currency;
+        if (currency === 'GNY') {
+          list[i]['precision'] = 8;
+        } else {
+          const precision = this.assets.filter(asset => {
+            return asset.currency === currency;
+          })[0].precision;
+          list[i]['precision'] = precision;
+        }
+      }
+
+      return list;
     },
   },
 
