@@ -88,7 +88,8 @@
           ></el-table-column>
           <el-table-column
             prop="productivity"
-            label="Productivity"
+            label="Productivity %"
+            :formatter="formatProductivity"
           ></el-table-column>
           <el-table-column prop="approval" label="Approval %" width="110"></el-table-column>
         </el-table>
@@ -120,6 +121,10 @@ export default {
     formatFees: function (row, column) {
       BigNumber.set({ DECIMAL_PLACES: 2 });
       return new BigNumber(row.fees).dividedBy(1e8).toFixed();
+    },
+
+    formatProductivity: function (row, column) {
+      return new BigNumber(row.productivity).times(100).decimalPlaces(4).toFixed();
     },
   },
   data() {
