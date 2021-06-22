@@ -96,9 +96,8 @@ export default {
     this.allNodes.push(...result.peersList);
 
     this.allNodes.sort((a, b) => {
-      return new BigNumber(a.height).gt(b.height);
-    })
-
+      return new BigNumber(a.height).lt(b.height);
+    });
     
     if (this.allNodes.length >= 0) {
       this.loading = false;
