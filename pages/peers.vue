@@ -94,6 +94,11 @@ export default {
     this.links.push(...result.visEdges);
     console.log(`length of result.peersList ${result.peersList.length}`);
     this.allNodes.push(...result.peersList);
+
+    this.allNodes.sort((a, b) => {
+      return new BigNumber(a.height).gt(b.height);
+    })
+
     
     if (this.allNodes.length >= 0) {
       this.loading = false;
