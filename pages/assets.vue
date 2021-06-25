@@ -10,7 +10,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="desc" align="center" label="Description" width="180"></el-table-column>
-        <el-table-column prop="timestamp" align="center" label="Timestamp" width="180" :formatter="timestamp2date"></el-table-column>
+        <el-table-column prop="timestamp" align="center" label="Forged Time" width="180" :formatter="timestamp2date"></el-table-column>
         <el-table-column prop="leftToIssuePretty" align="center" label="Left To Issue" width="180"></el-table-column>
         <el-table-column prop="issuerId" align="center" label="Issuer" width="120" :formatter="subIssuerId">
           <template v-slot:default="table">
