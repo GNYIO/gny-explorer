@@ -64,7 +64,8 @@ export default {
             to: {
               enabled: true,
             }
-          }
+          },
+          physics: false,
         },
 
         nodes: {
@@ -89,10 +90,15 @@ export default {
     const result = await getAllPeers(this.$axios);
 
     this.graphNodes.push(...result.visNodes);
-    this.links.push(...result.visEdges);
 
+    this.links.push(...result.visEdges);
     console.log(`length of result.peersList ${result.peersList.length}`);
     this.allNodes.push(...result.peersList);
+
+    this.allNodes.sort((a, b) => {
+      return new BigNumber(a.system.lastBlock.height).lt(b.system.lastBlock.height);
+    });
+    
     if (this.allNodes.length >= 0) {
       this.loading = false;
     }
