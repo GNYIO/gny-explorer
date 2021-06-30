@@ -4,7 +4,9 @@
         <el-row>
             <el-col :span="8">
             All Delegates
-            <p>{{count}}</p>
+            <p v-if="count">{{count}}</p>
+            <br v-if="count === ''">
+            <i v-if="count === ''"  class="el-icon-loading"></i>
             </el-col>
             <el-col :span="8">
               Most Produced Blocks
@@ -23,7 +25,10 @@
         <el-row>
             <el-col :span="8">
                 Forging Delegates
-                <p>101</p>
+                <!-- <p>{{forgingCount}}</p> -->
+                <p v-if="forgingCount">{{forgingCount}}</p>
+                <br v-if="forgingCount === 0">
+                <i v-if="forgingCount === 0"  class="el-icon-loading"></i>
             </el-col>
             <el-col :span="8">
                 Most Produced Blocks Delegate
@@ -130,7 +135,8 @@ export default {
   data() {
     return {
       allDelegates: [],
-      count: 101,
+      count: '',
+      forgingCount: 0,
 
       mostProducedBlocks: '',
       mostProducedBlocksDelegate: '',
@@ -199,6 +205,17 @@ export default {
         if (this.allDelegates.length >= 0) {
           this.loading = false;
         }
+
+        let enabledCount = 0;
+
+        for (const delegate of this.allDelegates) {
+          const enabled = (await connection.api.Delegate.forgingStatus(delegate.publicKey)).enabled;
+          if (enabled) {
+            enabledCount += 1;
+          }
+        }
+        this.forgingCount = enabledCount;
+        
       } else {
         this.allDelegates = [];
       }
