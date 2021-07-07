@@ -42,11 +42,11 @@
           </el-col>
           <el-col :span="8">
               Approval
-              <p>{{delegate.approval}}</p>
+              <p>{{delegate.approval}} %</p>
           </el-col>
           <el-col :span="8">
               Productivity
-              <p>{{delegate.productivity}} / 1</p>
+              <p>{{delegate.productivity}} %</p>
           </el-col>
       </el-row>
       
@@ -217,6 +217,9 @@ export default {
               delegate = result.delegate;
           }
         }
+
+        delegate.approval = new BigNumber(delegate.approval).decimalPlaces(4).toFixed();
+        delegate.productivity = new BigNumber(delegate.productivity).times(100).decimalPlaces(4).toFixed();
 
         console.log(`delegate: ${JSON.stringify(delegate, null, 2)}`);
         this.delegate = delegate;
