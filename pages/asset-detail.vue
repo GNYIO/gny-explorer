@@ -264,11 +264,11 @@ export default {
     },
 
     formatFee: function (row, column) {
-      return new BigNumber(row.fee).dividedBy(this.precision).toFixed();
+      return new BigNumber(row.fee).dividedBy(this.precision).decimalPlaces(2).toFixed();
     },
 
     formatBalance: function (row, column) {
-      return new BigNumber(row.balance).dividedBy(this.precision).toFixed();
+      return new BigNumber(row.balance).dividedBy(this.precision).decimalPlaces(2).toFixed();
     },
 
     makeAssetPretty: function(asset) {
@@ -283,11 +283,11 @@ export default {
         name: asset.name,
         precision: asset.precision,
         maximum: asset.maximum,
-        maximumPretty: new BigNumber(asset.maximum).dividedBy(prec).toFixed(),
+        maximumPretty: new BigNumber(asset.maximum).dividedBy(prec).decimalPlaces(2).toFixed(),
         quantity: asset.quantity,
-        quantityPretty: new BigNumber(asset.quantity).dividedBy(prec).toFixed(),
+        quantityPretty: new BigNumber(asset.quantity).dividedBy(prec).decimalPlaces(2).toFixed(),
         leftToIssue: difference,
-        leftToIssuePretty: new BigNumber(difference).dividedBy(prec).toFixed(),
+        leftToIssuePretty: new BigNumber(difference).dividedBy(prec).decimalPlaces(2).toFixed(),
         desc: asset.desc,
         issuerId: asset.issuerId,
       };

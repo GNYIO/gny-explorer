@@ -190,15 +190,15 @@ export default {
     },
 
     formatReward: function (row, column) {
-      return new BigNumber(row.reward).dividedBy(1e8).toFixed();
+      return new BigNumber(row.reward).dividedBy(1e8).decimalPlaces(2).toFixed();
     },
 
     formatFees: function (row, column) {
-      return new BigNumber(row.fees).dividedBy(1e8).toFixed();
+      return new BigNumber(row.fees).dividedBy(1e8).decimalPlaces(2).toFixed();
     },
 
     formatLockAmount: function (row, column) {
-      return new BigNumber(row.lockAmount).dividedBy(1e8).toFixed();
+      return new BigNumber(row.lockAmount).dividedBy(1e8).decimalPlaces(2).toFixed();
     },
     
     updatePage: async function (username, publicKey) {
@@ -222,7 +222,7 @@ export default {
         this.delegate = delegate;
         this.publicKey = delegate.publicKey;
         this.trs = delegate.tid.slice(0, 8);
-        this.rewards = new BigNumber(delegate.rewards).dividedBy(1e8).toFixed();
+        this.rewards = new BigNumber(delegate.rewards).dividedBy(1e8).decimalPlaces(2).toFixed();
         this.blockTitle = 'Produced Blocks ' + '(total: ' + delegate.producedBlocks + ')';
         this.blocksCount = new BigNumber(delegate.producedBlocks).toNumber();
 
