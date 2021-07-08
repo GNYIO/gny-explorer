@@ -5,7 +5,7 @@
         <el-col :span="24" >
           Block ID
           <p>
-            {{block.id}}
+            {{block.id}}  <i class="el-icon-copy-document" @click="copyId"></i>
           </p>
         </el-col>
       </el-row>
@@ -109,6 +109,14 @@ export default {
   },
 
   methods: {
+    copyId: async function() {
+      try {
+        await this.$copyText(this.block.id);
+      } catch (e) {
+        console.error(e);
+      }
+    },
+
     rowClick: function(row) {
         console.log(row.id);
         this.$router.push({name: 'transaction-detail', query: { id: row.id }});
@@ -161,6 +169,10 @@ export default {
 </script>
 
 <style scoped>
+i {
+    cursor: pointer;
+}
+
 .el-container {
   max-width: 1000px;
   box-sizing: border-box;
