@@ -1,6 +1,6 @@
 <template>
   <b-card title="Latest Blocks" class="shadow mt-4">
-    <el-table :data="blocks" stripe style="width: 95%; margin: auto;" v-loading="loading">
+    <el-table :data="blocks" stripe style="width: 95%; margin: auto;" v-loading="blocksLoading">
       <el-table-column prop="height" align="center" label="Height" width="150">
         <template v-slot:default="table">
           <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}" tag="span" :formatter="subID">
@@ -43,12 +43,7 @@ const connection = new gnyClient.Connection(
 );
 
 export default {
-  data() {
-    return {
-      blocks: [],
-      loading: true,
-    }
-  },
+  props: ['blocks', 'blocksLoading'],
 
   methods: {
     subID: function (row, column) {
@@ -64,16 +59,6 @@ export default {
     },
   },
 
-  async mounted() {
-    const limit = 5;
-    const offset = 0;
-    const orderBy = 'height:desc';
-
-    this.blocks = (await connection.api.Block.getBlocks(offset, limit, orderBy)).blocks;
-    if (this.blocks.length > 0) {
-      this.loading = false;
-    }
-  },
 }
 </script>
 

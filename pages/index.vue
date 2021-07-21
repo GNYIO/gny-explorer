@@ -2,7 +2,7 @@
   <el-container direction="vertical">
     <basic :blocksCount="blocksCount" :transactions="transactions" :latestHeight="latestHeight"></basic>
 
-    <Block />
+    <block :blocks="blocks" :blocksLoading="blocksLoading"></block>
 
     <Transaction />
   </el-container>
@@ -40,10 +40,22 @@ export default {
     const height = (await connection.api.Block.getHeight()).height;
     const blocksCount = new BigNumber(height).plus(1).toFixed();
     const transactions = String((await connection.api.Transaction.getTransactions({})).count);
+
+    let blocksLoading = true;
+    const limit = 5;
+    const offset = 0;
+    const orderBy = 'height:desc';
+
+    const blocks = (await connection.api.Block.getBlocks(offset, limit, orderBy)).blocks;
+    if (blocks.length > 0) {
+      blocksLoading = false;
+    }
     return {
         blocksCount : blocksCount,
         transactions: transactions,
         latestHeight: height,
+        blocks: blocks,
+        blocksLoading: blocksLoading,
     }
   },
 
