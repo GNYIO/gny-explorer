@@ -4,7 +4,9 @@
         <el-row>
             <el-col :span="8">
             All Delegates
-            <p>{{count}}</p>
+            <p v-if="count">{{count}}</p>
+            <br v-if="count === ''">
+            <i v-if="count === ''"  class="el-icon-loading"></i>
             </el-col>
             <el-col :span="8">
               Most Produced Blocks
@@ -23,7 +25,10 @@
         <el-row>
             <el-col :span="8">
                 Forging Delegates
-                <p>101</p>
+                <!-- <p>{{forgingCount}}</p> -->
+                <p v-if="forgingCount">{{forgingCount}}</p>
+                <br v-if="forgingCount === 0">
+                <i v-if="forgingCount === 0"  class="el-icon-loading"></i>
             </el-col>
             <el-col :span="8">
                 Most Produced Blocks Delegate
@@ -52,11 +57,12 @@
     </b-card>
     <b-card class="shadow mt-4">
       <el-table :data="allDelegates" stripe style="width: 100%" v-loading="loading">
-          <el-table-column prop="rate" label="Rank" width="60"></el-table-column>
+          <el-table-column prop="rate" label="Rank" width="60" align="center"></el-table-column>
           <el-table-column
             prop="username"
             label="Username"
             width="120"
+            align="center"
           >
             <template v-slot:default="table">
               <nuxt-link class="nuxt-link" :to="{ name: 'delegate-detail', query: { username: table.row.username }}">
@@ -68,30 +74,35 @@
             prop="producedBlocks"
             label="Produced Blocks"
             width="100"
+            align="center"
           ></el-table-column>
           <el-table-column
             prop="rewards"
             label="Rewards"
             width="80"
+            align="center"
             :formatter="formatRewards"
           ></el-table-column>
           <el-table-column
             prop="fees"
             label="Fees"
             width="100"
+            align="center"
             :formatter="formatFees"
           ></el-table-column>
           <el-table-column
             prop="missedBlocks"
             label="Missed Blocks"
             width="130"
+            align="center"
           ></el-table-column>
           <el-table-column
             prop="productivity"
             label="Productivity %"
+            align="center"
             :formatter="formatProductivity"
           ></el-table-column>
-          <el-table-column prop="approval" label="Approval %" width="110"></el-table-column>
+          <el-table-column prop="approval" label="Approval %" width="110" align="center"></el-table-column>
         </el-table>
     </b-card>
   </el-container>
@@ -130,7 +141,8 @@ export default {
   data() {
     return {
       allDelegates: [],
-      count: 101,
+      count: '',
+      forgingCount: 0,
 
       mostProducedBlocks: '',
       mostProducedBlocksDelegate: '',
@@ -199,6 +211,17 @@ export default {
         if (this.allDelegates.length >= 0) {
           this.loading = false;
         }
+
+        let enabledCount = 0;
+
+        for (const delegate of this.allDelegates) {
+          const enabled = (await connection.api.Delegate.forgingStatus(delegate.publicKey)).enabled;
+          if (enabled) {
+            enabledCount += 1;
+          }
+        }
+        this.forgingCount = enabledCount;
+
       } else {
         this.allDelegates = [];
       }
