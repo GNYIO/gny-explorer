@@ -50,23 +50,18 @@ const connection = new gnyClient.Connection(
 );
 
 export default {
+  props: ['blocks', 'transactions', 'latestHeight'],
+
   data() {
     return {
-      blocks: '',
-      transactions: '',
       dalegates: '',
-      latestHeight:'',
       size: 'loading',
       accounts: '',
     }
   },
 
   async mounted() {
-    const height = (await connection.api.Block.getHeight()).height;
-    this.blocks = new BigNumber(height).plus(1).toFixed();
     this.dalegates = (await connection.api.Delegate.getDelegates()).totalCount;
-    this.transactions = String((await connection.api.Transaction.getTransactions({})).count);
-    this.latestHeight = height;
     this.nodes = (await connection.api.Peer.getPeers()).count;
     this.accounts = (await connection.api.Account.countAccounts()).count;
   },
