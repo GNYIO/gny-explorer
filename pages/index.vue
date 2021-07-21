@@ -4,7 +4,7 @@
 
     <block :blocks="blocks" :blocksLoading="blocksLoading"></block>
 
-    <Transaction />
+    <transaction :latestTransactions="latestTransactions" :transLoading="transLoading"></transaction>
   </el-container>
 </template>
 
@@ -39,7 +39,7 @@ export default {
   async asyncData() {
     const height = (await connection.api.Block.getHeight()).height;
     const blocksCount = new BigNumber(height).plus(1).toFixed();
-    const transactions = String((await connection.api.Transaction.getTransactions({})).count);
+    const count = (await connection.api.Transaction.getTransactions({})).count;
 
     let blocksLoading = true;
     const limit = 5;
@@ -50,12 +50,27 @@ export default {
     if (blocks.length > 0) {
       blocksLoading = false;
     }
+
+    let transLoading = true;
+    const transOffset = count - 5;
+
+    const result = (await connection.api.Transaction.getTransactions({
+      limit: limit,
+      offset: transOffset,
+    })).transactions;
+
+    if (result.length > 0) {
+      transLoading = false;
+    }
+
     return {
         blocksCount : blocksCount,
-        transactions: transactions,
+        transactions: count,
         latestHeight: height,
         blocks: blocks,
         blocksLoading: blocksLoading,
+        latestTransactions: result,
+        transLoading: transLoading,
     }
   },
 
