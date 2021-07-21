@@ -4,9 +4,9 @@
     <el-row class="basic">
       <el-col :span="8" >
         Blocks
-        <br v-if="blocks === ''">
-        <i v-if="blocks === ''"  class="el-icon-loading"></i>
-        <p v-if="blocks">{{blocks}}</p>
+        <br v-if="blocksCount === ''">
+        <i v-if="blocksCount === ''"  class="el-icon-loading"></i>
+        <p v-if="blocksCount">{{blocksCount}}</p>
       </el-col>
       <el-col :span="8" >
         Transactions
@@ -26,7 +26,7 @@
         Accounts
         <br v-if="accounts === ''">
         <i v-if="accounts === ''"  class="el-icon-loading"></i>
-        <p v-if="size">{{accounts}}</p>
+        <p v-if="accounts">{{accounts}}</p>
       </el-col>
       <el-col :span="16" >
         Latest block height
@@ -39,7 +39,6 @@
 </template>
 
 <script>
-import BigNumber from 'bignumber.js';
 import * as gnyClient from '@gny/client';
 console.log(`endpoint: ${process.env['GNY_ENDPOINT']}`);
 const connection = new gnyClient.Connection(
@@ -50,23 +49,18 @@ const connection = new gnyClient.Connection(
 );
 
 export default {
+  props: ['blocksCount', 'transactions', 'latestHeight'],
+
   data() {
     return {
-      blocks: '',
-      transactions: '',
       dalegates: '',
-      latestHeight:'',
       size: 'loading',
       accounts: '',
     }
   },
 
   async mounted() {
-    const height = (await connection.api.Block.getHeight()).height;
-    this.blocks = new BigNumber(height).plus(1).toFixed();
     this.dalegates = (await connection.api.Delegate.getDelegates()).totalCount;
-    this.transactions = String((await connection.api.Transaction.getTransactions({})).count);
-    this.latestHeight = height;
     this.nodes = (await connection.api.Peer.getPeers()).count;
     this.accounts = (await connection.api.Account.countAccounts()).count;
   },
