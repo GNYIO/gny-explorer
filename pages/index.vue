@@ -1,6 +1,6 @@
 <template>
   <el-container direction="vertical">
-    <basic :blocks="blocks" :transactions="transactions" :latestHeight="latestHeight"></basic>
+    <basic :blocksCount="blocksCount" :transactions="transactions" :latestHeight="latestHeight"></basic>
 
     <Block />
 
@@ -38,10 +38,10 @@ export default {
 
   async asyncData() {
     const height = (await connection.api.Block.getHeight()).height;
-    const blocks = new BigNumber(height).plus(1).toFixed();
+    const blocksCount = new BigNumber(height).plus(1).toFixed();
     const transactions = String((await connection.api.Transaction.getTransactions({})).count);
     return {
-        blocks : blocks,
+        blocksCount : blocksCount,
         transactions: transactions,
         latestHeight: height,
     }

@@ -4,9 +4,9 @@
     <el-row class="basic">
       <el-col :span="8" >
         Blocks
-        <br v-if="blocks === ''">
-        <i v-if="blocks === ''"  class="el-icon-loading"></i>
-        <p v-if="blocks">{{blocks}}</p>
+        <br v-if="blocksCount === ''">
+        <i v-if="blocksCount === ''"  class="el-icon-loading"></i>
+        <p v-if="blocksCount">{{blocksCount}}</p>
       </el-col>
       <el-col :span="8" >
         Transactions
@@ -26,7 +26,7 @@
         Accounts
         <br v-if="accounts === ''">
         <i v-if="accounts === ''"  class="el-icon-loading"></i>
-        <p v-if="size">{{accounts}}</p>
+        <p v-if="accounts">{{accounts}}</p>
       </el-col>
       <el-col :span="16" >
         Latest block height
@@ -50,7 +50,7 @@ const connection = new gnyClient.Connection(
 );
 
 export default {
-  props: ['blocks', 'transactions', 'latestHeight'],
+  props: ['blocksCount', 'transactions', 'latestHeight'],
 
   data() {
     return {
