@@ -1,6 +1,6 @@
 <template>
   <b-card title="Latest Transactions" class="shadow mt-4">
-    <el-table :data="transactions" stripe style="width: 95%; margin: auto;" v-loading="loading">
+    <el-table :data="latestTransactions" stripe style="width: 95%; margin: auto;" v-loading="transLoading">
       <el-table-column prop="id" align="center" label="Transaction ID">
         <template v-slot:default="table">
           <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: table.row.id }}">
@@ -33,16 +33,11 @@
 
 <script>
 import moment from 'moment';
-import * as gnyClient from '@gny/client';
 import { slots } from '@gny/utils';
-const connection = new gnyClient.Connection(
-  process.env['GNY_ENDPOINT'],
-  Number(process.env['GNY_PORT']),
-  process.env['GNY_NETWORK'],
-  JSON.parse(process.env['GNY_HTTPS'] || false),
-);
 
 export default {
+  props: ['latestTransactions', 'transLoading'],
+
   methods: {
     subSenderId: function (row, column) {
       return row.senderId.slice(0,8);
@@ -52,30 +47,7 @@ export default {
       return moment(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD hh:mm:ss');
     },
   },
-  data() {
-    return {
-      count: 0,
-      transactions: null,
-      loading: true,
-    }
-  },
 
-  async mounted() {
-    const count = (await connection.api.Transaction.getTransactions({offset})).count;
-    
-    const limit = 5;
-    const offset = count - 5;
-
-    const result = (await connection.api.Transaction.getTransactions({
-      limit,
-      offset,
-    })).transactions;
-
-    this.transactions = result;
-    if (this.transactions.length > 0) {
-      this.loading = false;
-    }
-  },
 }
 </script>
 
