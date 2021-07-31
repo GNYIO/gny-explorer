@@ -69,7 +69,7 @@ export default {
         latestHeight: height,
         blocks: blocks,
         blocksLoading: blocksLoading,
-        latestTransactions: result,
+        latestTransactions: result.reverse(),
         transLoading: transLoading,
     }
   },
