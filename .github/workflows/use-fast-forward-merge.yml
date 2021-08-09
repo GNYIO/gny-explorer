@@ -1,0 +1,25 @@
+name: use fast forward merge
+on:
+  workflow_dispatch:
+    inputs:
+      fromBranch:
+        description: 'from branch'  
+        required: true
+        default: 'testnet'
+      targetBranch:
+        description: 'target branch'  
+        required: true
+        default: 'mainnet'
+
+jobs:
+  run-merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: GNYIO/actions-fast-forward-merge@main
+        with:
+          from_branch: ${{ github.event.inputs.fromBranch }}
+          to_branch: ${{ github.event.inputs.targetBranch }}
