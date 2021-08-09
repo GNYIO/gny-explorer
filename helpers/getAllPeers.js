@@ -10,7 +10,7 @@ const result = {
     peersList: [],
 };
 
-export async function getNode(axios, ip, port, network, https) {
+async function getNode(axios, ip, port, network, https) {
     const url = `.netlify/functions/serverless-http?ip=${ip}&port=${port}&networkType=${network}&https=${https}`;
     console.log(`getNode() url: ${url}`);
     const request = await axios.get(url);
@@ -97,14 +97,18 @@ function stripInfo(node) {
     }
 }
 
-export async function getRoot(axios) {
+async function getRoot(axios) {
     const root = await getNode(axios, ip, port, network, https);
     stripInfo(root);
 
     for (let i = 0; i < root.peers.length; ++i) {
         const one = root.peers[i];
-        const request = await getNode(axios, one.simple.host, Number(one.simple.port) -1, network, false);
-        stripInfo(request);
+        try {
+            const request = await getNode(axios, one.simple.host, Number(one.simple.port) -1, network, false);
+            stripInfo(request);
+        } catch (err) {
+            console.log(`error while trying to reach: "${one.simple.host}"`);
+        }
     }
 }
 
