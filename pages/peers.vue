@@ -4,6 +4,7 @@
     <b-card title="Connected Nodes" class="shadow mt-4">
       <el-table :data="allNodes" stripe style="width: 100%" v-loading="loading">
         <el-table-column prop="peersInfo.publicIp" label="IP"></el-table-column>
+        <el-table-column prop="system.p2p" label="p2p version"></el-table-column>
         <el-table-column prop="system.version" label="version" ></el-table-column>
         <el-table-column prop="system.lastBlock.height" label="height"></el-table-column>
         <el-table-column prop="system.lastBlock.behind" label="behind"></el-table-column>
