@@ -12,7 +12,7 @@
     "generate": "nuxt generate --spa"
   },
   "dependencies": {
-    "@gny/client": "^1.0.84",
+    "@gny/client": "^1.0.100",
     "@gny/extended-joi": "^1.0.84",
     "@gny/utils": "^1.0.84",
     "@nuxtjs/axios": "^5.12.5",
