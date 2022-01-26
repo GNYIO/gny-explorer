@@ -10,16 +10,24 @@ module.exports = {
   /*
   ** Headers of the page
   */
-  head: {
-    title: process.env.npm_package_name || '',
-    meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
-    ],
-    link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico?v2' }
-    ]
+  head() {
+    const capitalize = (word) => {
+      if (typeof word === 'string' && word.length >= 1) {
+        return word.charAt(0).toUpperCase() + word.slice(1);
+      }
+      return '';
+    };
+    return {
+      title: `GNY ${capitalize(process.env.GNY_NETWORK)} Explorer`,
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
+      ],
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico?v2' }
+      ]
+    }
   },
   /*
   ** Customize the progress-bar color
@@ -84,5 +92,6 @@ module.exports = {
     */
     extend (config, ctx) {
     }
-  }
+  },
+  telemetry: false,
 }
