@@ -82,13 +82,44 @@
       </el-table>
     </b-card>
 
-     <b-card title="Past Transfers" class="shadow mt-4">
+     <b-card title="Asset Transfers" class="shadow mt-4">
       <el-table @row-click="rowClick" :data="currentTransfers" style="width: 100%">
-        <el-table-column prop="senderId" label="Sender" align="center" width="200" :formatter="prettyPrintSenderAddress"></el-table-column>
-        <el-table-column prop="recipientId" label="Recipient" align="center" width="200" :formatter="prettyPrintRecipientAddress"></el-table-column>
-        <el-table-column prop="currency" align="center" label="Currency"></el-table-column>
+
         <el-table-column prop="amount" align="center" label="Amount" :formatter="prettyPrintAmount"></el-table-column>
-        <el-table-column prop="height" align="center" label="Height"></el-table-column>
+
+        <el-table-column prop="currency" align="center" label="Currency">
+          <template v-slot:default="table">
+            <span v-if="table.row.currency === 'GNY'">GNY</span>
+            <nuxt-link v-else class="nuxt-link" :to="{ name: 'asset-detail', query: { assetName: table.row.currency }}" tag="span">{{ table.row.currency }}</nuxt-link>
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="senderId" label="Sender" align="center" min-width="100">
+          <template v-slot:default="table">
+             <span v-if="account.address === table.row.senderId">ME</span>
+             <nuxt-link v-else class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.senderId }}" tag="span">
+              {{table.row.senderId.slice(0,8)}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="recipientId" label="Recipient" align="center" min-width="100">
+          <template v-slot:default="table">
+             <span v-if="account.address === table.row.recipientId">ME</span>
+             <nuxt-link v-else class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.recipientId }}" tag="span">
+              {{table.row.recipientId.slice(0,8)}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+     
+        <el-table-column prop="height" align="center" label="Height" width="150">
+          <template v-slot:default="table">
+             <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}" tag="span">
+              {{table.row.height}}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+
       </el-table>
       <el-pagination
         @current-change="handleCurrentChange"
@@ -168,22 +199,6 @@ export default {
 
     timestamp2date: function (row, column) {
       return moment(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD hh:mm:ss');
-    },
-
-    prettyPrintSenderAddress: function(row, column) {
-      if (row.senderId === this.address) {
-        return 'Me';
-      }
-
-      return row.senderId.slice(0,8);
-    },
-
-    prettyPrintRecipientAddress: function(row, column) {
-      if (row.recipientId === this.address) {
-        return 'Me';
-      }
-
-      return row.recipientId.slice(0,8);
     },
 
     prettyPrintAmount: function (row, column) {
