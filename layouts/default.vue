@@ -49,7 +49,7 @@
 
     </el-main>
     <el-footer>
-      © 2021 by gny.io Limited
+      © 2022 by gny.io Limited
     </el-footer>
   </el-container>
 </template>
