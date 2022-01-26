@@ -111,6 +111,14 @@
             </nuxt-link>
           </template>
         </el-table-column>
+
+        <el-table-column prop="tid" align="center" label="TransactionId" width="150">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: {id: table.row.tid }}" tag="span">
+             {{ table.row.tid.slice(0,8) }}
+            </nuxt-link>
+         </template>
+        </el-table-column>
      
         <el-table-column prop="height" align="center" label="Height" width="150">
           <template v-slot:default="table">
