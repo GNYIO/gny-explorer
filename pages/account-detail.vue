@@ -138,7 +138,10 @@
         align="center"
       ></el-pagination>
 
+
     </b-card>
+
+    <who-i-voted-for-component></who-i-voted-for-component>
 
   </el-container>
 </template>
@@ -148,6 +151,7 @@ import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import { slots } from '@gny/utils';
 import * as gnyClient from '@gny/client';
+import WhoIVotedForComponent from '../components/WhoIVotedFor.vue';
 
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],
@@ -157,6 +161,9 @@ const connection = new gnyClient.Connection(
 );
 
 export default {
+  components: {
+    'who-i-voted-for-component': WhoIVotedForComponent,
+  },
   watch: { 
     '$route.query.username': async function(username) {
       console.log(username);
