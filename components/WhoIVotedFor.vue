@@ -1,6 +1,6 @@
 <template>
   <b-card title="Who I Voted For" class="shadow mt-4">
-    <el-table :data="delegates" style="width: 100%">
+    <el-table :data="currentDelegates" style="width: 100%">
 
       <el-table-column prop="rate" align="center" label="Rank" width="70"></el-table-column>
 
@@ -12,10 +12,19 @@
 
       <el-table-column prop="producedBlocks" align="center" label="Produced Blocks"></el-table-column>
       <el-table-column prop="missedBlocks" align="center" label="Missed Blocks"></el-table-column>
-      <el-table-column prop="votes" align="center" label="Overall Vote Weight in GNY" :formatter="voteWeightFormatter"></el-table-column>
+      <el-table-column prop="votes" align="center" label="Overall Vote Weight (GNY)" :formatter="voteWeightFormatter" width="210"></el-table-column>
       <el-table-column prop="approval" align="center" label="Approval"></el-table-column>
 
     </el-table>
+
+    <el-pagination
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="5"
+        layout="prev, pager, next"
+        :total="delegateCount"
+        align="center"
+      ></el-pagination>
   </b-card>
 </template>
 
@@ -40,7 +49,11 @@ export default {
   },
   data() {
     return {
+      currentPage: 1,
+      delegateCount: 0,
+      pageSize: 5,
       delegates: [],
+      currentDelegates: [],
     };
   },
   watch: { 
@@ -68,11 +81,28 @@ export default {
           one.rate = 0;
         }
       }
-      this.delegates = delegates
+      this.delegates = delegates;
+      this.delegateCount = delegates.length;
+
+      this.handleCurrentChange(1);
     },
     voteWeightFormatter: function (row, column) {
       return new BigNumber(row.votes).dividedBy(1e8).toFixed();
     },
+    handleCurrentChange(currentPage) {
+      this.currentPage = currentPage;
+      this.changePage(this.delegates, currentPage);
+    },
+    changePage(list, currentPage) {
+      let from = (currentPage - 1) * this.pageSize;
+      let to = currentPage * this.pageSize;
+      this.currentDelegates = [];
+      for (; from < to; from++) {
+        if (list[from]) {
+          this.currentDelegates.push(list[from]);
+        }
+      }
+    }
   },  
 }
 </script>
