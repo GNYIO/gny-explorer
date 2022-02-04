@@ -32,25 +32,22 @@ const connection = new gnyClient.Connection(
 );
 
 export default {
+  props: {
+    addressOfVoter: {
+      required: true,
+      type: String,
+    }
+  },
   data() {
     return {
       delegates: [],
     };
   },
-   watch: { 
-    '$route.query.username': async function(username) {
-      await this.loadDataFor(username);
-    },
-
-    '$route.query.address': async function(address) {
+  watch: { 
+    addressOfVoter: async function(address) {
+      console.log('address of voter changed to ' + address);
       await this.loadDataFor(address);
-    }
-  },
-  async mounted() {
-    const address = this.$route.query.address;
-    const username = this.$route.query.username;
-
-    await this.loadDataFor(address, username);
+    },
   },
   methods: {
     async loadDataFor(address, username) {
@@ -64,17 +61,6 @@ export default {
           delegates = result.delegates;
         }
       }
-
-      if (username != null) {
-        const result = await connection.api.Delegate.getOwnVotes({
-          username,
-        });
-        if (result.success === true) {
-          delegates = result.delegates;
-        }
-      }
-
-      // console.log(JSON.stringify(delegates, null, 2));
 
       for (let i = 0; i < delegates.length; ++i) {
         const one = delegates[i];
