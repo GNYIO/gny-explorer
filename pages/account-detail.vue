@@ -138,7 +138,10 @@
         align="center"
       ></el-pagination>
 
+
     </b-card>
+
+    <who-i-voted-for-component :addressOfVoter="address"></who-i-voted-for-component>
 
   </el-container>
 </template>
@@ -148,6 +151,7 @@ import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import { slots } from '@gny/utils';
 import * as gnyClient from '@gny/client';
+import WhoIVotedForComponent from '../components/WhoIVotedFor.vue';
 
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],
@@ -157,14 +161,15 @@ const connection = new gnyClient.Connection(
 );
 
 export default {
+  components: {
+    'who-i-voted-for-component': WhoIVotedForComponent,
+  },
   watch: { 
     '$route.query.username': async function(username) {
-      console.log(username);
       await this.updatePage(username, null);
     },
 
     '$route.query.address': async function(address) {
-      console.log(address);
       await this.updatePage(null, address);
     }
   },
@@ -237,6 +242,7 @@ export default {
         }
 
         this.account = account;
+        this.address = account.address;
         this.balance = new BigNumber(this.account.gny || this.account.balance).dividedBy(1e8).toFixed();
 
         if (account.isLocked) {

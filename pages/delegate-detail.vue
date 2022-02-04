@@ -127,6 +127,8 @@
       </el-table>
     </b-card>
 
+    <who-i-voted-for-component :addressOfVoter="address"></who-i-voted-for-component>
+
   </el-container>
 </template>
 
@@ -135,6 +137,8 @@ import moment from 'moment';
 import * as gnyClient from '@gny/client';
 import { slots } from '@gny/utils';
 import BigNumber from 'bignumber.js';
+import WhoIVotedForComponent from '../components/WhoIVotedFor.vue';
+
 
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],
@@ -144,20 +148,22 @@ const connection = new gnyClient.Connection(
 );
 
 export default {
+  components: {
+    'who-i-voted-for-component': WhoIVotedForComponent,
+  },
   watch: { 
     '$route.query.username': async function(username) {
-      console.log(username);
       await this.updatePage(username, null);
     },
 
     '$route.query.publicKey': async function(publicKey) {
-      console.log(publicKey);
       await this.updatePage(null, publicKey);
     }
   },
 
   data() {
     return {
+      address: '',
       delegate: {},
       publicKey: '',
       username: '',
@@ -223,6 +229,7 @@ export default {
 
         console.log(`delegate: ${JSON.stringify(delegate, null, 2)}`);
         this.delegate = delegate;
+        this.address = delegate.address;
         this.publicKey = delegate.publicKey;
         this.trs = delegate.tid.slice(0, 8);
         this.rewards = new BigNumber(delegate.rewards).dividedBy(1e8).toFixed();
