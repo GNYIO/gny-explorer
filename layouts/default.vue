@@ -101,6 +101,24 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+.el-main {
+  padding: 0.5rem 0.5rem;
+  margin-top: 1rem;
+}
+
+@media screen and (min-width: 600px) {
+  .el-main {
+    padding: 1rem 1rem;
+  }
+}
+
+@media screen and (min-wdith: 800px) {
+  .el-main {
+    padding: 2rem 2rem;
+  }
+}
+
+
 a {
   text-decoration: none;
 }

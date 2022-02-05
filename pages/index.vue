@@ -97,7 +97,7 @@ export default {
   max-width: 1000px;
   box-sizing: border-box;
   margin: 0px auto;
-  padding: 20px 20px;
+  padding: 0rem 0rem;
 }
 
 
