@@ -43,7 +43,7 @@
     </b-card>
 
     <!-- v-if="balances.length > 0" -->
-    <b-card title="Assets" class="shadow mt-4">
+    <b-card title="Custom Assets" class="shadow mt-4">
       <el-table class="clickable-rows" :data="assets" stripe>
         <el-table-column prop="currency" align="center" label="Currency" width="auto">
           <template v-slot:default="table">
