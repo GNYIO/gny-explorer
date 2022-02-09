@@ -69,10 +69,10 @@
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column v-if="width >= 1200" prop="timestamp" align="center" label="Forged Time" :formatter="timestamp2date" width="auto"></el-table-column>
+        <el-table-column v-if="width >= 1200" prop="timestamp" align="center" label="Forged Time" :formatter="timestamp2date" width="160"></el-table-column>
         <el-table-column v-if="width >= 800" prop="count" align="center" label="Transactions" width="auto"></el-table-column>
-        <el-table-column v-if="width >= 800" prop="fees" align="center" label="Fees" :formatter="formatFees" width="auto"></el-table-column>
-        <el-table-column v-if="width >= 800" prop="reward" align="center" label="Reward" :formatter="formatReward" width="auto"> </el-table-column>
+        <el-table-column v-if="width >= 800" prop="fees" align="center" label="Fees" :formatter="formatFees" width="70"></el-table-column>
+        <el-table-column v-if="width >= 800" prop="reward" align="center" label="Reward" :formatter="formatReward" width="75"> </el-table-column>
         <el-table-column v-if="width >= 500" prop="delegate" align="center" label="Delegate" width="auto">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'delegate-detail', query: { publicKey: table.row.delegate }}">
@@ -91,7 +91,7 @@
       ></el-pagination>
     </b-card>
 
-    <b-card title="Voters" class="shadow mt-4">
+    <b-card title="Who Voted for Me" class="shadow mt-4">
       <el-table :data="voters" stripe v-loading="voteLoading">
         <el-table-column prop="senderId" align="center" label="Address">
           <template v-slot:default="table">
