@@ -11,7 +11,7 @@
       <el-table-column v-if="width >= 800" prop="desc" align="center" label="Description" width="auto"
       ></el-table-column>
       <el-table-column
-        v-if="width >= 800"
+        v-if="width >= 850"
         prop="timestamp"
         align="center"
         label="Forged Time"
@@ -19,17 +19,17 @@
         :formatter="timestamp2date"
       ></el-table-column>
       <el-table-column
-        v-if="width >= 500"
+        v-if="width >= 550"
         prop="leftToIssuePretty"
         align="center"
-        label="Left To Issue"
+        label="Tokens Left To Issue"
         width="auto"
       ></el-table-column>
       <el-table-column
         prop="issuerId"
         align="center"
         label="Issuer"
-        width="120"
+        width="auto"
         :formatter="subIssuerId"
       >
         <template v-slot:default="table">
