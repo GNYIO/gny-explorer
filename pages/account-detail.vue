@@ -1,100 +1,105 @@
 <template>
-  <el-container direction="vertical">
+  <div>
     <b-card title="Account info" class="shadow">
-      <el-row>
-        <el-col :span="10">
+      <div class="wrapper">
+        <div>
           Address
-          <p >{{account.address}}</p>
-        </el-col>
-        <el-col :span="7">
+          <p>{{account.address}}</p>
+        </div>
+        <div>
           GNY Balance
           <br v-if="balance === ''">
           <i v-if="balance === ''"  class="el-icon-loading"></i>
           <p >{{balance}}</p>
-        </el-col>
-        <el-col :span="7">
+        </div>
+        <div>
           Username
           <p v-if="account.username">{{account.username}}</p>
           <p v-else>Not set</p>
-        </el-col>
-      </el-row>
-      <el-row v-if="account.isLocked"> 
-        <el-col :span="10">
+        </div>
+        <div v-if="account.isLocked">
           Locked
           <p>True</p>
-        </el-col> 
-        <el-col :span="7">
+        </div> 
+        <div v-if="account.isLocked">
           Lock Height
           <p>{{account.lockHeight}}</p>
-        </el-col>
-        <el-col :span="7">
+        </div>
+        <div v-if="account.isLocked">
           Lock Amount
           <p>{{lockAmount}}</p>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="10">
+        </div>
+        <div>
           Public Key
           <p v-if="publicKey">{{publicKey}}</p>
           <p v-else>Not set</p>
-        </el-col> 
-        <el-col :span="7">
+        </div> 
+        <div>
           Delegate
           <p v-if="account.isDelegate"><nuxt-link :to="{name: 'delegate-detail', query: { username: account.username }}">Details</nuxt-link></p>
           <p v-else>False</p>
-        </el-col>
-      </el-row>
+        </div>
+      </div>
     </b-card>
 
     <!-- v-if="balances.length > 0" -->
     <b-card title="Assets" class="shadow mt-4">
-      <el-table class="clickable-rows" :data="assets" stripe style="width: 95%;">
-        <el-table-column prop="currency" align="center" label="Currency" >
+      <el-table class="clickable-rows" :data="assets" stripe>
+        <el-table-column prop="currency" align="center" label="Currency" width="auto">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'asset-detail', query: { assetName: table.row.currency }}" tag="span">
               {{table.row.currency}}
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="balance" align="center" label="Balance" width="300" :formatter="prettyPrintAssetAmount"></el-table-column>
-        <el-table-column prop="flag" align="center" label="Flag" width="300"></el-table-column>
+        <el-table-column prop="balance" align="center" label="Balance" width="auto" :formatter="prettyPrintAssetAmount"></el-table-column>
+        <el-table-column v-if="width > 600" prop="flag" align="center" label="Flag" width="auto"></el-table-column>
       </el-table>
     </b-card>
 
     <b-card title="Transactions" class="shadow mt-4">
-      <el-table @row-click="transactionRowClick" :data="transactions" stripe style="width: 95%;">
-        <el-table-column prop="height" align="center" label="Height" width="150">
+      <el-table @row-click="transactionRowClick" :data="transactions" stripe>
+        <el-table-column prop="height" align="center" label="Height" width="auto">
           <template v-slot:default="table">
              <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}" tag="span">
               {{table.row.height}}
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="id" align="center" label="Transaction ID">
+        <el-table-column prop="id" align="center" label="Transaction ID" width="auto">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: table.row.id }}" tag="span">
               {{table.row.id.slice(0,8)}}
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="timestamp" align="center" label="Forged Time" width="200" :formatter="timestamp2date"></el-table-column>
-        <el-table-column prop="senderId" align="center" label="Sender" width="200" :formatter="subSenderId"></el-table-column>
+        <el-table-column v-if="width >= 1000" prop="timestamp" align="center" label="Forged Time" :formatter="timestamp2date" width="auto"></el-table-column>
+        <el-table-column v-if="width >= 800" prop="senderId" align="center" label="Sender" width="auto">
+          <template v-slot:default="table">
+            <!-- should be always ME -->
+            <span v-if="account.address === table.row.senderId">ME</span>
+            <span v-else>{{ table.row.senderId.slice(0,8) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column v-if="width >= 800" prop="fee" align="center"  label="Fee" :formatter="formatFee" width="50"></el-table-column>
+        <el-table-column v-if="width >= 1000" prop="type" align="center"  label="Type" :formatter="formatType" width="auto"></el-table-column>
+
       </el-table>
     </b-card>
 
      <b-card title="Asset Transfers" class="shadow mt-4">
       <el-table @row-click="rowClick" :data="currentTransfers" style="width: 100%">
 
-        <el-table-column prop="amount" align="center" label="Amount" :formatter="prettyPrintAmount"></el-table-column>
+        <el-table-column prop="amount" align="center" label="Amount" :formatter="prettyPrintAmount" width="auto"></el-table-column>
 
-        <el-table-column prop="currency" align="center" label="Currency">
+        <el-table-column v-if="width >= 500" prop="currency" align="center" label="Currency" width="auto">
           <template v-slot:default="table">
             <span v-if="table.row.currency === 'GNY'">GNY</span>
             <nuxt-link v-else class="nuxt-link" :to="{ name: 'asset-detail', query: { assetName: table.row.currency }}" tag="span">{{ table.row.currency }}</nuxt-link>
           </template>
         </el-table-column>
 
-        <el-table-column prop="senderId" label="Sender" align="center" min-width="100">
+        <el-table-column v-if="width >= 500" prop="senderId" label="Sender" align="center" width="auto">
           <template v-slot:default="table">
              <span v-if="account.address === table.row.senderId">ME</span>
              <nuxt-link v-else class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.senderId }}" tag="span">
@@ -103,7 +108,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="recipientId" label="Recipient" align="center" min-width="100">
+        <el-table-column v-if="width >= 500" prop="recipientId" label="Recipient" align="center" width="auto">
           <template v-slot:default="table">
              <span v-if="account.address === table.row.recipientId">ME</span>
              <nuxt-link v-else class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.recipientId }}" tag="span">
@@ -112,7 +117,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="tid" align="center" label="TransactionId" width="150">
+        <el-table-column prop="tid" align="center" label="TX ID" width="auto">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: {id: table.row.tid }}" tag="span">
              {{ table.row.tid.slice(0,8) }}
@@ -120,7 +125,7 @@
          </template>
         </el-table-column>
      
-        <el-table-column prop="height" align="center" label="Height" width="150">
+        <el-table-column v-if="width >= 800" prop="height" align="center" label="Height" width="auto">
           <template v-slot:default="table">
              <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}" tag="span">
               {{table.row.height}}
@@ -143,15 +148,17 @@
 
     <who-i-voted-for-component :addressOfVoter="address"></who-i-voted-for-component>
 
-  </el-container>
+  </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import { slots } from '@gny/utils';
 import * as gnyClient from '@gny/client';
 import WhoIVotedForComponent from '../components/WhoIVotedFor.vue';
+import { contractMappingFilter } from '../helpers/getTransactionType';
 
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],
@@ -163,6 +170,9 @@ const connection = new gnyClient.Connection(
 export default {
   components: {
     'who-i-voted-for-component': WhoIVotedForComponent,
+  },
+  computed: {
+    ...mapGetters(['width']),
   },
   watch: { 
     '$route.query.username': async function(username) {
@@ -222,6 +232,14 @@ export default {
     prettyPrintAssetAmount: function (row, column) {
       const prec = Math.pow(10, row.precision);
       return new BigNumber(row.balance).dividedBy(prec).toFixed();
+    },
+
+    formatFee: function (row, column) {
+      return new BigNumber(row.fee).dividedBy(1e8).toFixed();
+    },
+
+    formatType: function (row, column) {
+      return contractMappingFilter(row.type);
     },
 
     updatePage: async function (username, address) {
@@ -353,21 +371,26 @@ export default {
 </script>
 
 <style scoped>
-.el-container {
-  max-width: 1000px;
-  box-sizing: border-box;
-  margin: 0px auto;
-  padding: 20px 20px;
+.wrapper {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: stretch;
 }
 
-.el-card {
-  margin-top: 20px;
+/* changed */
+@media screen and (min-width: 700px) {
+  .wrapper {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
-.el-col {
-  font-weight: 500;
+/* changed */
+@media screen and (min-width: 1000px) {
+  .wrapper {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 }
-
 
 p {
   color: #acacac;
