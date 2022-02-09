@@ -1,40 +1,37 @@
 <template>
   <b-card title="Basic" class="shadow">
-    <!-- <h4>Basic</h4> -->
-    <el-row class="basic">
-      <el-col :span="8" >
+    <div class="wrapper">
+      <div>
         Blocks
         <br v-if="blocksCount === ''">
         <i v-if="blocksCount === ''"  class="el-icon-loading"></i>
         <p v-if="blocksCount">{{blocksCount}}</p>
-      </el-col>
-      <el-col :span="8" >
+      </div>
+      <div>
         Transactions
         <br v-if="transactions === ''">
         <i v-if="transactions === ''"  class="el-icon-loading"></i>
         <p v-if="transactions">{{transactions}}</p>
-      </el-col>
-      <el-col :span="8" >
+      </div>
+      <div>
         Delegates
         <br v-if="dalegates === ''">
         <i v-if="dalegates === ''"  class="el-icon-loading"></i>
         <p v-if="dalegates">{{dalegates}}</p>
-      </el-col>
-    </el-row>
-    <el-row class="statics">
-      <el-col :span="8" >
+      </div>
+      <div>
         Accounts
         <br v-if="accounts === ''">
         <i v-if="accounts === ''"  class="el-icon-loading"></i>
         <p v-if="accounts">{{accounts}}</p>
-      </el-col>
-      <el-col :span="16" >
+      </div>
+      <div>
         Latest block height
         <br v-if="latestHeight === ''">
         <i v-if="latestHeight === ''"  class="el-icon-loading"></i>
         <p v-if="latestHeight">{{latestHeight}}</p>
-      </el-col>
-    </el-row>
+      </div>
+    </div>
   </b-card>
 </template>
 
@@ -68,14 +65,32 @@ export default {
 </script>
 
 <style scoped>
-
-.el-col {
-  font-weight: 500;
-}
-
 p {
   color: #acacac;
 }
 
+.wrapper {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: stretch;
+}
 
+@media screen and (min-width: 300px) {
+  .wrapper {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media screen and (min-width: 500px) {
+  .wrapper {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+@media screen and (min-width: 800px) {
+  .wrapper {
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  }
+}
 </style>

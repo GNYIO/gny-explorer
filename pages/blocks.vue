@@ -1,26 +1,25 @@
 <template>
-  <el-container>
     <b-card title="Blocks" class="shadow">
-      <el-table :data="blocks" stripe style="width: 100%; margin: auto;" height="500" v-loading="loading">
-        <el-table-column prop="height" align="center" label="Height" width="80">
+      <el-table :data="blocks" stripe height="500" v-loading="loading">
+        <el-table-column prop="height" align="center" label="Height" width="auto">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
               {{table.row.height}}
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="id" align="center" label="Block ID" width="100">
+        <el-table-column prop="id" align="center" label="Block ID" width="auto">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
               {{subID(table.row.id)}}
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="timestamp" align="center" label="Forged Time" width="170" :formatter="timestamp2date"></el-table-column>
-        <el-table-column prop="count" align="center" label="Transactions" width="110"></el-table-column>
-        <el-table-column prop="fees" align="center" label="Fees" width="130" :formatter="formatFees"></el-table-column>
-        <el-table-column prop="reward" align="center" label="Reward" width="90" :formatter="formatReward"> </el-table-column>
-        <el-table-column prop="delegate" align="center" label="Delegate" width="150">
+        <el-table-column v-if="width > 1050" prop="timestamp" align="center" label="Forged Time" width="165" :formatter="timestamp2date"></el-table-column>
+        <el-table-column v-if="width > 700" prop="count" align="center" label="TXs" width="80"></el-table-column>
+        <el-table-column v-if="width > 800" prop="fees" align="center" label="Fees" width="80" :formatter="formatFees"></el-table-column>
+        <el-table-column v-if="width > 800" prop="reward" align="center" label="Reward" width="80" :formatter="formatReward"> </el-table-column>
+        <el-table-column v-if="width > 400" prop="delegate" align="center" label="Delegate" width="auto">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'delegate-detail', query: { publicKey: table.row.delegate }}">
               {{subDelegate(table.row.delegate)}}
@@ -37,10 +36,10 @@
 
       </el-table>
     </b-card>
-  </el-container>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import moment from 'moment';
 import * as gnyClient from '@gny/client';
 import { slots } from '@gny/utils';
@@ -54,6 +53,9 @@ const connection = new gnyClient.Connection(
 );
 
 export default {
+  computed: {
+    ...mapGetters(['width']),
+  },
   data() {
     return {
       blocks: [],
@@ -120,14 +122,6 @@ export default {
 </script>
 
 <style scoped>
-
-.el-container {
-  max-width: 1000px;
-  box-sizing: border-box;
-  margin: 0px auto;
-  padding: 20px 20px;
-}
-
 .el-card {
   margin-top: 20px;
 }
@@ -136,5 +130,4 @@ export default {
   color:#2475ba;
   cursor: pointer;
 }
-
 </style>

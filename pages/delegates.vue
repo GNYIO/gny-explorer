@@ -1,68 +1,54 @@
 <template>
-  <el-container direction="vertical">
+  <div>
     <b-card title="Delegates" class="shadow">
-        <el-row>
-            <el-col :span="8">
+      <div class="wrapper">
+            <div>
             All Delegates
             <p v-if="count">{{count}}</p>
             <br v-if="count === ''">
             <i v-if="count === ''"  class="el-icon-loading"></i>
-            </el-col>
-            <el-col :span="8">
+            </div>
+            <div>
               Most Produced Blocks
-              <p v-if="mostProducedBlocks">{{mostProducedBlocks}}</p>
-              <br v-if="mostProducedBlocks === ''">
-              <i v-if="mostProducedBlocks === ''"  class="el-icon-loading"></i>
-              
-            </el-col>
-            <el-col :span="8">
+              <p v-if="mostProducedBlocks">
+                <nuxt-link class="nuxt-link" :to="{ name: 'delegate-detail', query: { username: mostProducedBlocksDelegate }}">{{mostProducedBlocksDelegate}}</nuxt-link> mined {{mostProducedBlocks}} Blocks
+              </p>
+              <br v-if="mostProducedBlocksDelegate === ''">
+              <i v-if="mostProducedBlocksDelegate === ''"  class="el-icon-loading"></i>
+            </div>
+            <div>
                 Highest Approval
                 <br v-if="highestApproval === ''">
                 <i v-if="highestApproval === ''"  class="el-icon-loading"></i>
                 <p>{{highestApproval}}</p>
-            </el-col>
-        </el-row>
-        <el-row>
-            <el-col :span="8">
+            </div>
+            <div>
                 Forging Delegates
-                <!-- <p>{{forgingCount}}</p> -->
                 <p v-if="forgingCount">{{forgingCount}}</p>
                 <br v-if="forgingCount === 0">
                 <i v-if="forgingCount === 0"  class="el-icon-loading"></i>
-            </el-col>
-            <el-col :span="8">
-                Most Produced Blocks Delegate
-                <br v-if="mostProducedBlocksDelegate === ''">
-                <i v-if="mostProducedBlocksDelegate === ''"  class="el-icon-loading"></i>
-                <p>
-                  <nuxt-link class="nuxt-link" :to="{ name: 'delegate-detail', query: { username: mostProducedBlocksDelegate }}">
-                  {{mostProducedBlocksDelegate}}
-                  </nuxt-link>
-                </p>
-                
-            </el-col>
-            <el-col :span="8">
-                Highest Approval Name
+            </div>
+            <div>
+                Highest Approval
                 <br v-if="highestApprovalDelegate === ''">
                 <i v-if="highestApprovalDelegate === ''"  class="el-icon-loading"></i>
                 <p>
                    <nuxt-link class="nuxt-link" :to="{ name: 'delegate-detail', query: { username: highestApprovalDelegate }}">
                     {{highestApprovalDelegate}}
                    </nuxt-link>
-                </p>
-                
-            </el-col>
-        </el-row>
-
+                </p>                
+            </div>
+      </div>
     </b-card>
+
     <b-card class="shadow mt-4">
       <el-table :data="allDelegates" stripe style="width: 100%" v-loading="loading">
           <el-table-column prop="rate" label="Rank" width="60" align="center"></el-table-column>
           <el-table-column
             prop="username"
             label="Username"
-            width="120"
             align="center"
+            width="auto"
           >
             <template v-slot:default="table">
               <nuxt-link class="nuxt-link" :to="{ name: 'delegate-detail', query: { username: table.row.username }}">
@@ -71,44 +57,51 @@
             </template>
           </el-table-column>
           <el-table-column
+            v-if="width >= 500"
             prop="producedBlocks"
             label="Produced Blocks"
-            width="100"
             align="center"
+            width="auto"
           ></el-table-column>
           <el-table-column
+            v-if="width >= 500"
             prop="rewards"
             label="Rewards"
-            width="80"
             align="center"
             :formatter="formatRewards"
+            width="auto"
           ></el-table-column>
           <el-table-column
+            v-if="width >= 800"
             prop="fees"
             label="Fees"
-            width="100"
             align="center"
             :formatter="formatFees"
+            width="auto"
           ></el-table-column>
           <el-table-column
+            v-if="width >= 800"
             prop="missedBlocks"
             label="Missed Blocks"
-            width="130"
             align="center"
+            width="auto"
           ></el-table-column>
           <el-table-column
+            v-if="width >= 800"
             prop="productivity"
             label="Productivity %"
             align="center"
             :formatter="formatProductivity"
+            width="auto"
           ></el-table-column>
-          <el-table-column prop="approval" label="Approval %" width="110" align="center"></el-table-column>
+          <el-table-column v-if="width >= 800" prop="approval" label="Approval %" align="center" width="auto"></el-table-column>
         </el-table>
     </b-card>
-  </el-container>
+  </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import * as gnyClient from '@gny/client';
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],
@@ -119,6 +112,9 @@ const connection = new gnyClient.Connection(
 import { BigNumber } from 'bignumber.js';
 
 export default {
+  computed: {
+    ...mapGetters(['width']),
+  },
   methods: {
     handleCurrentChange: function(row) {
       console.log(row.username);
@@ -233,19 +229,30 @@ export default {
 </script>
 
 <style>
-.el-container {
-  max-width: 1000px;
-  box-sizing: border-box;
-  margin: 0px auto;
-  padding: 20px 20px;
+
+.wrapper {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: stretch;
 }
 
-.el-card {
-  margin-top: 20px;
+@media screen and (min-width: 500px) {
+  .wrapper {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
-.el-col {
-  font-weight: 500;
+@media screen and (min-width: 700px) {
+  .wrapper {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media screen and (min-width: 850px) {
+  .wrapper {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 }
 
 p {

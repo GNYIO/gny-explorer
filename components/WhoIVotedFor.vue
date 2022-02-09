@@ -1,19 +1,19 @@
 <template>
   <b-card title="Who I Voted For" class="shadow mt-4">
-    <el-table :data="currentDelegates" style="width: 100%">
+    <el-table :data="currentDelegates">
 
-      <el-table-column prop="rate" align="center" label="Rank" width="70"></el-table-column>
+      <el-table-column prop="rate" align="center" label="Rank" width="auto"></el-table-column>
 
       <el-table-column prop="username" align="center" label="Delegate">
-        <template v-slot:default="table">
+        <template v-slot:default="table" width="auto">
             <nuxt-link class="nuxt-link" :to="{ name: 'delegate-detail', query: { username: table.row.username }}" tag="span">{{ table.row.username }}</nuxt-link>
           </template>
       </el-table-column>
 
-      <el-table-column prop="producedBlocks" align="center" label="Produced Blocks"></el-table-column>
-      <el-table-column prop="missedBlocks" align="center" label="Missed Blocks"></el-table-column>
-      <el-table-column prop="votes" align="center" label="Overall Vote Weight (GNY)" :formatter="voteWeightFormatter" width="210"></el-table-column>
-      <el-table-column prop="approval" align="center" label="Approval"></el-table-column>
+      <el-table-column v-if="width >= 500" prop="producedBlocks" align="center" label="Produced Blocks" width="auto"></el-table-column>
+      <el-table-column v-if="width >= 800" prop="missedBlocks" align="center" label="Missed Blocks" width="auto"></el-table-column>
+      <el-table-column v-if="width >= 1200" prop="votes" align="center" label="Overall Vote Weight (GNY)" :formatter="voteWeightFormatter" width="200"></el-table-column>
+      <el-table-column v-if="width >= 1000" prop="approval" align="center" label="Approval" width="auto"></el-table-column>
 
     </el-table>
 
@@ -30,6 +30,7 @@
 
 
 <script>
+import { mapGetters } from 'vuex';
 import * as gnyClient from '@gny/client';
 import { BigNumber } from 'bignumber.js';
 
@@ -41,6 +42,9 @@ const connection = new gnyClient.Connection(
 );
 
 export default {
+  computed: {
+    ...mapGetters(['width']),
+  },
   props: {
     addressOfVoter: {
       required: true,
@@ -110,5 +114,10 @@ export default {
 <style scoped>
 .el-card {
   margin-top: 20px;
+}
+
+.nuxt-link {
+  color:#2475ba;
+  cursor: pointer;
 }
 </style>

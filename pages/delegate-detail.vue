@@ -1,88 +1,79 @@
 <template>
-  <el-container direction="vertical">
+  <div>
     <b-card title="Delegate" class="shadow">
-      <el-row>
-        <el-col :span="8" >
+      <div class="wrapper">
+        <div>
           Username
           <p>
             <nuxt-link class="nuxt-link" :to="{ name: 'account-detail', query: { username: delegate.username }}">{{delegate.username}}</nuxt-link>
           </p>
-        </el-col>
-        <el-col :span="8" >
+        </div>
+        <div>
           Public Key
           <p>{{publicKey.slice(0,8)}}</p>
-        </el-col>
-        <el-col :span="8" >
+        </div>
+        <div>
           Address
           <p>
             <nuxt-link class="nuxt-link" :to="{ name: 'account-detail', query: { address: delegate.address }}">{{delegate.address}}</nuxt-link>
           </p>
-        </el-col>
-      </el-row>
-
-      <el-row>
-        <el-col :span="8" >
+        </div>
+        <div>
           Produced Blocks
           <p >{{delegate.producedBlocks}}</p>
-        </el-col>
-        <el-col :span="8" >
+        </div>
+        <div>
           Missed Blocks
           <p >{{delegate.missedBlocks}}</p>
-        </el-col>
-        <el-col :span="8" >
+        </div>
+        <div>
           Rewards
           <p >{{rewards}} GNY</p>
-        </el-col>
-      </el-row>
-
-      <el-row>
-          <el-col :span="8">
+        </div>
+         <div>
               Rank
               <p># {{delegate.rate}}</p>
-          </el-col>
-          <el-col :span="8">
+          </div>
+          <div>
               Approval
               <p>{{delegate.approval}} %</p>
-          </el-col>
-          <el-col :span="8">
+          </div>
+          <div>
               Productivity
               <p>{{delegate.productivity}} %</p>
-          </el-col>
-      </el-row>
-      
-      <el-row>
-        <el-col :span="24">
+          </div>
+          <div>
           Registration Transaction
           <p>
             <nuxt-link class="nuxt-link" :to="{ name: 'transaction-detail', query: { id: delegate.tid }}">
               {{trs}}
             </nuxt-link>
           </p>
-        </el-col>
-      </el-row>
+          </div>
+      </div>
     </b-card>
 
     <b-card :title="blockTitle" class="shadow mt-4">
-      <el-table :data="currentBlocks" stripe style="width: 100%; margin: auto;" v-loading="loading">
-        <el-table-column prop="height" align="center" label="Height" width="80">
+      <el-table :data="currentBlocks" stripe v-loading="loading">
+        <el-table-column prop="height" align="center" label="Height" width="auto">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
               {{table.row.height}}
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="id" align="center" label="Block ID" width="100">
+        <el-table-column prop="id" align="center" label="Block ID" width="auto">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
               {{subID(table.row.id)}}
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="timestamp" align="center" label="Forged Time" width="170" :formatter="timestamp2date"></el-table-column>
-        <el-table-column prop="count" align="center" label="Transactions" width="110"></el-table-column>
-        <el-table-column prop="fees" align="center" label="Fees" width="130" :formatter="formatFees"></el-table-column>
-        <el-table-column prop="reward" align="center" label="Reward" width="90" :formatter="formatReward"> </el-table-column>
-        <el-table-column prop="delegate" align="center" label="Delegate" width="150">
+        <el-table-column v-if="width >= 1200" prop="timestamp" align="center" label="Forged Time" :formatter="timestamp2date" width="160"></el-table-column>
+        <el-table-column v-if="width >= 800" prop="count" align="center" label="Transactions" width="auto"></el-table-column>
+        <el-table-column v-if="width >= 800" prop="fees" align="center" label="Fees" :formatter="formatFees" width="70"></el-table-column>
+        <el-table-column v-if="width >= 800" prop="reward" align="center" label="Reward" :formatter="formatReward" width="75"> </el-table-column>
+        <el-table-column v-if="width >= 500" prop="delegate" align="center" label="Delegate" width="auto">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'delegate-detail', query: { publicKey: table.row.delegate }}">
               {{subDelegate(table.row.delegate)}}
@@ -100,8 +91,8 @@
       ></el-pagination>
     </b-card>
 
-    <b-card title="Voters" class="shadow mt-4">
-      <el-table :data="voters" stripe style="width: 100%; margin: auto;" v-loading="voteLoading">
+    <b-card title="Who Voted for Me" class="shadow mt-4">
+      <el-table :data="voters" stripe v-loading="voteLoading">
         <el-table-column prop="senderId" align="center" label="Address">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.senderId }}">
@@ -109,15 +100,15 @@
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="lockAmount" align="center" label="Lock Amount" :formatter="formatLockAmount"></el-table-column>
-        <el-table-column prop="transactionId" align="center" label="Transaction ID">
+        <el-table-column prop="lockAmount" align="center" label="Lock Amount" :formatter="formatLockAmount" width="auto"></el-table-column>
+        <el-table-column v-if="width >= 800" prop="transactionId" align="center" label="Transaction ID" width="auto">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: table.row.transactionId }}">
               {{table.row.transactionId.slice(0, 8)}}
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="height" align="center" label="Block Height">
+        <el-table-column v-if="width >= 500" prop="height" align="center" label="Block Height" width="auto">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
               {{table.row.height}}
@@ -129,10 +120,11 @@
 
     <who-i-voted-for-component :addressOfVoter="address"></who-i-voted-for-component>
 
-  </el-container>
+  </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import moment from 'moment';
 import * as gnyClient from '@gny/client';
 import { slots } from '@gny/utils';
@@ -312,6 +304,7 @@ export default {
   },
 
   computed: {
+    ...mapGetters(['width']),
     formatTitle() {
       return 'Produced Blocks ' + '(total: ' + this.blocksCount + ')';
     }
@@ -334,11 +327,26 @@ export default {
 </script>
 
 <style scoped>
-.el-container {
-  max-width: 1000px;
-  box-sizing: border-box;
-  margin: 0px auto;
-  padding: 20px 20px;
+.wrapper {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: stretch;
+}
+
+/* changed from 300px to 650 */
+@media screen and (min-width: 650px) {
+  .wrapper {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* removed one media query */
+
+@media screen and (min-width: 800px) {
+  .wrapper {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 }
 
 .nuxt-link {

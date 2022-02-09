@@ -1,166 +1,163 @@
 <template>
-  <el-container direction="vertical">
+  <div>
     <b-card title="Asset Info" class="shadow">
-      <el-row>
-        <el-col :span="6" >
+      <div class="wrapper">
+        <div>
           Name
           <p>{{asset.name}}</p>
-        </el-col>
-        <el-col :span="6" >
+        </div>
+        <div>
           Description
           <p>{{asset.desc}}</p>
-        </el-col>
-        <el-col :span="6">
+        </div>
+        <div>
           Issuer Name
           <p>{{issuer.name}}</p>
-        </el-col>
-        <el-col :span="6">
+        </div>
+        <div>
           Issuer Account
           <p>
             <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: asset.issuerId }}">
              {{assetIssuerId}}
             </nuxt-link>
           </p>
-        </el-col>
-      </el-row>
-
-      <el-row>
-        <el-col :span="6">
+        </div>
+        <div>
           Precision
           <p>{{asset.precision}}</p>
-        </el-col> 
-        <el-col :span="6">
+        </div> 
+        <div>
           Maximum
           <p>{{asset.maximumPretty}}</p>
-        </el-col>
-        <el-col :span="6">
+        </div>
+        <div>
           Left to Issue
           <p>{{asset.leftToIssuePretty}}</p>
-        </el-col>
-        <el-col :span="6">
+        </div>
+        <div>
           TransactionId
           <p>
             <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: asset.tid }}">
               {{assetTid}}
             </nuxt-link>
           </p>
-        </el-col>
-      </el-row>
+        </div>
+      </div>
     </b-card>
 
     <b-card title="Issuer Transaction" class="shadow mt-4">
 
       <el-table :data="issuerTransactions" stripe style="width: 100%; margin: auto;"  v-loading="issuerLoading">
-        <el-table-column prop="id" align="center" width="200" label="Transaction ID">
+        <el-table-column prop="id" align="center" label="TX ID" width="auto">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: table.row.id }}" tag="span">
               {{table.row.id.slice(0,8)}}
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="height" align="center" label="Block Height" width="120">
+        <el-table-column prop="height" align="center" label="Block Height" width="auto">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
               {{table.row.height}}
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="timestamp" align="center" label="Forged Time" width="200" :formatter="timestamp2date"></el-table-column>
-        <el-table-column prop="senderId" align="center" label="Sender" width="200" :formatter="subSenderId">
+        <el-table-column v-if="width >= 800" prop="timestamp" align="center" label="Forged Time" width="auto" :formatter="timestamp2date"></el-table-column>
+        <el-table-column v-if="width >= 500" prop="senderId" align="center" label="Sender" width="auto" :formatter="subSenderId">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.senderId }}" tag="span">
               {{table.row.senderId.slice(0,8)}}
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="fee" label="Fee" :formatter="formatFee"></el-table-column>
+        <el-table-column v-if="width >= 800" prop="fee" label="Fee" :formatter="formatFee" width="auto"></el-table-column>
       </el-table>
     </b-card>
 
     <b-card title="Asset Transaction" class="shadow mt-4">
 
       <el-table :data="assetTransactions" stripe style="width: 100%; margin: auto;"  v-loading="assetLoading">
-        <el-table-column prop="id" align="center" width="200" label="Transaction ID">
+        <el-table-column prop="id" align="center" label="TX ID" width="auto">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: table.row.id }}" tag="span">
               {{table.row.id.slice(0,8)}}
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="height" align="center" label="Block Height" width="120">
+        <el-table-column prop="height" align="center" label="Block Height" width="auto">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
               {{table.row.height}}
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="timestamp" align="center" label="Forged Time" width="200" :formatter="timestamp2date"></el-table-column>
-        <el-table-column prop="senderId" align="center" label="Sender" width="200" :formatter="subSenderId">
+        <el-table-column v-if="width >= 800" prop="timestamp" align="center" label="Forged Time" width="auto" :formatter="timestamp2date"></el-table-column>
+        <el-table-column v-if="width >= 500" prop="senderId" align="center" label="Sender" width="auto" :formatter="subSenderId">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.senderId }}" tag="span">
               {{table.row.senderId.slice(0,8)}}
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="fee" label="Fee" :formatter="formatFee"></el-table-column>
+        <el-table-column v-if="width >= 800" prop="fee" label="Fee" :formatter="formatFee" width="auto"></el-table-column>
       </el-table>
     </b-card>
 
     <b-card title="Issue Transactions" class="shadow mt-4">
 
       <el-table :data="issueTransactions" stripe style="width: 100%; margin: auto;"  v-loading="issueLoading">
-        <el-table-column prop="id" align="center" width="200" label="Transaction ID">
+        <el-table-column prop="id" align="center" label="TX ID" width="auto">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: table.row.id }}" tag="span">
               {{table.row.id.slice(0,8)}}
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="height" align="center" label="Block Height" width="120">
+        <el-table-column prop="height" align="center" label="Block Height" width="auto">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
               {{table.row.height}}
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="timestamp" align="center" label="Forged Time" width="200" :formatter="timestamp2date"></el-table-column>
-        <el-table-column prop="senderId" align="center" label="Sender" width="200" :formatter="subSenderId">
+        <el-table-column v-if="width >= 800" prop="timestamp" align="center" label="Forged Time" width="auto" :formatter="timestamp2date"></el-table-column>
+        <el-table-column v-if="width >= 500" prop="senderId" align="center" label="Sender" width="auto" :formatter="subSenderId">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.senderId }}" tag="span">
               {{table.row.senderId.slice(0,8)}}
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="fee" label="Fee" :formatter="formatFee"></el-table-column>
+        <el-table-column v-if="width >= 800" prop="fee" label="Fee" :formatter="formatFee" width="auto"></el-table-column>
       </el-table>
     </b-card>
 
     <b-card title="Transfers" class="shadow mt-4">
 
       <el-table :data="currentTransfers" stripe style="width: 100%; margin: auto;"  v-loading="transferLoading">
-        <el-table-column prop="id" align="center" width="200" label="Transaction ID">
+        <el-table-column prop="id" align="center" width="auto" label="TX ID">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: table.row.id }}" tag="span">
               {{table.row.id.slice(0,8)}}
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="height" align="center" label="Block Height" width="120">
+        <el-table-column prop="height" align="center" label="Block Height" width="auto">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
               {{table.row.height}}
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="timestamp" align="center" label="Forged Time" width="200" :formatter="timestamp2date"></el-table-column>
-        <el-table-column prop="senderId" align="center" label="Sender" width="200" :formatter="subSenderId">
+        <el-table-column v-if="width >= 800" prop="timestamp" align="center" label="Forged Time" width="auto" :formatter="timestamp2date"></el-table-column>
+        <el-table-column v-if="width >= 500" prop="senderId" align="center" label="Sender" width="auto" :formatter="subSenderId">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.senderId }}" tag="span">
               {{table.row.senderId.slice(0,8)}}
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="fee" label="Fee" :formatter="formatFee"></el-table-column>
+        <el-table-column v-if="width >= 800" prop="fee" label="Fee" :formatter="formatFee" width="auto"></el-table-column>
       </el-table>
 
       <el-pagination
@@ -170,22 +167,22 @@
         layout="prev, pager, next"
         :total="transfersCount"
         align="center"
-      ></el-pagination>
+     ></el-pagination>
 
     </b-card>
 
     <b-card title="Holders" class="shadow mt-4">
 
-      <el-table :data="currentHolders" stripe style="width: 100%; margin: auto;"  v-loading="holdersLoading">
-        <el-table-column prop="address" align="center" label="Address">
+      <el-table :data="currentHolders" stripe v-loading="holdersLoading">
+        <el-table-column prop="address" align="center" label="Address" width="auto">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.address }}" tag="span">
-              {{table.row.address}}
+              {{table.row.address.slice(0,8)}}
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="currency" align="center" label="Currency"></el-table-column>
-        <el-table-column prop="balance" label="Balance" :formatter="formatBalance"></el-table-column>
+        <el-table-column prop="currency" align="center" label="Currency" width="auto"></el-table-column>
+        <el-table-column v-if="width >= 500" prop="balance" label="Balance" :formatter="formatBalance" width="auto"></el-table-column>
       </el-table>
 
       <el-pagination
@@ -195,13 +192,13 @@
         layout="prev, pager, next"
         :total="holdersCount"
         align="center"
-      ></el-pagination>
+     ></el-pagination>
     </b-card>
-
-  </el-container>
+  </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import { slots } from '@gny/utils';
@@ -215,13 +212,15 @@ const connection = new gnyClient.Connection(
 );
 
 export default {
+  computed: {
+    ...mapGetters(['width']),
+  },
   watch: { 
     '$route.query.assetName': async function(assetName) {
       console.log(assetName);
       await this.updatePage(assetName);
     }
   },
-
   data() {
     return {
       asset: {},
@@ -311,19 +310,19 @@ export default {
 
         this.issuerTransactions = (await connection.api.Transaction.getTransactions({senderId: result.issuerId, type: 100})).transactions;
         
-        if (this.issuerTransactions.length >= 0) {
+        if (this.issuerTransactions.length>= 0) {
           this.issuerLoading = false;
         }
 
         this.assetTransactions = (await connection.api.Transaction.getTransactions({senderId: result.issuerId, type: 101})).transactions;
         
-        if (this.assetTransactions.length >= 0) {
+        if (this.assetTransactions.length>= 0) {
           this.assetLoading = false;
         }
 
         this.issueTransactions = (await connection.api.Transaction.getTransactions({senderId: result.issuerId, type: 102})).transactions;
         
-        if (this.issueTransactions.length >= 0) {
+        if (this.issueTransactions.length>= 0) {
           this.issueLoading = false;
         }
 
@@ -334,7 +333,7 @@ export default {
         })
         this.transfersCount = this.transfers.length;
         
-        if (this.transfersCount >= 0) {
+        if (this.transfersCount>= 0) {
           this.transferLoading = false;
         }
 
@@ -342,7 +341,7 @@ export default {
 
         this.holdersCount = this.holders.length;
 
-        if (this.holdersCount >= 0) {
+        if (this.holdersCount>= 0) {
           this.holdersLoading = false;
         }
 
@@ -398,20 +397,35 @@ export default {
 </script>
 
 <style scoped>
-.el-container {
-  max-width: 1000px;
-  box-sizing: border-box;
-  margin: 0px auto;
-  padding: 20px 20px;
+.card {
+  margin-bottom: 2rem;
 }
 
-.el-card {
-  margin-top: 20px;
+.wrapper {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: stretch;
 }
 
-.el-col {
-  font-weight: 500;
+@media screen and (min-width: 300px) {
+  .wrapper {
+    grid-template-columns: 1fr 1fr;
+  }
 }
+
+@media screen and (min-width: 500px) {
+  .wrapper {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+@media screen and (min-width: 800px) {
+  .wrapper {
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  }
+}
+
 
 
 p {

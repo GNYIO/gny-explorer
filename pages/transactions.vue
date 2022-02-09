@@ -1,31 +1,30 @@
 <template>
-  <el-container>
     <b-card title="Transactions" class="shadow">
-      <el-table :data="transactions" stripe style="width: 100%; margin: auto;" height="500" v-loading="loading">
-        <el-table-column prop="id" align="center" width="130" label="Transaction ID">
+      <el-table :data="transactions" stripe height="500" v-loading="loading">
+        <el-table-column prop="id" align="center" width="auto" label="Transaction ID">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: table.row.id }}" tag="span">
               {{table.row.id.slice(0,8)}}
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="height" align="center" label="Block Height" width="120">
+        <el-table-column prop="height" align="center" label="Block Height" width="auto">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
               {{table.row.height}}
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="timestamp" align="center" label="Forged Time" width="200" :formatter="timestamp2date"></el-table-column>
-        <el-table-column prop="senderId" align="center" label="Sender" width="100" :formatter="subSenderId">
+        <el-table-column v-if="width > 1050" prop="timestamp" align="center" label="Forged Time" width="165" :formatter="timestamp2date"></el-table-column>
+        <el-table-column v-if="width > 450" prop="senderId" align="center" label="Sender" width="auto" :formatter="subSenderId">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.senderId }}" tag="span">
               {{table.row.senderId.slice(0,8)}}
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="fee" label="Fee" width="70" :formatter="formatFee"></el-table-column>
-        <el-table-column prop="type" label="Type" width="210" :formatter="formatType"></el-table-column>
+        <el-table-column v-if="width > 800" prop="fee" label="Fee" align="center" width="auto" :formatter="formatFee"></el-table-column>
+        <el-table-column v-if="width > 600" prop="type" label="Type" align="center" width="auto" :formatter="formatType"></el-table-column>
 
         <infinite-loading
           slot="append"
@@ -36,11 +35,11 @@
       </el-table>
 
     </b-card>
-  </el-container>
 </template>
 
 
 <script>
+import { mapGetters } from 'vuex';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import * as gnyClient from '@gny/client';
@@ -55,6 +54,9 @@ const connection = new gnyClient.Connection(
 );
 
 export default {
+  computed: {
+    ...mapGetters(['width']),
+  },
   methods: {
     rowClick: function(row) {
       console.log(row.id);
@@ -118,14 +120,6 @@ export default {
 
 
 <style scoped>
-
-.el-container {
-  max-width: 1000px;
-  box-sizing: border-box;
-  margin: 0px auto;
-  padding: 20px 20px;
-}
-
 .el-card {
   margin-top: 20px;
 }
