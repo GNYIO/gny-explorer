@@ -10,10 +10,11 @@
             </div>
             <div>
               Most Produced Blocks
-              <p v-if="mostProducedBlocks">{{mostProducedBlocks}}</p>
-              <br v-if="mostProducedBlocks === ''">
-              <i v-if="mostProducedBlocks === ''"  class="el-icon-loading"></i>
-              
+              <p v-if="mostProducedBlocks">
+                <nuxt-link class="nuxt-link" :to="{ name: 'delegate-detail', query: { username: mostProducedBlocksDelegate }}">{{mostProducedBlocksDelegate}}</nuxt-link> mined {{mostProducedBlocks}} Blocks
+              </p>
+              <br v-if="mostProducedBlocksDelegate === ''">
+              <i v-if="mostProducedBlocksDelegate === ''"  class="el-icon-loading"></i>
             </div>
             <div>
                 Highest Approval
@@ -23,24 +24,12 @@
             </div>
             <div>
                 Forging Delegates
-                <!-- <p>{{forgingCount}}</p> -->
                 <p v-if="forgingCount">{{forgingCount}}</p>
                 <br v-if="forgingCount === 0">
                 <i v-if="forgingCount === 0"  class="el-icon-loading"></i>
             </div>
             <div>
-                Most Produced Blocks Delegate
-                <br v-if="mostProducedBlocksDelegate === ''">
-                <i v-if="mostProducedBlocksDelegate === ''"  class="el-icon-loading"></i>
-                <p>
-                  <nuxt-link class="nuxt-link" :to="{ name: 'delegate-detail', query: { username: mostProducedBlocksDelegate }}">
-                  {{mostProducedBlocksDelegate}}
-                  </nuxt-link>
-                </p>
-                
-            </div>
-            <div>
-                Highest Approval Name
+                Highest Approval
                 <br v-if="highestApprovalDelegate === ''">
                 <i v-if="highestApprovalDelegate === ''"  class="el-icon-loading"></i>
                 <p>
@@ -248,24 +237,23 @@ export default {
   align-items: stretch;
 }
 
-@media screen and (min-width: 300px) {
+@media screen and (min-width: 500px) {
   .wrapper {
     grid-template-columns: 1fr 1fr;
   }
 }
 
-@media screen and (min-width: 500px) {
+@media screen and (min-width: 700px) {
+  .wrapper {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media screen and (min-width: 850px) {
   .wrapper {
     grid-template-columns: 1fr 1fr 1fr;
   }
 }
-
-@media screen and (min-width: 800px) {
-  .wrapper {
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-  }
-}
-
 
 p {
   color: #acacac;
