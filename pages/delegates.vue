@@ -58,6 +58,13 @@
           </el-table-column>
           <el-table-column
             v-if="width >= 500"
+            prop="balance"
+            label="Balance"
+            align="center"
+            width="auto"
+          ></el-table-column>
+          <el-table-column
+            v-if="width >= 500"
             prop="producedBlocks"
             label="Produced Blocks"
             align="center"
@@ -160,6 +167,17 @@ export default {
             all.push(...part.delegates);
           }
         }
+
+        for (let i = 0; i < all.length; i++) {
+          console.log('address: ', all[i].address);
+          const result = await connection.api.Account.getBalance(all[i].address);
+          const balance = new BigNumber(result.balances[0].gny).dividedBy(1e8).toFixed();
+          console.log('balance: ', balance);
+          if (result.success) {
+            all[i]['balance'] = balance;
+          }
+        }
+
 
         this.allDelegates = all;
         this.count = all.length;
