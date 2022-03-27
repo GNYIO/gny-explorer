@@ -58,8 +58,15 @@
           </el-table-column>
           <el-table-column
             v-if="width >= 500"
-            prop="balance"
-            label="Balance"
+            prop="prettyBalance"
+            label="Unlocked Balance"
+            align="center"
+            width="auto"
+          ></el-table-column>
+          <el-table-column
+            v-if="width >= 500"
+            prop="prettyLockBalance"
+            label="Locked Balance"
             align="center"
             width="auto"
           ></el-table-column>
@@ -160,7 +167,7 @@ export default {
       const countWrapper = await connection.api.Delegate.count();
       if (countWrapper.success === true) {
         const count = countWrapper.count;
-        const all = [];
+        let all = [];
         for (let offset = 0; offset < count; offset += 100) {
           const part = await connection.api.Delegate.getDelegates(offset, 100);
           if (part.success) {
@@ -168,16 +175,15 @@ export default {
           }
         }
 
-        for (let i = 0; i < all.length; i++) {
-          console.log('address: ', all[i].address);
-          const result = await connection.api.Account.getBalance(all[i].address);
-          const balance = new BigNumber(result.balances[0].gny).dividedBy(1e8).toFixed();
-          console.log('balance: ', balance);
-          if (result.success) {
-            all[i]['balance'] = balance;
-          }
-        }
-
+        all = all.map(x => {
+          const one = {
+            ...x,
+            prettyBalance: new BigNumber(x.gny).dividedBy(1e8).toFixed(0),
+            prettyLockBalance: new BigNumber(x.lockAmount).dividedBy(1e8).toFixed(0),
+          };
+          return one;
+        });
+        console.log(JSON.stringify(all[0], null, 2));
 
         this.allDelegates = all;
         this.count = all.length;
@@ -228,8 +234,9 @@ export default {
 
         let enabledCount = 0;
 
-        for (const delegate of this.allDelegates) {
-          const enabled = (await connection.api.Delegate.forgingStatus(delegate.publicKey)).enabled;
+        for (let i = 0; i < 101; ++i) {
+          const one = this.allDelegates[i];
+          const enabled = (await connection.api.Delegate.forgingStatus(one.publicKey)).enabled;
           if (enabled) {
             enabledCount += 1;
           }
