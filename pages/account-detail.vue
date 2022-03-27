@@ -7,27 +7,27 @@
           <p>{{account.address}}</p>
         </div>
         <div>
-          GNY Balance
+          Balance
           <br v-if="balance === ''">
           <i v-if="balance === ''"  class="el-icon-loading"></i>
           <p >{{balance}}</p>
         </div>
         <div>
+          Locked Balance
+          <p><b>{{lockAmount}}</b> out of {{balance}}</p>
+        </div>
+        <div>
+          Is Locked
+          <p>{{isLocked}}</p>
+        </div> 
+        <div >
+          Lock Height
+          <p>{{lockHeight}}</p>
+        </div>
+        <div>
           Username
           <p v-if="account.username">{{account.username}}</p>
           <p v-else>Not set</p>
-        </div>
-        <div v-if="account.isLocked">
-          Locked
-          <p>True</p>
-        </div> 
-        <div v-if="account.isLocked">
-          Lock Height
-          <p>{{account.lockHeight}}</p>
-        </div>
-        <div v-if="account.isLocked">
-          Lock Amount
-          <p>{{lockAmount}}</p>
         </div>
         <div>
           Public Key
@@ -193,7 +193,13 @@ export default {
       address: '',
       publicKey: '',
       balance: '',
+      
+      isLocked: false,
+      lockedAmount: '',
+      
+      lockHeight: '',
       lockAmount: '',
+
       loaded: 0,
       transfers: [],
       transfersCount: 0,
@@ -261,11 +267,11 @@ export default {
 
         this.account = account;
         this.address = account.address;
-        this.balance = new BigNumber(this.account.gny || this.account.balance).dividedBy(1e8).toFixed();
+        this.balance = new BigNumber(this.account.gny || this.account.balance).dividedBy(1e8).toFixed(0);
 
-        if (account.isLocked) {
-          this.lockAmount = new BigNumber(account.lockAmount).dividedBy(1e8).toFixed();
-        }
+        this.lockAmount = new BigNumber(account.lockAmount).dividedBy(1e8).toFixed(0);
+        this.isLocked = account.isLocked === '0' ? false : true;
+        this.lockHeight = account.lockHeight;
 
         if (account.publicKey) {
           this.publicKey = account.publicKey.slice(0, 8);

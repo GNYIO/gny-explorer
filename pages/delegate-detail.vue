@@ -20,7 +20,15 @@
         </div>
         <div>
           Produced Blocks
-          <p >{{delegate.producedBlocks}}</p>
+          <p>{{delegate.producedBlocks}}</p>
+        </div>
+        <div>
+          Balance
+          <p>{{prettyBalance}}</p>
+        </div>
+        <div>
+          Locked Balance (voting weight)
+          <p><b>{{prettyLockBalance}}</b> out of {{prettyBalance}}</p>
         </div>
         <div>
           Missed Blocks
@@ -171,6 +179,8 @@ export default {
       blockTitle:'',
       voters: [],
       voteLoading: true,
+      prettyBalance: '',
+      prettyLockBalance: '',
     }
   },
 
@@ -249,6 +259,13 @@ export default {
         if (this.voters.length >= 0) {
             this.voteLoading = false;
         }
+
+        const account = await connection.api.Account.getAccountByAddress(delegate.address);
+        if (account.success) {
+          this.prettyBalance = new BigNumber(account.account.balance).dividedBy(1e8).toFixed(0);
+          this.prettyLockBalance = new BigNumber(account.account.lockAmount).dividedBy(1e8).toFixed(0);
+        }
+
       } catch (error) {
         console.log(`error(delegate-detail): ${JSON.stringify(error && error.response && error.response.data, null, 2)}`);
         error({ statusCode: 404, message: 'Oops...' })

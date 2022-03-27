@@ -234,8 +234,9 @@ export default {
 
         let enabledCount = 0;
 
-        for (const delegate of this.allDelegates) {
-          const enabled = (await connection.api.Delegate.forgingStatus(delegate.publicKey)).enabled;
+        for (let i = 0; i < 101; ++i) {
+          const one = this.allDelegates[i];
+          const enabled = (await connection.api.Delegate.forgingStatus(one.publicKey)).enabled;
           if (enabled) {
             enabledCount += 1;
           }
