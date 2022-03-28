@@ -254,7 +254,7 @@ export default {
         if (address) {
           const result = await connection.api.Account.getAccountByAddress(address);
           if (result.success === true) {
-            account = result.account;
+            account = result;
           }
         }
 
@@ -267,7 +267,7 @@ export default {
 
         this.account = account;
         this.address = account.address;
-        this.balance = new BigNumber(this.account.gny || this.account.balance).dividedBy(1e8).toFixed(0);
+        this.balance = new BigNumber(this.account.gny).dividedBy(1e8).toFixed(0);
 
         this.lockAmount = new BigNumber(account.lockAmount).dividedBy(1e8).toFixed(0);
         this.isLocked = account.isLocked === '0' ? false : true;
@@ -295,8 +295,6 @@ export default {
           this.assets.push({...this.balances[i], ...{precision}});
         }
 
-        console.log(this.assets);
-
         this.transfersResult = await connection.api.Transfer.getRoot({
           ownerId: senderId,
           limit: this.limit,
@@ -321,7 +319,6 @@ export default {
 
           this.transfers.push(...newTransfers);
           totalCount += newTransfers.length;
-
         }
 
         this.transfers = this.addPrecision(this.transfers);
