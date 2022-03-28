@@ -229,7 +229,6 @@ export default {
         delegate.approval = new BigNumber(delegate.approval).decimalPlaces(4).toFixed();
         delegate.productivity = new BigNumber(delegate.productivity).times(100).decimalPlaces(4).toFixed();
 
-        console.log(`delegate: ${JSON.stringify(delegate, null, 2)}`);
         this.delegate = delegate;
         this.address = delegate.address;
         this.publicKey = delegate.publicKey;
@@ -262,8 +261,8 @@ export default {
 
         const account = await connection.api.Account.getAccountByAddress(delegate.address);
         if (account.success) {
-          this.prettyBalance = new BigNumber(account.account.balance).dividedBy(1e8).toFixed(0);
-          this.prettyLockBalance = new BigNumber(account.account.lockAmount).dividedBy(1e8).toFixed(0);
+          this.prettyBalance = new BigNumber(account.gny).dividedBy(1e8).toFixed(0);
+          this.prettyLockBalance = new BigNumber(account.lockAmount).dividedBy(1e8).toFixed(0);
         }
 
       } catch (error) {
