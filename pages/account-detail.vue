@@ -7,14 +7,14 @@
           <p>{{account.address}}</p>
         </div>
         <div>
-          Balance
+          Unlocked Balance
           <br v-if="balance === ''">
           <i v-if="balance === ''"  class="el-icon-loading"></i>
           <p >{{balance}}</p>
         </div>
         <div>
           Locked Balance
-          <p><b>{{lockAmount}}</b> out of {{balance}}</p>
+          <p>{{lockAmount}}</p>
         </div>
         <div>
           Is Locked

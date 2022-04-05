@@ -1,6 +1,6 @@
 <template>
   <b-card title="Who I Voted For" class="shadow mt-4">
-    <el-table :data="currentDelegates">
+    <el-table :data="currentDelegates" stripe>
 
       <el-table-column prop="rate" align="center" label="Rank" width="auto"></el-table-column>
 
