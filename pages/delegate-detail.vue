@@ -24,10 +24,14 @@
         </div>
         <div>
           Unlocked Balance
+          <br v-if="prettyBalance === ''">
+          <i v-if="prettyBalance === ''"  class="el-icon-loading"></i>
           <p>{{prettyBalance}}</p>
         </div>
         <div>
           Locked Balance (voting weight)
+          <br v-if="prettyLockBalance === ''">
+          <i v-if="prettyLockBalance === ''"  class="el-icon-loading"></i>
           <p>{{prettyLockBalance}}</p>
         </div>
         <div>
@@ -36,6 +40,8 @@
         </div>
         <div >
           Lock Height
+          <br v-if="lockHeight === ''">
+          <i v-if="lockHeight === ''"  class="el-icon-loading"></i>
           <p>{{lockHeight}}</p>
         </div>
         <div>
