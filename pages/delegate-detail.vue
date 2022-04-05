@@ -23,12 +23,20 @@
           <p>{{delegate.producedBlocks}}</p>
         </div>
         <div>
-          Balance
+          Unlocked Balance
           <p>{{prettyBalance}}</p>
         </div>
         <div>
           Locked Balance (voting weight)
-          <p><b>{{prettyLockBalance}}</b> out of {{prettyBalance}}</p>
+          <p>{{prettyLockBalance}}</p>
+        </div>
+        <div>
+          Is Locked
+          <p>{{isLocked}}</p>
+        </div>
+        <div >
+          Lock Height
+          <p>{{lockHeight}}</p>
         </div>
         <div>
           Missed Blocks
@@ -181,6 +189,8 @@ export default {
       voteLoading: true,
       prettyBalance: '',
       prettyLockBalance: '',
+      isLocked: false,
+      lockHeight: '',
     }
   },
 
@@ -260,10 +270,10 @@ export default {
         }
 
         const account = await connection.api.Account.getAccountByAddress(delegate.address);
-        if (account.success) {
-          this.prettyBalance = new BigNumber(account.gny).dividedBy(1e8).toFixed(0);
-          this.prettyLockBalance = new BigNumber(account.lockAmount).dividedBy(1e8).toFixed(0);
-        }
+        this.prettyBalance = new BigNumber(account.gny).dividedBy(1e8).toFixed(0);
+        this.prettyLockBalance = new BigNumber(account.lockAmount).dividedBy(1e8).toFixed(0);
+        this.isLocked = account.isLocked === '0' ? false : true;
+        this.lockHeight = account.lockHeight;
 
       } catch (error) {
         console.log(`error(delegate-detail): ${JSON.stringify(error && error.response && error.response.data, null, 2)}`);
