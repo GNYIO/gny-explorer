@@ -58,15 +58,15 @@
           </el-table-column>
           <el-table-column
             v-if="width >= 500"
-            prop="prettyBalance"
-            label="Unlocked Balance"
+            prop="prettyLockBalance"
+            label="Locked Balance"
             align="center"
             width="auto"
           ></el-table-column>
           <el-table-column
             v-if="width >= 500"
-            prop="prettyLockBalance"
-            label="Locked Balance"
+            prop="prettyBalance"
+            label="Unlocked Balance"
             align="center"
             width="auto"
           ></el-table-column>
