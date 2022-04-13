@@ -326,11 +326,12 @@ export default {
           this.issueLoading = false;
         }
 
-        const allTransfers = (await connection.api.Transaction.getTransactions({type: 103})).transactions;
+        const allTransfers = (await connection.api.Transaction.getTransactions({type: 103})).transactions.reverse();
 
         this.transfers = allTransfers.filter(function(transfer) {
           return JSON.parse(transfer.args)[0] === result.name;
         })
+
         this.transfersCount = this.transfers.length;
         
         if (this.transfersCount>= 0) {
