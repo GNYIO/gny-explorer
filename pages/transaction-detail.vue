@@ -266,6 +266,22 @@ export default {
       this.message = this.transaction.message;
       console.log(this.message);
 
+      this.transaction.fee = new BigNumber(this.transaction.fee).dividedBy(1e8).toFixed();
+
+      try {
+        const currentHeight = (await connection.api.Block.getHeight()).height;
+        this.confirmation = new BigNumber(currentHeight).minus(this.transaction.height).toFixed();
+
+        if (this.confirmation === '1') {
+          this.confirmationText = ' confirmation';
+        } else {
+          this.confirmationText = ' confirmations';
+        }
+      } catch (error) {
+        console.log(error.message);
+        // error({ statusCode: 404, message: 'Oops...' });
+      }
+
       switch (this.transaction.type) {
         case 0:
           this.args[0] = new BigNumber(this.args[0]).dividedBy(1e8).toFixed();
@@ -300,8 +316,8 @@ export default {
           break;
         case 103:
           this.currency = this.args[0];
+          this.username = (await connection.api.Account.getAccountByAddress(this.transaction.senderId)).username;
 
-          const username = (await connection.api.Account.getAccountByAddress(this.transaction.senderId)).account.username;
           const name = this.currency;
           const precisionRaw = (await connection.api.Uia.getAsset(name)).asset.precision;
           const precision = Math.pow(10, precisionRaw);
@@ -311,21 +327,6 @@ export default {
           break;
       }
 
-      this.transaction.fee = new BigNumber(this.transaction.fee).dividedBy(1e8).toFixed();
-
-      try {
-        const currentHeight = (await connection.api.Block.getHeight()).height;
-        this.confirmation = new BigNumber(currentHeight).minus(this.transaction.height).toFixed();
-
-        if (this.confirmation === '1') {
-          this.confirmationText = ' confirmation';
-        } else {
-          this.confirmationText = ' confirmations';
-        }
-      } catch (error) {
-        console.log(error.message);
-        // error({ statusCode: 404, message: 'Oops...' });
-      }
     }
   },
 
