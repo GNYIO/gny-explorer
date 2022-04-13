@@ -157,7 +157,8 @@
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column v-if="width >= 800" prop="fee" label="Fee" :formatter="formatFee" width="auto"></el-table-column>
+        <el-table-column v-if="width >= 400" prop="fee" label="Fee" :formatter="formatFee" width="auto"></el-table-column>
+        <el-table-column v-if="width >= 400" prop="type" label="Type" :formatter="formatType" width="auto"></el-table-column>
       </el-table>
 
       <el-pagination
@@ -203,6 +204,7 @@ import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import { slots } from '@gny/utils';
 import * as gnyClient from '@gny/client';
+import { contractMappingFilter } from '../helpers/getTransactionType';
 
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],
@@ -268,6 +270,10 @@ export default {
 
     formatBalance: function (row, column) {
       return new BigNumber(row.balance).dividedBy(this.precision).toFixed();
+    },
+
+    formatType: function (row, column) {
+      return contractMappingFilter(row.type);
     },
 
     makeAssetPretty: function(asset) {
