@@ -157,7 +157,8 @@
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column v-if="width >= 800" prop="fee" label="Fee" :formatter="formatFee" width="auto"></el-table-column>
+        <el-table-column v-if="width >= 400" prop="fee" label="Fee" :formatter="formatFee" width="auto"></el-table-column>
+        <el-table-column v-if="width >= 400" prop="type" label="Type" :formatter="formatType" width="auto"></el-table-column>
       </el-table>
 
       <el-pagination
@@ -203,6 +204,7 @@ import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import { slots } from '@gny/utils';
 import * as gnyClient from '@gny/client';
+import { contractMappingFilter } from '../helpers/getTransactionType';
 
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],
@@ -270,6 +272,10 @@ export default {
       return new BigNumber(row.balance).dividedBy(this.precision).toFixed();
     },
 
+    formatType: function (row, column) {
+      return contractMappingFilter(row.type);
+    },
+
     makeAssetPretty: function(asset) {
       const prec = Math.pow(10, asset.precision);
       const difference = new BigNumber(asset.maximum)
@@ -326,11 +332,12 @@ export default {
           this.issueLoading = false;
         }
 
-        const allTransfers = (await connection.api.Transaction.getTransactions({type: 103})).transactions;
+        const allTransfers = (await connection.api.Transaction.getTransactions({type: 103})).transactions.reverse();
 
         this.transfers = allTransfers.filter(function(transfer) {
           return JSON.parse(transfer.args)[0] === result.name;
         })
+
         this.transfersCount = this.transfers.length;
         
         if (this.transfersCount>= 0) {
