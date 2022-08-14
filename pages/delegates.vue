@@ -231,18 +231,6 @@ export default {
         if (this.allDelegates.length >= 0) {
           this.loading = false;
         }
-
-        let enabledCount = 0;
-
-        for (let i = 0; i < 101; ++i) {
-          const one = this.allDelegates[i];
-          const enabled = (await connection.api.Delegate.forgingStatus(one.publicKey)).enabled;
-          if (enabled) {
-            enabledCount += 1;
-          }
-        }
-        this.forgingCount = enabledCount;
-
       } else {
         this.allDelegates = [];
       }
