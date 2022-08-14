@@ -23,12 +23,6 @@
                 <p>{{highestApproval}}</p>
             </div>
             <div>
-                Forging Delegates
-                <p v-if="forgingCount">{{forgingCount}}</p>
-                <br v-if="forgingCount === 0">
-                <i v-if="forgingCount === 0"  class="el-icon-loading"></i>
-            </div>
-            <div>
                 Highest Approval
                 <br v-if="highestApprovalDelegate === ''">
                 <i v-if="highestApprovalDelegate === ''"  class="el-icon-loading"></i>
@@ -152,7 +146,6 @@ export default {
     return {
       allDelegates: [],
       count: '',
-      forgingCount: 0,
 
       mostProducedBlocks: '',
       mostProducedBlocksDelegate: '',
@@ -180,6 +173,7 @@ export default {
             ...x,
             prettyBalance: new BigNumber(x.gny).dividedBy(1e8).toFixed(0),
             prettyLockBalance: new BigNumber(x.lockAmount).dividedBy(1e8).toFixed(0),
+            approval: new BigNumber(x.approval).toFixed(6),
           };
           return one;
         });
@@ -205,7 +199,7 @@ export default {
             return 0;
         })[0];
 
-        this.highestApproval = highestApproval.approval + ' %';
+        this.highestApproval = highestApproval.approval.slice(0, 6) + ' %';
         this.highestApprovalDelegate = highestApproval.username;
 
 
