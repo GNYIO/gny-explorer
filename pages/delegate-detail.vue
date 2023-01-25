@@ -183,7 +183,6 @@ export default {
       username: '',
       trs: '',
       rewards: '',
-      blocks: [],
       blocksCount: 0,
       offset: 0,
       loading: true,
@@ -256,13 +255,7 @@ export default {
         const query = {
           offset: this.offset,
           publicKey: this.publicKey,
-        }
-
-        this.blocks = (await connection.api.Delegate.ownProducedBlocks(query)).blocks;
-
-        if (this.blocks.length >= 0) {
-            this.loading = false;
-        }
+        };
 
         const voterAccounts = (await connection.api.Delegate.getVoters(this.delegate.username)).accounts;
 
@@ -309,29 +302,21 @@ export default {
     },
 
     handleCurrentChange: async function (currentPage) {
-      this.currentPage = currentPage;
-      const currentFrom = (currentPage - 1) * this.pageSize;
-      while (currentFrom > this.blocks.length) {
-        const offset = this.blocks.length;
-        const query = {
-          offset: offset,
-          publicKey: this.publicKey,
-        }
-        const newBlocks = (await connection.api.Delegate.ownProducedBlocks(query)).blocks;
-        this.blocks = this.blocks.concat(newBlocks);
-      }
-      this.changePage(this.blocks, currentPage);
-    },
+      this.loading = true;
 
-    changePage(list, currentPage) {
-      let from = (currentPage - 1) * this.pageSize;
-      let to = currentPage * this.pageSize;
+      const from = (currentPage - 1) * this.pageSize;
+      const query = {
+        limit: this.pageSize,
+        offset: from,
+        publicKey: this.publicKey,
+      };
+      console.log(JSON.stringify(query));
+      const downloadedBlocks = (await connection.api.Delegate.ownProducedBlocks(query)).blocks;
+      console.log(`length: ${downloadedBlocks.length}`);
       this.currentBlocks = [];
-      for (; from < to; from++) {
-        if (list[from]) {
-          this.currentBlocks.push(list[from]);
-        }
-      }
+      this.currentBlocks = downloadedBlocks;
+
+      this.loading = false;
     },
   },
 
