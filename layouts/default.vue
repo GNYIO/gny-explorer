@@ -11,7 +11,13 @@
           </nuxt-link>
         </b-navbar-brand>
 
-        <b-navbar-toggle target="nav_collapse" ></b-navbar-toggle>
+        <b-navbar-toggle target="nav_collapse">
+          <template #default="{ expanded }">
+            <svg
+            style="display: inline-block; width: 1.5em; height: 1.5em; vertical-align: middle; content: ''; background: no-repeat center center; background-image: none; background-size: auto; background-size: 100% 100%;"
+            xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'><path stroke='rgba(0, 0, 0, 0.5)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/></svg>
+          </template>
+        </b-navbar-toggle>
 
         <b-collapse is-nav id="nav_collapse">
           <b-navbar-nav>
