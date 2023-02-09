@@ -57,37 +57,9 @@
       </el-table>
     </b-card>
 
-    <b-card title="Transactions" class="shadow mt-4">
-      <el-table @row-click="transactionRowClick" :data="transactions" stripe>
-        <el-table-column prop="height" align="center" label="Height" width="auto">
-          <template v-slot:default="table">
-             <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}" tag="span">
-              {{table.row.height}}
-            </nuxt-link>
-          </template>
-        </el-table-column>
-        <el-table-column prop="id" align="center" label="Transaction ID" width="auto">
-          <template v-slot:default="table">
-            <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: table.row.id }}" tag="span">
-              {{table.row.id.slice(0,8)}}
-            </nuxt-link>
-          </template>
-        </el-table-column>
-        <el-table-column v-if="width >= 1000" prop="timestamp" align="center" label="Forged Time" :formatter="timestamp2date" width="auto"></el-table-column>
-        <el-table-column v-if="width >= 800" prop="senderId" align="center" label="Sender" width="auto">
-          <template v-slot:default="table">
-            <!-- should be always ME -->
-            <span v-if="account.address === table.row.senderId">ME</span>
-            <span v-else>{{ table.row.senderId.slice(0,8) }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column v-if="width >= 800" prop="fee" align="center"  label="Fee" :formatter="formatFee" width="50"></el-table-column>
-        <el-table-column v-if="width >= 1000" prop="type" align="center"  label="Type" :formatter="formatType" width="auto"></el-table-column>
+    <transactions-i-sent :senderAddress="address"></transactions-i-sent>
 
-      </el-table>
-    </b-card>
-
-     <b-card title="Asset Transfers" class="shadow mt-4">
+    <b-card title="Asset Transfers" class="shadow mt-4">
       <el-table @row-click="rowClick" :data="currentTransfers" style="width: 100%">
 
         <el-table-column prop="amount" align="center" label="Amount" :formatter="prettyPrintAmount" width="auto"></el-table-column>
@@ -157,7 +129,10 @@ import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import { slots } from '@gny/utils';
 import * as gnyClient from '@gny/client';
+
+import TransactionsISent from '../components/TransactionsISent.vue';
 import WhoIVotedForComponent from '../components/WhoIVotedFor.vue';
+
 import { contractMappingFilter } from '../helpers/getTransactionType';
 
 const connection = new gnyClient.Connection(
@@ -169,6 +144,7 @@ const connection = new gnyClient.Connection(
 
 export default {
   components: {
+    'transactions-i-sent': TransactionsISent,
     'who-i-voted-for-component': WhoIVotedForComponent,
   },
   computed: {
@@ -187,7 +163,6 @@ export default {
   data() {
     return {
       account: {},
-      transactions: [],
       balances: [],
       assets: [],
       address: '',
@@ -212,11 +187,6 @@ export default {
   },
 
   methods: {
-    transactionRowClick: function(row) {
-        console.log(row.id);
-        this.$router.push({name: 'transaction-detail', query: { id: row.id }});
-    },
-
     rowClick: function(row) {
         console.log(row.id);
         this.$router.push({name: 'transaction-detail', query: { id: row.tid }});
@@ -281,9 +251,8 @@ export default {
 
         const query = {
           senderId,
-        }
-
-        this.transactions = (await connection.api.Transaction.getTransactions(query)).transactions.reverse();
+          limit: 5,
+        };
 
         this.balances = (await connection.api.Uia.getBalances(senderId)).balances;
 
