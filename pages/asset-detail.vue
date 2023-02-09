@@ -261,7 +261,7 @@ export default {
     },
 
     timestamp2date: function (row, column) {
-      return moment(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD hh:mm:ss');
+      return moment(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD HH:mm:ss');
     },
 
     formatFee: function (row, column) {
