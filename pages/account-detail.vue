@@ -47,7 +47,7 @@
       <el-table class="clickable-rows" :data="assets" stripe>
         <el-table-column prop="currency" align="center" label="Currency" width="auto">
           <template v-slot:default="table">
-            <nuxt-link class="nuxt-link" :to="{name: 'asset-detail', query: { assetName: table.row.currency }}" tag="span">
+            <nuxt-link class="nuxt-link" :to="{name: 'asset-detail', query: { assetName: table.row.currency }}">
               {{table.row.currency}}
             </nuxt-link>
           </template>
@@ -67,14 +67,14 @@
         <el-table-column v-if="width >= 500" prop="currency" align="center" label="Currency" width="auto">
           <template v-slot:default="table">
             <span v-if="table.row.currency === 'GNY'">GNY</span>
-            <nuxt-link v-else class="nuxt-link" :to="{ name: 'asset-detail', query: { assetName: table.row.currency }}" tag="span">{{ table.row.currency }}</nuxt-link>
+            <nuxt-link v-else class="nuxt-link" :to="{ name: 'asset-detail', query: { assetName: table.row.currency }}">{{ table.row.currency }}</nuxt-link>
           </template>
         </el-table-column>
 
         <el-table-column v-if="width >= 500" prop="senderId" label="Sender" align="center" width="auto">
           <template v-slot:default="table">
              <span v-if="account.address === table.row.senderId">ME</span>
-             <nuxt-link v-else class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.senderId }}" tag="span">
+             <nuxt-link v-else class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.senderId }}">
               {{table.row.senderId.slice(0,8)}}
             </nuxt-link>
           </template>
@@ -83,7 +83,7 @@
         <el-table-column v-if="width >= 500" prop="recipientId" label="Recipient" align="center" width="auto">
           <template v-slot:default="table">
              <span v-if="account.address === table.row.recipientId">ME</span>
-             <nuxt-link v-else class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.recipientId }}" tag="span">
+             <nuxt-link v-else class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.recipientId }}">
               {{table.row.recipientId.slice(0,8)}}
             </nuxt-link>
           </template>
@@ -91,7 +91,7 @@
 
         <el-table-column prop="tid" align="center" label="TX ID" width="auto">
           <template v-slot:default="table">
-            <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: {id: table.row.tid }}" tag="span">
+            <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: {id: table.row.tid }}">
              {{ table.row.tid.slice(0,8) }}
             </nuxt-link>
          </template>
@@ -99,7 +99,7 @@
      
         <el-table-column v-if="width >= 800" prop="height" align="center" label="Height" width="auto">
           <template v-slot:default="table">
-             <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}" tag="span">
+             <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
               {{table.row.height}}
             </nuxt-link>
           </template>
