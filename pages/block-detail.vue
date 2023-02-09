@@ -131,7 +131,7 @@ export default {
     },
 
     timestamp2date: function (row, column) {
-      return moment(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD hh:mm:ss');
+      return moment(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD HH:mm:ss');
     },
 
     updatePage: async function (height) {
@@ -150,7 +150,7 @@ export default {
         this.prevId = null;
       }
       
-      this.date = moment(slots.getRealTime(this.block.timestamp)).format('YYYY-MM-DD hh:mm:ss');
+      this.date = moment(slots.getRealTime(this.block.timestamp)).format('YYYY-MM-DD HH:mm:ss');
       this.transactions = transactions;
       this.delegateID = this.block.delegate.slice(0, 8);
     } catch (error) {
