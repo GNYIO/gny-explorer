@@ -3,7 +3,7 @@
       <el-table :data="transactions" stripe height="500" v-loading="loading">
         <el-table-column prop="id" align="center" width="auto" label="Transaction ID">
           <template v-slot:default="table">
-            <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: table.row.id }}" tag="span">
+            <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: table.row.id }}">
               {{table.row.id.slice(0,8)}}
             </nuxt-link>
           </template>
@@ -18,7 +18,7 @@
         <el-table-column v-if="width > 1050" prop="timestamp" align="center" label="Forged Time" width="165" :formatter="timestamp2date"></el-table-column>
         <el-table-column v-if="width > 450" prop="senderId" align="center" label="Sender" width="auto" :formatter="subSenderId">
           <template v-slot:default="table">
-            <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.senderId }}" tag="span">
+            <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.senderId }}">
               {{table.row.senderId.slice(0,8)}}
             </nuxt-link>
           </template>

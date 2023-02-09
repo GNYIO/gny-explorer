@@ -3,14 +3,14 @@
     <el-table @row-click="blockRowClick" :data="blocks" stripe v-loading="blocksLoading">
       <el-table-column prop="height" align="center" label="Height" width="auto">
         <template v-slot:default="table">
-          <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}" tag="span" :formatter="subID">
+          <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}" :formatter="subID">
             {{table.row.height}}
           </nuxt-link>
         </template>
       </el-table-column>
       <el-table-column v-if="width >= 500" prop="id" align="center" label="Block ID" width="auto">
         <template v-slot:default="table">
-          <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}" tag="span" :formatter="subID">
+          <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}" :formatter="subID">
             {{table.row.id.slice(0,8)}}
           </nuxt-link>
         </template>
@@ -18,7 +18,7 @@
       <el-table-column v-if="width >= 800" prop="timestamp" align="center" label="Forged Time" width="auto" :formatter="timestamp2date"></el-table-column>
       <el-table-column prop="delegate" align="center" label="Delegate" :formatter="subDelegate">
         <template v-slot:default="table">
-          <nuxt-link class="nuxt-link" :to="{name: 'delegate-detail', query: { publicKey: table.row.delegate }}" tag="span">
+          <nuxt-link class="nuxt-link" :to="{name: 'delegate-detail', query: { publicKey: table.row.delegate }}">
             {{table.row.delegate.slice(0, 8)}}
            </nuxt-link>
         </template>

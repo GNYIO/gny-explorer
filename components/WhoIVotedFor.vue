@@ -6,7 +6,7 @@
 
       <el-table-column prop="username" align="center" label="Delegate">
         <template v-slot:default="table" width="auto">
-            <nuxt-link class="nuxt-link" :to="{ name: 'delegate-detail', query: { username: table.row.username }}" tag="span">{{ table.row.username }}</nuxt-link>
+            <nuxt-link class="nuxt-link" :to="{ name: 'delegate-detail', query: { username: table.row.username }}">{{ table.row.username }}</nuxt-link>
           </template>
       </el-table-column>
 

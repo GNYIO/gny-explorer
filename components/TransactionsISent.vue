@@ -4,14 +4,14 @@
     <el-table :data="transactions" stripe @row-click="transactionRowClick">
         <el-table-column prop="height" align="center" label="Height" width="auto">
           <template v-slot:default="table">
-             <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}" tag="span">
+             <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
               {{table.row.height}}
             </nuxt-link>
           </template>
         </el-table-column>
         <el-table-column prop="id" align="center" label="Transaction ID" width="auto">
           <template v-slot:default="table">
-            <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: table.row.id }}" tag="span">
+            <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: table.row.id }}">
               {{table.row.id.slice(0,8)}}
             </nuxt-link>
           </template>

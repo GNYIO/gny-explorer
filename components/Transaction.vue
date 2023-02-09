@@ -18,7 +18,7 @@
       <el-table-column v-if="width >= 800" prop="timestamp" align="center" label="Forged Time" width="auto" :formatter="timestamp2date"></el-table-column>
       <el-table-column v-if="width >= 500" prop="senderId" align="center" label="Sender" width="auto" :formatter="subSenderId">
         <template v-slot:default="table">
-          <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.senderId }}" tag="span">
+          <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.senderId }}">
             <div>{{table.row.senderId.slice(0,8)}}</div>
           </nuxt-link>
         </template>
