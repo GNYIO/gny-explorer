@@ -260,7 +260,7 @@ export default {
         // error({ statusCode: 404, message: 'Oops...' });
       }
 
-      this.date = moment(slots.getRealTime(this.transaction.timestamp)).format('YYYY-MM-DD HH:mm:ss');
+      this.date = moment.utc(slots.getRealTime(this.transaction.timestamp)).format('YYYY-MM-DD HH:mm:ss UTC');
 
       this.args = JSON.parse(this.transaction.args);
       this.message = this.transaction.message;
