@@ -115,7 +115,7 @@ export default {
             return contractMappingFilter(row.type);
         },
         timestamp2date: function (row, column) {
-            return moment(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD HH:mm:ss');
+            return moment.utc(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD HH:mm:ss UTC');
         },
         transactionRowClick: function(row) {
             this.$router.push({name: 'transaction-detail', query: { id: row.id }});
