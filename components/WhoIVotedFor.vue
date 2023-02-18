@@ -1,6 +1,6 @@
 <template>
   <b-card title="Who I Voted For" class="shadow mt-4">
-    <el-table :data="currentDelegates" stripe>
+    <el-table :data="delegates" stripe>
 
       <el-table-column prop="rate" align="center" label="Rank" width="auto"></el-table-column>
 
@@ -22,7 +22,7 @@
         :current-page="currentPage"
         :page-size="5"
         layout="prev, pager, next"
-        :total="delegateCount"
+        :total="delegatesCount"
         align="center"
       ></el-pagination>
   </b-card>
@@ -53,67 +53,72 @@ export default {
   },
   data() {
     return {
+      loading: true,
       currentPage: 1,
-      delegateCount: 0,
       pageSize: 5,
       delegates: [],
-      currentDelegates: [],
+      delegatesCount: 0,
     };
   },
   watch: { 
     addressOfVoter: async function(address) {
       console.log('(WhoIVotedFor) address of voter changed to ' + address);
-      await this.loadDataFor(address);
-    },
-  },
-  methods: {
-    async loadDataFor(address) {
+
+      // reset delegates and delegatesCount because if error occurs while
+      // loading new data we don't want that the old data is visible
+      // better no data then wrong data
       this.delegates = [];
-      this.delegateCount = 0;
+      this.delegatesCount = 0;
 
-      let delegates = null;
-
-      if (address != null) {
-        const result = await connection.api.Delegate.getOwnVotes({
-          address,
-        });
-        if (result.success === true) {
-          delegates = result.delegates;
-        }
-      }
-
-      if (delegates === null || delegates === undefined) {
+      if (this.addressOfVoter === null || this.addressOfVoter === undefined) {
         return;
       }
 
-      for (let i = 0; i < delegates.length; ++i) {
-        const one = delegates[i];
+      await this.handleCurrentChange(1);
+    },
+  },
+  methods: {
+    voteWeightFormatter: function (row, column) {
+      return new BigNumber(row.votes).dividedBy(1e8).toFixed();
+    },
+    handleCurrentChange: async function(currentPage) {
+      this.loading = true;
+
+      const from = (currentPage - 1) * this.pageSize;
+      const query = {
+          address: this.addressOfVoter,
+      };
+      console.log(JSON.stringify(query, null, 2));
+
+      let result = [];
+      try {
+        // this endpoint is not paged because it only returns
+        // up to 33 votes
+        const raw = await connection.api.Delegate.getOwnVotes(query);
+        if (raw.success === true) {
+          result = raw.delegates;
+        }
+
+      } catch (err) {
+        console.log(`(WhoIVotedFor) error while fetching own votes`);
+        this.loading = false;
+        return;
+      }
+
+      for (let i = 0; i < result.length; ++i) {
+        const one = result[i];
         if (!one.rate) {
           one.rate = 0;
         }
       }
-      this.delegates = delegates;
-      this.delegateCount = delegates.length;
 
-      this.handleCurrentChange(1);
+      const paged = result.slice(from, from + this.pageSize);
+      this.delegates = paged;
+      this.delegatesCount = result.length;
+
+      this.loading = false;
     },
-    voteWeightFormatter: function (row, column) {
-      return new BigNumber(row.votes).dividedBy(1e8).toFixed();
-    },
-    handleCurrentChange(currentPage) {
-      this.currentPage = currentPage;
-      this.changePage(this.delegates, currentPage);
-    },
-    changePage(list, currentPage) {
-      let from = (currentPage - 1) * this.pageSize;
-      let to = currentPage * this.pageSize;
-      this.currentDelegates = [];
-      for (; from < to; from++) {
-        if (list[from]) {
-          this.currentDelegates.push(list[from]);
-        }
-      }
-    }
+
   },  
 }
 </script>
