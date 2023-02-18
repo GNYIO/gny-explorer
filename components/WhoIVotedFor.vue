@@ -62,12 +62,15 @@ export default {
   },
   watch: { 
     addressOfVoter: async function(address) {
-      console.log('address of voter changed to ' + address);
+      console.log('(WhoIVotedFor) address of voter changed to ' + address);
       await this.loadDataFor(address);
     },
   },
   methods: {
-    async loadDataFor(address, username) {
+    async loadDataFor(address) {
+      this.delegates = [];
+      this.delegateCount = 0;
+
       let delegates = null;
 
       if (address != null) {
@@ -77,6 +80,10 @@ export default {
         if (result.success === true) {
           delegates = result.delegates;
         }
+      }
+
+      if (delegates === null || delegates === undefined) {
+        return;
       }
 
       for (let i = 0; i < delegates.length; ++i) {
