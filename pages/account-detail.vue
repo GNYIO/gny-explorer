@@ -152,10 +152,12 @@ export default {
   },
   watch: { 
     '$route.query.username': async function(username) {
+      console.log(`(account-detail) username changed`);
       await this.updatePage(username, null);
     },
 
     '$route.query.address': async function(address) {
+      console.log(`(account-detail) address changed`);
       await this.updatePage(null, address);
     }
   },
@@ -219,7 +221,29 @@ export default {
     },
 
     updatePage: async function (username, address) {
-      try {
+      // reset all data properties
+        this.account = {}
+        this.balances = [];
+        this.assets = [];
+        this.address = '';
+        this.publicKey = '';
+        this.balance = '';
+        
+        this.isLocked = false;
+        this.lockedAmount = '';
+        
+        this.lockHeight = '';
+        this.lockAmount = '';
+
+        this.loaded = 0;
+        this.transfers = [];
+        this.transfersCount = 0;
+        this.currentTransfers = [];
+        this.currentPage = 1;
+        this.pageSize = 10;
+        this.limit = 100;
+        this.offset = 0;
+
         let account = null;
         if (address) {
           const result = await connection.api.Account.getAccountByAddress(address);
@@ -235,6 +259,10 @@ export default {
           }
         }
 
+        if (account === null) {
+          throw new Error('failed to fetch account');
+        }
+
         this.account = account;
         this.address = account.address;
         this.balance = new BigNumber(this.account.gny).dividedBy(1e8).toFixed(0);
@@ -248,11 +276,6 @@ export default {
         }
 
         const senderId = account.address;
-
-        const query = {
-          senderId,
-          limit: 5,
-        };
 
         this.balances = (await connection.api.Uia.getBalances(senderId)).balances;
 
@@ -292,10 +315,6 @@ export default {
 
         this.transfers = this.addPrecision(this.transfers);
         
-      } catch (error) {
-        console.log(error && error.response && error.response.data);
-        // error({ statusCode: 404, message: 'Oops...' })
-      }
     },
 
     handleCurrentChange(currentPage) {
@@ -332,10 +351,11 @@ export default {
   },
 
   async mounted() {
-    this.address = this.$route.query.address;
+    console.log(`(account-detail) mounted()`);
+    const address = this.$route.query.address;
     const username = this.$route.query.username;
 
-    await this.updatePage(username, this.address);
+    await this.updatePage(username, address);
     this.handleCurrentChange(1);
   }
 };

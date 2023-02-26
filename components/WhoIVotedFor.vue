@@ -1,6 +1,6 @@
 <template>
-  <b-card title="Who I Voted For" class="shadow mt-4">
-    <el-table :data="delegates" stripe>
+  <b-card :title="formatTitle" class="shadow mt-4">
+    <el-table :data="delegates" stripe v-loading="loading">
 
       <el-table-column prop="rate" align="center" label="Rank" width="auto"></el-table-column>
 
@@ -43,6 +43,9 @@ const connection = new gnyClient.Connection(
 
 export default {
   computed: {
+    formatTitle() {
+      return `Who I Voted For (total: ${this.delegatesCount})`;
+    },
     ...mapGetters(['width']),
   },
   props: {
@@ -89,20 +92,14 @@ export default {
           address: this.addressOfVoter,
       };
       console.log(JSON.stringify(query, null, 2));
+      console.log(`delegatescount: ${this.delegatesCount}`);
 
       let result = [];
-      try {
-        // this endpoint is not paged because it only returns
-        // up to 33 votes
-        const raw = await connection.api.Delegate.getOwnVotes(query);
-        if (raw.success === true) {
-          result = raw.delegates;
-        }
-
-      } catch (err) {
-        console.log(`(WhoIVotedFor) error while fetching own votes`);
-        this.loading = false;
-        return;
+      // this endpoint is not paged because it only returns
+      // up to 33 votes
+      const raw = await connection.api.Delegate.getOwnVotes(query);
+      if (raw.success === true) {
+        result = raw.delegates;
       }
 
       for (let i = 0; i < result.length; ++i) {
@@ -115,6 +112,7 @@ export default {
       const paged = result.slice(from, from + this.pageSize);
       this.delegates = paged;
       this.delegatesCount = result.length;
+      console.log(`delegatescount: ${this.delegatesCount}`);
 
       this.loading = false;
     },

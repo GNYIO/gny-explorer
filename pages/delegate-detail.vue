@@ -113,32 +113,7 @@
       ></el-pagination>
     </b-card>
 
-    <b-card title="Who Voted for Me" class="shadow mt-4">
-      <el-table :data="voters" stripe v-loading="voteLoading">
-        <el-table-column prop="senderId" align="center" label="Address">
-          <template v-slot:default="table">
-            <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.senderId }}">
-              {{table.row.senderId.slice(0, 8)}}
-            </nuxt-link>
-          </template>
-        </el-table-column>
-        <el-table-column prop="lockAmount" align="center" label="Lock Amount" :formatter="formatLockAmount" width="auto"></el-table-column>
-        <el-table-column v-if="width >= 800" prop="transactionId" align="center" label="Transaction ID" width="auto">
-          <template v-slot:default="table">
-            <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: table.row.transactionId }}">
-              {{table.row.transactionId.slice(0, 8)}}
-            </nuxt-link>
-          </template>
-        </el-table-column>
-        <el-table-column v-if="width >= 500" prop="height" align="center" label="Block Height" width="auto">
-          <template v-slot:default="table">
-            <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
-              {{table.row.height}}
-            </nuxt-link>
-          </template>
-        </el-table-column>
-      </el-table>
-    </b-card>
+    <who-voted-for-me-component :votedForAddress="address"></who-voted-for-me-component>
 
     <who-i-voted-for-component :addressOfVoter="address"></who-i-voted-for-component>
 
@@ -151,6 +126,8 @@ import moment from 'moment';
 import * as gnyClient from '@gny/client';
 import { slots } from '@gny/utils';
 import BigNumber from 'bignumber.js';
+
+import WhoVotedForMeComponent from '../components/WhoVotedForMe.vue';
 import WhoIVotedForComponent from '../components/WhoIVotedFor.vue';
 
 
@@ -163,6 +140,7 @@ const connection = new gnyClient.Connection(
 
 export default {
   components: {
+    'who-voted-for-me-component': WhoVotedForMeComponent,
     'who-i-voted-for-component': WhoIVotedForComponent,
   },
   watch: { 
@@ -190,8 +168,6 @@ export default {
       currentPage: 1,
       pageSize: 10,
       blockTitle:'',
-      voters: [],
-      voteLoading: true,
       prettyBalance: '',
       prettyLockBalance: '',
       isLocked: false,
@@ -257,17 +233,6 @@ export default {
           publicKey: this.publicKey,
         };
 
-        const voterAccounts = (await connection.api.Delegate.getVoters(this.delegate.username)).accounts;
-
-        for (let i = 0; i < voterAccounts.length; ++i) {
-          const voter = await this.getVoterInfo(voterAccounts[i]);
-          this.voters.push(voter);
-        }
-
-        if (this.voters.length >= 0) {
-            this.voteLoading = false;
-        }
-
         const account = await connection.api.Account.getAccountByAddress(delegate.address);
         this.prettyBalance = new BigNumber(account.gny).dividedBy(1e8).toFixed(0);
         this.prettyLockBalance = new BigNumber(account.lockAmount).dividedBy(1e8).toFixed(0);
@@ -275,31 +240,13 @@ export default {
         this.lockHeight = account.lockHeight;
 
       } catch (error) {
+        console.log(error.message);
         console.log(`error(delegate-detail): ${JSON.stringify(error && error.response && error.response.data, null, 2)}`);
         error({ statusCode: 404, message: 'Oops...' })
       }
     },
 
-    getVoterInfo: async function (account) {
-      let voter = {};
-      const query = {
-        senderId: account.address,
-        type: 4,
-      }
-      const transactions =  (await connection.api.Transaction.getTransactions(query)).transactions;
 
-      for (let i = 0; i < transactions.length; ++i) {
-        const voteList = transactions[i].args;
-        if (voteList.includes(this.delegate.username)) {
-          voter['transactionId'] = transactions[i].id;
-          voter['height'] = transactions[i].height;
-          voter['senderId'] = transactions[i].senderId;
-          voter['lockAmount'] = account.lockAmount;
-
-          return voter;
-        }
-      }
-    },
 
     handleCurrentChange: async function (currentPage) {
       this.loading = true;

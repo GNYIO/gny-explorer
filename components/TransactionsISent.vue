@@ -1,7 +1,7 @@
 <template>
     <b-card :title="formatTitle" class="shadow mt-4">
 
-    <el-table :data="transactions" stripe @row-click="transactionRowClick">
+    <el-table :data="transactions" stripe @row-click="transactionRowClick" v-loading="loading">
         <el-table-column prop="height" align="center" label="Height" width="auto">
           <template v-slot:default="table">
              <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
@@ -82,12 +82,17 @@ export default {
         senderAddress: async function(senderAddress) {
             console.log('(TransactionsISent) address of voter changed to ' + senderAddress);
 
+            // reset
+            this.transactions = [];
+            this.transactionsCount = 0;
+
             await this.handleCurrentChange(1);
         },
     },
     methods: {
         handleCurrentChange: async function (currentPage) {
             this.loading = true;
+            console.log(`(TransactionsISent) load data for page "${currentPage}"`);
 
             const from = (currentPage - 1) * this.pageSize;
             const query = {
@@ -96,12 +101,9 @@ export default {
                 senderId: this.senderAddress,
             };
             
-            console.log(JSON.stringify(query, null, 2));
-
             const raw = await connection.api.Transaction.getTransactions(query);
             this.transactionsCount = raw.count;
 
-            console.log(`(TransactionsISent) length: ${raw.count}`);
             this.transactions = [];
             this.transactions = raw.transactions;
             
@@ -110,7 +112,6 @@ export default {
         formatFee: function (row, column) {
             return new BigNumber(row.fee).dividedBy(1e8).toFixed();
         },
-
         formatType: function (row, column) {
             return contractMappingFilter(row.type);
         },
