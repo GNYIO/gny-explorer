@@ -42,20 +42,7 @@
       </div>
     </b-card>
 
-    <!-- v-if="balances.length > 0" -->
-    <b-card title="Custom Assets" class="shadow mt-4">
-      <el-table class="clickable-rows" :data="assets" stripe>
-        <el-table-column prop="currency" align="center" label="Currency" width="auto">
-          <template v-slot:default="table">
-            <nuxt-link class="nuxt-link" :to="{name: 'asset-detail', query: { assetName: table.row.currency }}">
-              {{table.row.currency}}
-            </nuxt-link>
-          </template>
-        </el-table-column>
-        <el-table-column prop="balance" align="center" label="Balance" width="auto" :formatter="prettyPrintAssetAmount"></el-table-column>
-        <el-table-column v-if="width > 600" prop="flag" align="center" label="Flag" width="auto"></el-table-column>
-      </el-table>
-    </b-card>
+    <custom-assets :senderAddress="address"></custom-assets>
 
     <transactions-i-sent :senderAddress="address"></transactions-i-sent>
 
@@ -130,8 +117,9 @@ import moment from 'moment';
 import { slots } from '@gny/utils';
 import * as gnyClient from '@gny/client';
 
-import TransactionsISent from '../components/TransactionsISent.vue';
+import TransactionsISentComponent from '../components/TransactionsISent.vue';
 import WhoIVotedForComponent from '../components/WhoIVotedFor.vue';
+import CustomAssetsComponent from '../components/CustomAssets.vue';
 
 import { contractMappingFilter } from '../helpers/getTransactionType';
 
@@ -144,8 +132,9 @@ const connection = new gnyClient.Connection(
 
 export default {
   components: {
-    'transactions-i-sent': TransactionsISent,
+    'transactions-i-sent': TransactionsISentComponent,
     'who-i-voted-for-component': WhoIVotedForComponent,
+    'custom-assets': CustomAssetsComponent,
   },
   computed: {
     ...mapGetters(['width']),
@@ -165,12 +154,11 @@ export default {
   data() {
     return {
       account: {},
-      balances: [],
-      assets: [],
       address: '',
       publicKey: '',
       balance: '',
-      
+      assets: [],
+
       isLocked: false,
       lockedAmount: '',
       
@@ -207,10 +195,7 @@ export default {
       return new BigNumber(row.amount).dividedBy(prec).toFixed();
     },
 
-    prettyPrintAssetAmount: function (row, column) {
-      const prec = Math.pow(10, row.precision);
-      return new BigNumber(row.balance).dividedBy(prec).toFixed();
-    },
+
 
     formatFee: function (row, column) {
       return new BigNumber(row.fee).dividedBy(1e8).toFixed();
@@ -223,11 +208,10 @@ export default {
     updatePage: async function (username, address) {
       // reset all data properties
         this.account = {}
-        this.balances = [];
-        this.assets = [];
         this.address = '';
         this.publicKey = '';
         this.balance = '';
+        this.assets = [];
         
         this.isLocked = false;
         this.lockedAmount = '';
@@ -277,15 +261,7 @@ export default {
 
         const senderId = account.address;
 
-        this.balances = (await connection.api.Uia.getBalances(senderId)).balances;
 
-        for (let i = 0; i < this.balances.length; i++) {
-          const currency = this.balances[i].currency;
-          const asset = (await connection.api.Uia.getAsset(currency)).asset;
-          const precision = asset.precision;
-
-          this.assets.push({...this.balances[i], ...{precision}});
-        }
 
         this.transfersResult = await connection.api.Transfer.getRoot({
           ownerId: senderId,
@@ -312,6 +288,19 @@ export default {
           this.transfers.push(...newTransfers);
           totalCount += newTransfers.length;
         }
+
+        // fetch asset data (for precision data)
+        // this is needed asset transfers
+        const allAssets = this.transfers.map(x => x.currency);
+        const allAssetsNoDuplicates = [...new Set(allAssets)]; // remove duplicates
+        for (let i = 0; i < allAssetsNoDuplicates.length; ++i) {
+          if (allAssetsNoDuplicates[i] === 'GNY') {
+            continue;
+          }
+          const asset = (await connection.api.Uia.getAsset(allAssetsNoDuplicates[i])).asset;
+          this.assets.push(asset);
+        }
+        console.log(`assets: ${JSON.stringify(this.assets, null, 2)}`);
 
         this.transfers = this.addPrecision(this.transfers);
         
@@ -340,7 +329,7 @@ export default {
           list[i]['precision'] = 8;
         } else {
           const precision = this.assets.filter(asset => {
-            return asset.currency === currency;
+            return asset.name === currency;
           })[0].precision;
           list[i]['precision'] = precision;
         }
