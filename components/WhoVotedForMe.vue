@@ -52,7 +52,7 @@ const connection = new gnyClient.Connection(
 export default {
   computed: {
     formatTitle() {
-      return 'Who voted for me ' + '(total: ' + this.votersCount + ')';
+      return 'Who Voted For Me ' + '(total: ' + this.votersCount + ')';
     },
     ...mapGetters(['width']),
   },
