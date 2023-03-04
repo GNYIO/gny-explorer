@@ -60,7 +60,7 @@ export default {
     computed: {
       ...mapGetters(['width']),
       formatTitle() {
-        return 'Transactions ' + '(total: ' + this.transactionsCount + ')';
+        return 'My Transactions ' + '(total: ' + this.transactionsCount + ')';
       },
     },
     data() {
