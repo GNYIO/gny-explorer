@@ -26,13 +26,13 @@
           Unlocked Balance
           <br v-if="prettyBalance === ''">
           <i v-if="prettyBalance === ''"  class="el-icon-loading"></i>
-          <p>{{prettyBalance}}</p>
+          <p>{{prettyBalance}} GNY</p>
         </div>
         <div>
           Locked Balance (voting weight)
           <br v-if="prettyLockBalance === ''">
           <i v-if="prettyLockBalance === ''"  class="el-icon-loading"></i>
-          <p>{{prettyLockBalance}}</p>
+          <p>{{prettyLockBalance}} GNY</p>
         </div>
         <div>
           Is Locked
