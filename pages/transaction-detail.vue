@@ -1,193 +1,178 @@
 <template>
-  <el-container direction="vertical">
+  <div>
     <b-card title="Transaction" class="shadow">
-      <el-row>
-        <el-col :span="8">
-          Block height
-          <p>
-            <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: transaction.height }}">
-              {{transaction.height}}
-            </nuxt-link>
-          </p>
-        </el-col>
-        <el-col :span="8">
-          Confirmations
-          <p>{{confirmation}}</p>
-        </el-col>
-        <el-col :span="8">
-          Forged Time
-          <p>{{date}}</p>
-        </el-col>
-      </el-row>
+      <div class="wrapper">
+      <div>
+        Block height
+        <p>
+          <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: transaction.height }}">
+            {{transaction.height}}
+          </nuxt-link>
+        </p>
+      </div>
+      <div>
+        Confirmations
+        <p>{{confirmation}}</p>
+      </div>
+      <div>
+        Forged Time
+        <p>{{date}}</p>
+      </div>
+      <div>
+        Fee
+        <p>{{transaction.fee}}</p>
+      </div>
+      <div>
+        Transaction Type
+        <p>{{transaction.type}}</p>
+      </div>
+      <div>
+        Signatures
+        <p>{{transaction.signatures | truncate(24) }}       <i class="el-icon-copy-document" @click="copySignatures"></i></p>
+      </div>
 
-      <el-row>
-        <el-col :span="8">
-          Fee
-          <p>{{transaction.fee}}</p>
-        </el-col>
-        <el-col :span="8">
-          Transaction Type
-          <p>{{transaction.type}}</p>
-        </el-col>
-        <el-col :span="8">
-          Signatures
-          <p>{{transaction.signatures | truncate(24) }}</p>
-        </el-col>
-      </el-row>
+      <div>
+        Transaction ID
+        <p>{{transaction.id | truncate(24) }}     <i class="el-icon-copy-document" @click="copyId"></i></p>
+      </div>
 
-      <el-row>
-        <el-col :span="24" >
-          Transaction ID
-          <p>{{transaction.id}}     <i class="el-icon-copy-document" @click="copyId"></i></p>
-        </el-col>
-      </el-row>
+      <div>
+        Sender ID
+        <p>
+          <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: transaction.senderId }}">
+            {{transaction.senderId | truncate(20)}}
+          </nuxt-link>
+        </p>
+      </div>
 
-      <el-row>
-        <el-col :span="8">
-          Sender ID
-          <p>
-            <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: transaction.senderId }}">
-              {{transaction.senderId | truncate(20)}}
-            </nuxt-link>
-          </p>
-        </el-col>
-        <el-col :span="16">
-          Sender Public Key
-          <p>{{transaction.senderPublicKey | truncate(50)}}</p>
-        </el-col>
-      </el-row>
+      <div>
+        Sender Public Key
+        <p>{{transaction.senderPublicKey | truncate(24)}}<i class="el-icon-copy-document" @click="copySenderPublicKey"></i></p>
+      </div>
 
 
-      <el-row v-if="!!transaction && transaction.secondSignature">
-        <el-col :span="24">
-          Second Signature
-          <p>{{transaction.secondSignature | truncate(24) }}</p>
-        </el-col>
-      </el-row>
+      <div v-if="!!transaction && transaction.secondSignature">
+        Second Signature
+        <p>{{transaction.secondSignature | truncate(24) }}</p>
+      </div>
 
-      <el-row v-if="transaction.type === 0">
-        <el-col :span="8">
-          Amount
-          <p>{{args[0]}}</p>
-        </el-col>
-        <el-col :span="16">
-          Recipient
-          <p>
-            <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: args[1]}}">
-              {{args[1]}}
-            </nuxt-link>
-          </p>
-        </el-col>
-      </el-row>
+      <div v-if="transaction.type === 0">
+        Amount
+        <p>{{args[0]}}</p>
+      </div>
+      <div v-if="transaction.type === 0">
+        Recipient
+        <p>
+          <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: args[1]}}">
+            {{args[1]}}
+          </nuxt-link>
+        </p>
+      </div>
 
-      <el-row v-if="transaction.type === 1">
-        <el-col :span="8">
-          Username
-          <p>{{username}}</p>
-        </el-col>
-      </el-row>
+      <div v-if="transaction.type === 1">
+        Username
+        <p>{{username}}</p>
+      </div>
 
-      <el-row v-if="transaction.type === 2">
-        <el-col :span="24">
-          Second Public Key
-          <p>{{secondPublicKey | truncate(70)}}</p>
-        </el-col>
-      </el-row>
+      <div v-if="transaction.type === 2">
+        Second Public Key
+        <p>{{secondPublicKey | truncate(70)}}</p>
+      </div>
 
-      <el-row v-if="transaction.type === 3">
-        <el-col :span="8">
-          Amount
-          <p>{{amount}}</p>
-        </el-col>
-        <el-col :span="16">
-          Lock Height
-          <p>{{lockHeight}}</p>
-        </el-col>
-      </el-row>
+      <div v-if="transaction.type === 3">
+        Amount
+        <p>{{amount}}</p>
+      </div>
+      <div v-if="transaction.type === 3">
+        Lock Height
+        <p>{{lockHeight}}</p>
+      </div>
 
-       <el-row v-if="transaction.type === 4 || transaction.type === 5">
-        <el-col :span="24">
-          Vote List
-          <p>
-            <nuxt-link v-for="vote in voteList" class="nuxt-link" :key="vote" :to="{name: 'account-detail', query: { username: vote}}">
-              {{vote}}
-            </nuxt-link>
-          </p>
-        </el-col>
-      </el-row>
 
-      <el-row v-if="transaction.type === 100">
-        <el-col :span="8">
-          Username
-          <p>{{username}}</p>
-        </el-col>
-        <el-col :span="16">
-          Description
-          <p>{{desc | truncate(50)}}</p>
-        </el-col>
-      </el-row>
+      <div v-if="transaction.type === 4 || transaction.type === 5">
+        Vote List
+        <p>
+          <nuxt-link v-for="vote in voteList" class="nuxt-link" :key="vote" :to="{name: 'account-detail', query: { username: vote}}">
+            {{vote}}
+          </nuxt-link>
+        </p>
+      </div>
 
-      <el-row v-if="transaction.type === 101">
-        <el-col :span="8">
-          Username
-          <p>{{username}}</p>
-        </el-col>
-        <el-col :span="8">
-          Maximum
-          <p>{{maximum}}</p>
-        </el-col>
-        <el-col :span="8">
-          Precision
-          <p>{{precision}}</p>
-        </el-col>
-      </el-row>
-      <el-row v-if="transaction.type === 101">
-        <el-col :span="24">
-          Description
-          <p>{{desc | truncate(70)}}</p>
-        </el-col>
-      </el-row>
 
-      <el-row v-if="transaction.type === 102">
-        <el-col :span="8">
-          Currency
-          <p>{{currency}}</p>
-        </el-col>
-        <el-col :span="16">
-          Amount
-          <p>{{amount}}</p>
-        </el-col>
-      </el-row>
+      <!--transaction type 100 start-->
+      <div v-if="transaction.type === 100">
+        Username
+        <p>{{username}}</p>
+      </div>
+      <div v-if="transaction.type === 100">
+        Description
+        <p>{{desc | truncate(50)}}</p>
+      </div>
+      <!--transaction type 100 start-->
 
-      <el-row v-if="transaction.type === 103">
-        <el-col :span="8">
-          Currency
-          <p>{{currency}}</p>
-        </el-col>
-        <el-col :span="8">
-          Amount
-          <p>{{amount}}</p>
-        </el-col>
-        <el-col :span="8">
-          Recipient ID
-          <p>
-            <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: recipientId}}">
-              {{recipientId | truncate(20)}}
-            </nuxt-link>
-          </p>
-        </el-col>
-      </el-row>
 
-      <el-row v-if="!!message">
-        <el-col :span="8">
-          Message
-          <el-tooltip class="item" effect="light" :content="message" placement="bottom">
-            <p>{{message | truncate(25)}}</p> 
-          </el-tooltip>
-        </el-col>
-      </el-row>
+      <!--transaction type 101 start-->
+      <div v-if="transaction.type === 101">
+        Username
+        <p>{{username}}</p>
+      </div>
+      <div v-if="transaction.type === 101">
+        Maximum
+        <p>{{maximum}}</p>
+      </div>
+      <div v-if="transaction.type === 101">
+        Precision
+        <p>{{precision}}</p>
+      </div>
+      <div v-if="transaction.type === 101">
+        Description
+        <p>{{desc | truncate(70)}}</p>
+      </div>
+      <!--transaction type 101 end-->
+
+
+      <!--transaction type 102 start-->
+      <div v-if="transaction.type === 102">
+        Currency
+        <p>{{currency}}</p>
+      </div>
+      <div v-if="transaction.type === 102">
+        Amount
+        <p>{{amount}}</p>
+      </div>
+      <!--transaction type 102 end-->
+
+
+      <!--transaction type 103 start-->
+      <div v-if="transaction.type === 103">
+        Currency
+        <p>{{currency}}</p>
+      </div>
+      <div v-if="transaction.type === 103">
+        Amount
+        <p>{{amount}}</p>
+      </div>
+      <div v-if="transaction.type === 103">
+        Recipient ID
+        <p>
+          <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: recipientId}}">
+            {{recipientId | truncate(20)}}
+          </nuxt-link>
+        </p>
+      </div>
+      <!--transaction type 103 end-->
+
+
+      <div v-if="!!message">
+        Message
+        <el-tooltip class="item" effect="light" :content="message" placement="bottom">
+          <p>{{message | truncate(25)}}</p> 
+        </el-tooltip>
+      </div>
+
+    </div>
     </b-card>
-  </el-container>
+  </div>
 </template>
 
 <script>
@@ -242,6 +227,20 @@ export default {
     async copyId() {
       try {
         await this.$copyText(this.transaction.id);
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    async copySignatures() {
+      try {
+        await this.$copyText(JSON.stringify(this.transaction.signatures));
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    async copySenderPublicKey() {
+      try {
+        await this.$copyText(this.transaction.senderPublicKey);
       } catch (e) {
         console.error(e);
       }
@@ -344,20 +343,47 @@ i {
     cursor: pointer;
 }
 
-.el-container {
-  max-width: 1000px;
-  box-sizing: border-box;
-  margin: 0px auto;
-  padding: 20px 20px;
+.wrapper {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: stretch;
 }
 
-.el-card {
-  margin-top: 20px;
+/* changed */
+@media screen and (min-width: 700px) {
+  .wrapper {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* changed */
+@media screen and (min-width: 1000px) {
+  .wrapper {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+p {
+  color: #acacac;
 }
 
 .nuxt-link {
   color:#2475ba;
   cursor: pointer;
+}
+
+.el-icon-copy-document {
+  transition: 0.1s;
+  transition-property: color;
+}
+
+.el-icon-copy-document:hover {
+  color: #565656;
+}
+
+.el-icon-copy-document:active {
+  color: black;
 }
 
 </style>
