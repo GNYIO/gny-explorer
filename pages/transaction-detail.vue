@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-card title="Transaction" class="shadow">
+    <b-card :title="formatTitle" class="shadow">
       <div class="wrapper">
       <div>
         Block height
@@ -27,8 +27,8 @@
         <p>{{transaction.type}}</p>
       </div>
       <div>
-        Signatures
-        <p>{{transaction.signatures | truncate(24) }}       <i class="el-icon-copy-document" @click="copySignatures"></i></p>
+        Signature
+        <p>{{transaction.signatures | truncate(24) }}       <i class="el-icon-copy-document" @click="copySignature"></i></p>
       </div>
 
       <div>
@@ -53,7 +53,7 @@
 
       <div v-if="!!transaction && transaction.secondSignature">
         Second Signature
-        <p>{{transaction.secondSignature | truncate(24) }}</p>
+        <p>{{transaction.secondSignature | truncate(24) }} <i class="el-icon-copy-document" @click="copySecondSignature"></i> </p>
       </div>
 
       <div v-if="transaction.type === 0">
@@ -76,12 +76,12 @@
 
       <div v-if="transaction.type === 2">
         Second Public Key
-        <p>{{secondPublicKey | truncate(70)}}</p>
+        <p>{{secondPublicKey | truncate(24)}}  <i class="el-icon-copy-document" @click="copySecondSenderPubilcKey"></i></p>
       </div>
 
       <div v-if="transaction.type === 3">
-        Amount
-        <p>{{amount}}</p>
+        Lock Amount
+        <p>{{amount}} GNY</p>
       </div>
       <div v-if="transaction.type === 3">
         Lock Height
@@ -101,11 +101,11 @@
 
       <!--transaction type 100 start-->
       <div v-if="transaction.type === 100">
-        Username
+        Registered Asset Issuer
         <p>{{username}}</p>
       </div>
       <div v-if="transaction.type === 100">
-        Description
+        Registered Asset Issuer Description
         <p>{{desc | truncate(50)}}</p>
       </div>
       <!--transaction type 100 start-->
@@ -113,19 +113,19 @@
 
       <!--transaction type 101 start-->
       <div v-if="transaction.type === 101">
-        Username
+        Created Asset Name
         <p>{{username}}</p>
       </div>
       <div v-if="transaction.type === 101">
-        Maximum
+        Created Asset Maximum
         <p>{{maximum}}</p>
       </div>
       <div v-if="transaction.type === 101">
-        Precision
+        Created Asset Precision
         <p>{{precision}}</p>
       </div>
       <div v-if="transaction.type === 101">
-        Description
+        Created Asset Description
         <p>{{desc | truncate(70)}}</p>
       </div>
       <!--transaction type 101 end-->
@@ -133,24 +133,16 @@
 
       <!--transaction type 102 start-->
       <div v-if="transaction.type === 102">
-        Currency
-        <p>{{currency}}</p>
-      </div>
-      <div v-if="transaction.type === 102">
-        Amount
-        <p>{{amount}}</p>
+        Minted Currency Amount
+        <p>{{amount}} {{currency}}</p>
       </div>
       <!--transaction type 102 end-->
 
 
       <!--transaction type 103 start-->
       <div v-if="transaction.type === 103">
-        Currency
-        <p>{{currency}}</p>
-      </div>
-      <div v-if="transaction.type === 103">
-        Amount
-        <p>{{amount}}</p>
+        Asset Transfer Amount
+        <p>{{amount}} {{currency}}</p>
       </div>
       <div v-if="transaction.type === 103">
         Recipient ID
@@ -195,7 +187,51 @@ export default {
       await this.updatePage(id);
     }
   },
+  computed: {
+    formatTitle() {
+      if (this.transaction && this.transaction.type === 0) {
+        return 'Transaction - GNY Transfer';
+      }
+      if (this.transaction && this.transaction.type === 1) {
+        return 'Transaction - Set Username';
+      }
+      if (this.transaction && this.transaction.type === 2) {
+        return 'Transaction - Set Second Password';
+      }
+      if (this.transaction && this.transaction.type === 3) {
+        return 'Transaction - Lock GNY';
+      }
+      if (this.transaction && this.transaction.type === 4) {
+        return 'Transaction - Vote for Delegate';
+      }
+      if (this.transaction && this.transaction.type === 5) {
+        return 'Transaction - Unvote Delegate';
+      }
+      if (this.transaction && this.transaction.type === 6) {
+        return 'Transaction - Unlock GNY';
+      }
+      if (this.transaction && this.transaction.type === 10) {
+        return 'Transaction - Register Delegate';
+      }
 
+      if (this.transaction && this.transaction.type === 100) {
+        return 'Transaction - Register Asset Issuer';
+      }
+      if (this.transaction && this.transaction.type === 101) {
+        return 'Transaction - Register Asset';
+      }
+      if (this.transaction && this.transaction.type === 102) {
+        return 'Transaction - Mint Asset';
+      }
+      if (this.transaction && this.transaction.type === 103) {
+        return 'Transaction - Transfer Asset';
+      }
+
+
+      // fallback
+      return 'Custom Transaction Name';
+    },
+  },
   data() {
     return {
       transaction: {
@@ -231,9 +267,16 @@ export default {
         console.error(e);
       }
     },
-    async copySignatures() {
+    async copySignature() {
       try {
         await this.$copyText(JSON.stringify(this.transaction.signatures));
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    async copySecondSignature() {
+      try {
+        await this.$copyText(JSON.stringify(this.transaction.secondSignature));
       } catch (e) {
         console.error(e);
       }
@@ -241,6 +284,13 @@ export default {
     async copySenderPublicKey() {
       try {
         await this.$copyText(this.transaction.senderPublicKey);
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    async copySecondSenderPubilcKey() {
+      try {
+        await this.$copyText(this.secondPublicKey);
       } catch (e) {
         console.error(e);
       }
