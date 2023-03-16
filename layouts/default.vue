@@ -55,7 +55,7 @@
 
     </el-main>
     <el-footer>
-      © 2022 by gny.io Limited
+      © 2023 by gny.io Limited
     </el-footer>
   </el-container>
 </template>
