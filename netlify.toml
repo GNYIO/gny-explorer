@@ -10,4 +10,4 @@
   for = "/*"
   [headers.values]
     Content-Security-Policy = "default-src 'self' 'unsafe-inline' 'unsafe-eval' *.gny.io;"
-    
+    X-XSS-Protection = "0"
