@@ -58,7 +58,7 @@ module.exports = {
       '/*': [
         'Access-Control-Allow-Origin: *',
         'X-Frame-Options: DENY',
-        'X-XSS-Protection: 1; mode=block'
+        'X-XSS-Protection: 0'
       ]
     }
   },
