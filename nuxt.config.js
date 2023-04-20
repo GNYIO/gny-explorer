@@ -53,7 +53,7 @@ module.exports = {
   buildModules: [
   ],
   netlify: { 
-    mergeSecurityHeaders: true,
+    mergeSecurityHeaders: false,
     headers: {
       '/*': [
         'Access-Control-Allow-Origin: *',
