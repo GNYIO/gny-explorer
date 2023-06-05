@@ -42,81 +42,11 @@
       </div>
     </b-card>
 
-    <!-- v-if="balances.length > 0" -->
-    <b-card title="Custom Assets" class="shadow mt-4">
-      <el-table class="clickable-rows" :data="assets" stripe>
-        <el-table-column prop="currency" align="center" label="Currency" width="auto">
-          <template v-slot:default="table">
-            <nuxt-link class="nuxt-link" :to="{name: 'asset-detail', query: { assetName: table.row.currency }}">
-              {{table.row.currency}}
-            </nuxt-link>
-          </template>
-        </el-table-column>
-        <el-table-column prop="balance" align="center" label="Balance" width="auto" :formatter="prettyPrintAssetAmount"></el-table-column>
-        <el-table-column v-if="width > 600" prop="flag" align="center" label="Flag" width="auto"></el-table-column>
-      </el-table>
-    </b-card>
+    <custom-assets-component :senderAddress="address"></custom-assets-component>
 
-    <transactions-i-sent :senderAddress="address"></transactions-i-sent>
+    <transactions-i-sent-component :senderAddress="address"></transactions-i-sent-component>
 
-    <b-card title="Asset Transfers" class="shadow mt-4">
-      <el-table @row-click="rowClick" :data="currentTransfers" style="width: 100%">
-
-        <el-table-column prop="amount" align="center" label="Amount" :formatter="prettyPrintAmount" width="auto"></el-table-column>
-
-        <el-table-column v-if="width >= 500" prop="currency" align="center" label="Currency" width="auto">
-          <template v-slot:default="table">
-            <span v-if="table.row.currency === 'GNY'">GNY</span>
-            <nuxt-link v-else class="nuxt-link" :to="{ name: 'asset-detail', query: { assetName: table.row.currency }}">{{ table.row.currency }}</nuxt-link>
-          </template>
-        </el-table-column>
-
-        <el-table-column v-if="width >= 500" prop="senderId" label="Sender" align="center" width="auto">
-          <template v-slot:default="table">
-             <span v-if="account.address === table.row.senderId">ME</span>
-             <nuxt-link v-else class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.senderId }}">
-              {{table.row.senderId.slice(0,8)}}
-            </nuxt-link>
-          </template>
-        </el-table-column>
-
-        <el-table-column v-if="width >= 500" prop="recipientId" label="Recipient" align="center" width="auto">
-          <template v-slot:default="table">
-             <span v-if="account.address === table.row.recipientId">ME</span>
-             <nuxt-link v-else class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.recipientId }}">
-              {{table.row.recipientId.slice(0,8)}}
-            </nuxt-link>
-          </template>
-        </el-table-column>
-
-        <el-table-column prop="tid" align="center" label="TX ID" width="auto">
-          <template v-slot:default="table">
-            <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: {id: table.row.tid }}">
-             {{ table.row.tid.slice(0,8) }}
-            </nuxt-link>
-         </template>
-        </el-table-column>
-     
-        <el-table-column v-if="width >= 800" prop="height" align="center" label="Height" width="auto">
-          <template v-slot:default="table">
-             <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">
-              {{table.row.height}}
-            </nuxt-link>
-          </template>
-        </el-table-column>
-
-      </el-table>
-      <el-pagination
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-size="10"
-        layout="prev, pager, next"
-        :total="transfersCount"
-        align="center"
-      ></el-pagination>
-
-
-    </b-card>
+    <asset-transfers-component :senderAddress="address"></asset-transfers-component>
 
     <who-i-voted-for-component :addressOfVoter="address"></who-i-voted-for-component>
 
@@ -126,14 +56,12 @@
 <script>
 import { mapGetters } from 'vuex';
 import BigNumber from 'bignumber.js';
-import moment from 'moment';
-import { slots } from '@gny/utils';
 import * as gnyClient from '@gny/client';
 
-import TransactionsISent from '../components/TransactionsISent.vue';
+import TransactionsISentComponent from '../components/TransactionsISent.vue';
 import WhoIVotedForComponent from '../components/WhoIVotedFor.vue';
-
-import { contractMappingFilter } from '../helpers/getTransactionType';
+import CustomAssetsComponent from '../components/CustomAssets.vue';
+import AssetTransfersComponent from '../components/AssetTransfers.vue';
 
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],
@@ -144,18 +72,22 @@ const connection = new gnyClient.Connection(
 
 export default {
   components: {
-    'transactions-i-sent': TransactionsISent,
+    'transactions-i-sent-component': TransactionsISentComponent,
     'who-i-voted-for-component': WhoIVotedForComponent,
+    'custom-assets-component': CustomAssetsComponent,
+    'asset-transfers-component': AssetTransfersComponent,
   },
   computed: {
     ...mapGetters(['width']),
   },
   watch: { 
     '$route.query.username': async function(username) {
+      console.log(`(account-detail) username changed`);
       await this.updatePage(username, null);
     },
 
     '$route.query.address': async function(address) {
+      console.log(`(account-detail) address changed`);
       await this.updatePage(null, address);
     }
   },
@@ -163,21 +95,17 @@ export default {
   data() {
     return {
       account: {},
-      balances: [],
-      assets: [],
       address: '',
       publicKey: '',
       balance: '',
-      
+      assets: [],
+
       isLocked: false,
       lockedAmount: '',
       
       lockHeight: '',
       lockAmount: '',
 
-      loaded: 0,
-      transfers: [],
-      transfersCount: 0,
       currentTransfers: [],
       currentPage: 1,
       pageSize: 10,
@@ -187,39 +115,28 @@ export default {
   },
 
   methods: {
-    rowClick: function(row) {
-        console.log(row.id);
-        this.$router.push({name: 'transaction-detail', query: { id: row.tid }});
-    },
-
-    subSenderId: function (row, column) {
-      return row.senderId.slice(0,8);
-    },
-
-    timestamp2date: function (row, column) {
-      return moment.utc(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD HH:mm:ss UTC');
-    },
-
-    prettyPrintAmount: function (row, column) {
-      const prec = Math.pow(10, row.precision);
-      return new BigNumber(row.amount).dividedBy(prec).toFixed();
-    },
-
-    prettyPrintAssetAmount: function (row, column) {
-      const prec = Math.pow(10, row.precision);
-      return new BigNumber(row.balance).dividedBy(prec).toFixed();
-    },
-
-    formatFee: function (row, column) {
-      return new BigNumber(row.fee).dividedBy(1e8).toFixed();
-    },
-
-    formatType: function (row, column) {
-      return contractMappingFilter(row.type);
-    },
-
     updatePage: async function (username, address) {
-      try {
+      // reset all data properties
+        this.account = {}
+        this.address = '';
+        this.publicKey = '';
+        this.balance = '';
+        this.assets = [];
+        
+        this.isLocked = false;
+        this.lockedAmount = '';
+        
+        this.lockHeight = '';
+        this.lockAmount = '';
+
+        this.transfers = [];
+        this.transfersCount = 0;
+        this.currentTransfers = [];
+        this.currentPage = 1;
+        this.pageSize = 10;
+        this.limit = 100;
+        this.offset = 0;
+
         let account = null;
         if (address) {
           const result = await connection.api.Account.getAccountByAddress(address);
@@ -235,6 +152,10 @@ export default {
           }
         }
 
+        if (account === null) {
+          throw new Error('failed to fetch account');
+        }
+
         this.account = account;
         this.address = account.address;
         this.balance = new BigNumber(this.account.gny).dividedBy(1e8).toFixed(0);
@@ -246,97 +167,15 @@ export default {
         if (account.publicKey) {
           this.publicKey = account.publicKey.slice(0, 8);
         }
-
-        const senderId = account.address;
-
-        const query = {
-          senderId,
-          limit: 5,
-        };
-
-        this.balances = (await connection.api.Uia.getBalances(senderId)).balances;
-
-        for (let i = 0; i < this.balances.length; i++) {
-          const currency = this.balances[i].currency;
-          const asset = (await connection.api.Uia.getAsset(currency)).asset;
-          const precision = asset.precision;
-
-          this.assets.push({...this.balances[i], ...{precision}});
-        }
-
-        this.transfersResult = await connection.api.Transfer.getRoot({
-          ownerId: senderId,
-          limit: this.limit,
-          offset: this.offset,
-        });
-
-        this.transfers = this.transfersResult.transfers;
-        this.transfersCount = this.transfersResult.count;
-        
-
-        let totalCount = this.transfers.length;
-        let newTransfers = [];
- 
-        while (totalCount < this.transfersCount) {
-          this.offset += this.limit;
-
-          newTransfers = (await connection.api.Transfer.getRoot({
-            ownerId: senderId,
-            limit: this.limit,
-            offset: this.offset,
-          })).transfers;
-
-          this.transfers.push(...newTransfers);
-          totalCount += newTransfers.length;
-        }
-
-        this.transfers = this.addPrecision(this.transfers);
-        
-      } catch (error) {
-        console.log(error && error.response && error.response.data);
-        // error({ statusCode: 404, message: 'Oops...' })
-      }
-    },
-
-    handleCurrentChange(currentPage) {
-      this.currentPage = currentPage;
-      this.changePage(this.transfers, currentPage);
-    },
-
-    changePage(list, currentPage) {
-      let from = (currentPage - 1) * this.pageSize;
-      let to = currentPage * this.pageSize;
-      this.currentTransfers = [];
-      for (; from < to; from++) {
-        if (list[from]) {
-          this.currentTransfers.push(list[from]);
-        }
-      }
-    },
-
-    addPrecision(list) {
-      for (let i = 0; i < list.length; i++) {
-        const currency = list[i].currency;
-        if (currency === 'GNY') {
-          list[i]['precision'] = 8;
-        } else {
-          const precision = this.assets.filter(asset => {
-            return asset.currency === currency;
-          })[0].precision;
-          list[i]['precision'] = precision;
-        }
-      }
-
-      return list;
     },
   },
 
   async mounted() {
-    this.address = this.$route.query.address;
+    console.log(`(account-detail) mounted()`);
+    const address = this.$route.query.address;
     const username = this.$route.query.username;
 
-    await this.updatePage(username, this.address);
-    this.handleCurrentChange(1);
+    await this.updatePage(username, address);
   }
 };
 

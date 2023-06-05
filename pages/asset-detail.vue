@@ -35,7 +35,7 @@
           <p>{{asset.leftToIssuePretty}}</p>
         </div>
         <div>
-          TransactionId
+          Asset Registration
           <p>
             <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: asset.tid }}">
               {{assetTid}}

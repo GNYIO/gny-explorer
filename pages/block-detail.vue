@@ -1,58 +1,54 @@
 <template>
-  <el-container direction="vertical">
+  <div>
     <b-card title="Block" class="shadow">
-      <el-row>
-        <el-col :span="24" >
+      <div class="wrapper">
+        <div>
           Block ID
           <p>
-            {{block.id}}  <i class="el-icon-copy-document" @click="copyId"></i>
+            {{id}}...  <i class="el-icon-copy-document" @click="copyId"></i>
           </p>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="8" >
+        </div>
+        <div :span="8" >
           Height
           <p>{{block.height}}</p>
-        </el-col>
-        <el-col :span="8" v-if="prevId">
+        </div>
+        <div :span="8" v-if="prevId">
           Previous block
           <p>
             <nuxt-link class="nuxt-link" :to="{ name: 'block-detail', query: { height: block.height - 1 }}">
-              {{prevId}}
+              {{prevId}}...
             </nuxt-link>
           </p>
-        </el-col>
-        <el-col :span="8" v-if="!prevId">
+        </div>
+        <div :span="8" v-if="!prevId">
           Previous block
           <p>-</p>
-        </el-col>
-        <el-col :span="8" >
+        </div>
+        <div :span="8" >
           Date
           <p>{{date}}</p>
-        </el-col>
-      </el-row>
-
-      <el-row>
-        <el-col :span="8" >
+        </div>
+        <div :span="8" >
           Transaction count
           <p >{{block.count}}</p>
-        </el-col>
-        <el-col :span="8" >
+        </div>
+        <div :span="8" >
           Reward
-          <p >{{block.reward}}</p>
-        </el-col>
-        <el-col :span="8" >
+          <p >{{reward}} GNY</p>
+        </div>
+        <div :span="8" >
           Delegate
           <p v-if="block.height !== '0'">
             <nuxt-link class="nuxt-link" :to="{ name: 'delegate-detail', query: { publicKey: block.delegate }}">
-              {{delegateID}}
+              {{delegateOrUsername}}
             </nuxt-link>
           </p>
           <!-- delegate for block height 0 doesn't exist -->
-          <p v-if="block.height === '0'">{{delegateID}}</p>
-        </el-col>
-      </el-row>
+          <p v-if="block.height === '0'">-</p>
+        </div>
+      </div>
     </b-card>
+
     <b-card title="Transactions included in this Block" class="shadow mt-4">
       <el-table :data="transactions" stripe style="width: 95%; margin: auto;">
         <el-table-column prop="id" align="center" label="Transaction ID" width="150">
@@ -73,7 +69,7 @@
         <el-table-column prop="fee" align="center" label="Fee" width="120"></el-table-column>
       </el-table>
     </b-card>
-  </el-container>
+  </div>
 </template>
 
 <script>
@@ -101,9 +97,11 @@ export default {
   data() {
     return {
       block: {},
+      id: '',
+      reward: '',
       prevId: '',
       date: '',
-      delegateID: '',
+      delegateOrUsername: '',
       transactions: [],
     }
   },
@@ -115,15 +113,6 @@ export default {
       } catch (e) {
         console.error(e);
       }
-    },
-
-    rowClick: function(row) {
-        console.log(row.id);
-        this.$router.push({name: 'transaction-detail', query: { id: row.id }});
-    },
-
-    subID: function (row, column) {
-      return row.id.slice(0,8);
     },
 
     subSenderId: function (row, column) {
@@ -141,18 +130,24 @@ export default {
           height: height,
       })).transactions;
 
-      console.log(`block-detail: ${JSON.stringify(block, null, 2)}`);
       this.block = block
 
       if (new BigNumber(this.block.height).isGreaterThan(0)) {
-        this.prevId = this.block.prevBlockId.slice(0, 8);
+        this.prevId = this.block.prevBlockId.slice(0, 24);
       } else {
         this.prevId = null;
       }
       
       this.date = moment.utc(slots.getRealTime(this.block.timestamp)).format('YYYY-MM-DD HH:mm:ss UTC');
       this.transactions = transactions;
-      this.delegateID = this.block.delegate.slice(0, 8);
+
+      this.id = this.block.id.slice(0, 24);
+
+      this.reward = new BigNumber(this.block.reward).dividedBy(1e8).toFixed(0);
+
+      // delegate should always have an username
+      const rawDelegate = await connection.api.Delegate.getDelegateByPubKey(this.block.delegate);
+      this.delegateOrUsername = rawDelegate.delegate.username;
     } catch (error) {
       console.log(error.message);
       error({ statusCode: 404, message: 'Oops...' })
@@ -173,24 +168,47 @@ i {
     cursor: pointer;
 }
 
-.el-container {
-  max-width: 1000px;
-  box-sizing: border-box;
-  margin: 0px auto;
-  padding: 20px 20px;
+.wrapper {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: stretch;
 }
 
-.el-card {
-  margin-top: 20px;
+/* changed */
+@media screen and (min-width: 700px) {
+  .wrapper {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
-.el-col {
-  font-weight: 500;
+/* changed */
+@media screen and (min-width: 1000px) {
+  .wrapper {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+p {
+  color: #acacac;
 }
 
 .nuxt-link {
   color:#2475ba;
   cursor: pointer;
+}
+
+.el-icon-copy-document {
+  transition: 0.1s;
+  transition-property: color;
+}
+
+.el-icon-copy-document:hover {
+  color: #565656;
+}
+
+.el-icon-copy-document:active {
+  color: black;
 }
 
 </style>
