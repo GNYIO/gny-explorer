@@ -75,6 +75,13 @@
       </div>
     </b-card>
 
+    <b-card>
+      <graph2d>
+        :dataset="dataset"
+        :options="options"
+      </graph2d>
+    </b-card>
+
     <b-card :title="blockTitle" class="shadow mt-4">
       <el-table :data="currentBlocks" stripe v-loading="loading">
         <el-table-column prop="height" align="center" label="Height" width="auto">
@@ -126,6 +133,7 @@ import moment from 'moment';
 import * as gnyClient from '@gny/client';
 import { slots } from '@gny/utils';
 import BigNumber from 'bignumber.js';
+import { DataSet } from "vue-visjs";
 
 import WhoVotedForMeComponent from '../components/WhoVotedForMe.vue';
 import WhoIVotedForComponent from '../components/WhoIVotedFor.vue';
@@ -155,6 +163,9 @@ export default {
 
   data() {
     return {
+      dataset: {},
+      options: {},
+
       address: '',
       delegate: {},
       publicKey: '',
@@ -285,6 +296,30 @@ export default {
     
     await this.updatePage(this.username, this.publicKey);
     await this.handleCurrentChange(1);
+
+    let items = [
+      { x: "2014-06-11", y: 10 },
+      { x: "2014-06-12", y: 25 },
+      { x: "2014-06-13", y: 30 },
+      { x: "2014-06-14", y: 10 },
+      { x: "2014-06-15", y: 15 },
+      { x: "2014-06-16", y: 30 },
+    ];
+    const dataset = new DataSet(items);
+
+    this.dataset = dataset;
+    var options = {
+      style: "bar",
+      barChart: { width: 50, align: "center" }, // align: left, center, right
+      drawPoints: false,
+      dataAxis: {
+        icons: true,
+      },
+      orientation: "top",
+      start: "2014-06-10",
+      end: "2014-06-18",
+    };
+    this.options = options;
   }
 };
 
