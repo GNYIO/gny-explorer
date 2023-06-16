@@ -36,7 +36,7 @@
     "vis-network": "^7.10.0",
     "vis-util": "^4.3.2",
     "vue-infinite-loading": "^2.4.5",
-    "vue-vis-network": "^1.0.2"
+    "vue-visjs": "^0.6.0"
   },
   "devDependencies": {
     "@aceforth/nuxt-netlify": "^1.0.0",
