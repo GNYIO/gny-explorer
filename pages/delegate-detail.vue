@@ -75,11 +75,12 @@
       </div>
     </b-card>
 
-    <b-card>
-      <graph2d>
-        :dataset="dataset"
-        :options="options"
-      </graph2d>
+    <b-card title="GNY Visualization" class="shadow mt-4">
+      <network
+        :nodes="nodes"
+        :edges="edges"
+        :options="options">
+      </network>
     </b-card>
 
     <b-card :title="blockTitle" class="shadow mt-4">
@@ -135,6 +136,9 @@ import { slots } from '@gny/utils';
 import BigNumber from 'bignumber.js';
 import { DataSet } from "vue-visjs";
 
+import { getNodesAndEdges } from '../helpers/createNodesAndEdges';
+
+
 import WhoVotedForMeComponent from '../components/WhoVotedForMe.vue';
 import WhoIVotedForComponent from '../components/WhoIVotedFor.vue';
 
@@ -163,7 +167,8 @@ export default {
 
   data() {
     return {
-      dataset: {},
+      nodes: [],
+      edges: [],
       options: {},
 
       address: '',
@@ -297,29 +302,44 @@ export default {
     await this.updatePage(this.username, this.publicKey);
     await this.handleCurrentChange(1);
 
-    let items = [
-      { x: "2014-06-11", y: 10 },
-      { x: "2014-06-12", y: 25 },
-      { x: "2014-06-13", y: 30 },
-      { x: "2014-06-14", y: 10 },
-      { x: "2014-06-15", y: 15 },
-      { x: "2014-06-16", y: 30 },
-    ];
-    const dataset = new DataSet(items);
 
-    this.dataset = dataset;
-    var options = {
-      style: "bar",
-      barChart: { width: 50, align: "center" }, // align: left, center, right
-      drawPoints: false,
-      dataAxis: {
-        icons: true,
-      },
-      orientation: "top",
-      start: "2014-06-10",
-      end: "2014-06-18",
+
+    const { nodes, edges} = await getNodesAndEdges(this.address);
+    
+    const options = {
+      autoResize: true,
+        height: '500px',
+        width: '100%',
+
+        edges: {
+          labelHighlightBold: false,
+          arrows: {
+            to: {
+              enabled: true,
+            }
+          },
+          shadow: true,
+        },
+        nodes: {
+          shape: 'dot',
+          shadow: true,
+          scaling: {
+            // customScalingFunction: function (min,max,total,value) {
+            //   return value/total;
+            // },
+            // min:1,
+            // max:10,
+          }
+        },
+        interaction: {
+          tooltipDelay: 100,
+        }
     };
     this.options = options;
+
+    this.nodes = nodes;
+    this.edges = edges;
+
   }
 };
 
