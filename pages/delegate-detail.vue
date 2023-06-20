@@ -75,16 +75,6 @@
       </div>
     </b-card>
 
-    <b-card title="GNY Visualization" class="shadow mt-4">
-      <network
-        :nodes="nodes"
-        :edges="edges"
-        :options="options"
-        @double-click="doubleClick"
-        >
-      </network>
-    </b-card>
-
     <b-card :title="blockTitle" class="shadow mt-4">
       <el-table :data="currentBlocks" stripe v-loading="loading">
         <el-table-column prop="height" align="center" label="Height" width="auto">
@@ -136,9 +126,6 @@ import moment from 'moment';
 import * as gnyClient from '@gny/client';
 import { slots } from '@gny/utils';
 import BigNumber from 'bignumber.js';
-import { DataSet } from "vue-visjs";
-
-import { getNodesAndEdges } from '../helpers/createNodesAndEdges';
 
 
 import WhoVotedForMeComponent from '../components/WhoVotedForMe.vue';
@@ -194,10 +181,6 @@ export default {
   },
 
   methods: {
-    doubleClick: function(el) {
-      const firstNode = el.nodes[0];
-      console.log(firstNode);
-    },
     subID: function (id) {
       return id.slice(0,8);
     },
@@ -307,45 +290,6 @@ export default {
     
     await this.updatePage(this.username, this.publicKey);
     await this.handleCurrentChange(1);
-
-
-
-    const { nodes, edges} = await getNodesAndEdges(this.address);
-    
-    const options = {
-      autoResize: true,
-        height: '500px',
-        width: '100%',
-
-        edges: {
-          labelHighlightBold: false,
-          arrows: {
-            to: {
-              enabled: true,
-            }
-          },
-          shadow: true,
-        },
-        nodes: {
-          shape: 'dot',
-          shadow: true,
-          scaling: {
-            // customScalingFunction: function (min,max,total,value) {
-            //   return value/total;
-            // },
-            // min:1,
-            // max:10,
-          }
-        },
-        interaction: {
-          tooltipDelay: 100,
-        }
-    };
-    this.options = options;
-
-    this.nodes = nodes;
-    this.edges = edges;
-
   }
 };
 
