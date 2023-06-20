@@ -79,7 +79,9 @@
       <network
         :nodes="nodes"
         :edges="edges"
-        :options="options">
+        :options="options"
+        @double-click="doubleClick"
+        >
       </network>
     </b-card>
 
@@ -192,6 +194,10 @@ export default {
   },
 
   methods: {
+    doubleClick: function(el) {
+      const firstNode = el.nodes[0];
+      console.log(firstNode);
+    },
     subID: function (id) {
       return id.slice(0,8);
     },

@@ -132,10 +132,12 @@ function createEdgeWith(edges) {
     const one = edges[i];
     
     const extra = one.extra;
-    if (extra >= 100_000_000) {
+    if (extra >= 1_000_000) {
       one.width = 5;
-    } else if (extra >= 100_000) {
+    } else if (extra >= 100_000 && extra < 1_000_000) {
       one.width = 3;
+    } else if (extra >= 10_000 && extra < 100_000) {
+      one.width = 1;
     } else {
       one.width = 0.5;
     }
