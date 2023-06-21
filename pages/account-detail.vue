@@ -43,10 +43,7 @@
       </div>
     </b-card>
 
-    <b-card title="GNY Visualization" class="shadow mt-4">
-      <network :nodes="nodes" :edges="edges" :options="options" @double-click="doubleClick">
-      </network>
-    </b-card>
+    <visualization-component :address="address" ></visualization-component>
 
     <custom-assets-component :senderAddress="address"></custom-assets-component>
 
@@ -68,8 +65,8 @@ import TransactionsISentComponent from '../components/TransactionsISent.vue';
 import WhoIVotedForComponent from '../components/WhoIVotedFor.vue';
 import CustomAssetsComponent from '../components/CustomAssets.vue';
 import AssetTransfersComponent from '../components/AssetTransfers.vue';
+import VisualizationComponent from '../components/Visualization.vue';
 
-import { getNodesAndEdges } from '../helpers/createNodesAndEdges';
 
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],
@@ -84,6 +81,7 @@ export default {
     'who-i-voted-for-component': WhoIVotedForComponent,
     'custom-assets-component': CustomAssetsComponent,
     'asset-transfers-component': AssetTransfersComponent,
+    'visualization-component': VisualizationComponent,
   },
   computed: {
     ...mapGetters(['width']),
@@ -102,10 +100,6 @@ export default {
 
   data() {
     return {
-      nodes: [],
-      edges: [],
-      options: {},
-
       account: {},
       address: '',
       publicKey: '',
@@ -127,59 +121,7 @@ export default {
   },
 
   methods: {
-    createNetwork: async function() {
-      console.log('creatNetwork');
 
-      // reset
-      this.nodes = [];
-      this.edges = [];
-
-
-      const { nodes, edges } = await getNodesAndEdges(this.address);
-
-      const options = {
-        autoResize: true,
-        height: '500px',
-        width: '100%',
-
-        edges: {
-          labelHighlightBold: false,
-          arrows: {
-            to: {
-              enabled: true,
-            }
-          },
-          shadow: true,
-        },
-        nodes: {
-          shape: 'dot',
-          shadow: true,
-          scaling: {
-            // customScalingFunction: function (min,max,total,value) {
-            //   return value/total;
-            // },
-            // min:1,
-            // max:10,
-          }
-        },
-        interaction: {
-          tooltipDelay: 100,
-        }
-      };
-      this.options = options;
-
-      this.nodes = nodes;
-      this.edges = edges;
-    },
-
-    doubleClick: async function(el) {
-      const firstNode = el.nodes[0];
-
-      if (typeof firstNode === 'string') {
-        await navigator.clipboard.writeText(firstNode);
-        console.log(`copied "${firstNode}" to clipboard`);
-      }
-    },
     updatePage: async function (username, address) {
       console.log('updatePage');
       // reset all data properties
@@ -242,8 +184,6 @@ export default {
     const username = this.$route.query.username;
 
     await this.updatePage(username, address);
-
-    await this.createNetwork();
   }
 };
 
