@@ -101,13 +101,13 @@ export default {
   },
   watch: {
     senderAddress: async function (senderAddress) {
-      console.log('(AssetTransfers) address changed to ' + senderAddress);
+      console.log(`(AssetTransfers) address change to "${senderAddress}"`);
 
       // reset
       this.transfers = [];
       this.transfersCount = 0;
 
-      if (this.senderAddress === null || this.senderAddress === undefined) {
+      if (this.senderAddress === null || this.senderAddress === undefined || this.senderAddress === '') {
         return;
       }
 

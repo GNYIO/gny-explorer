@@ -56,7 +56,7 @@ export default {
       this.nodes = [];
       this.edges = [];
 
-      if (this.address === null || this.address === undefined) {
+      if (this.address === null || this.address === undefined || this.address === '') {
         return;
       }
 
@@ -74,8 +74,8 @@ export default {
       const firstNode = el.nodes[0];
 
       if (typeof firstNode === 'string') {
-        await navigator.clipboard.writeText(firstNode);
-        console.log(`copied "${firstNode}" to clipboard`);
+        console.log(`now navigating to account "${firstNode}"`);
+        this.$router.push({name: 'account-detail', query: { address: firstNode }});
       }
     },
   }

@@ -80,11 +80,15 @@ export default {
     },
     watch: { 
         senderAddress: async function(senderAddress) {
-            console.log('(TransactionsISent) address of voter changed to ' + senderAddress);
+            console.log(`(TransactionsISent) address of voter changed to ' + "${senderAddress}"`);
 
             // reset
             this.transactions = [];
             this.transactionsCount = 0;
+
+            if (this.senderAddress === null || this.senderAddress === undefined || this.senderAddress === '') {
+              return;
+            }
 
             await this.handleCurrentChange(1);
         },

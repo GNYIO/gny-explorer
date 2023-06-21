@@ -61,14 +61,14 @@ export default {
 
   watch: {
     senderAddress: async function (senderAddress) {
-      console.log('(CustomAssets) address changed to ' + senderAddress);
+      console.log(`(CustomAssets) address changed to "${this.senderAddress}"`);
 
       // reset
       this.balances = [];
       this.balancesCount = 0;
       this.assets = []
 
-      if (senderAddress === undefined) {
+      if (this.senderAddress === null || this.senderAddress === undefined || this.senderAddress === '') {
         console.log(`(CustomAssets) senderAddress is "undefined"`);
         return;
       }
@@ -80,7 +80,7 @@ export default {
   methods: {
     handleCurrentChange: async function (currentPage) {
       this.loading = true;
-      console.log(`(CustomAsset) load data for page "${currentPage}"`);
+      console.log(`(CustomAssets) load data for page "${currentPage}"`);
 
       const from = (currentPage - 1) * this.pageSize;
 
