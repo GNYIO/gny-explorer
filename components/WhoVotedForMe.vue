@@ -75,8 +75,11 @@ export default {
   },
   watch: { 
     votedForAddress: async function(address) {
-      console.log('(WhoVotedForMe) address of voter changed to ' + address);
+      console.log(`(WhoVotedForMe) address of voter changed to "${address}"`);
 
+      this.voters = [];
+      this.votersCount = 0;
+        
       if(this.votedForAddress === null || this.votedForAddress === undefined) {
         return;
       }

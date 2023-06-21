@@ -65,7 +65,7 @@ export default {
   },
   watch: { 
     addressOfVoter: async function(address) {
-      console.log('(WhoIVotedFor) address of voter changed to ' + address);
+      console.log(`(WhoIVotedFor) address of voter changed to "${address}"`);
 
       // reset delegates and delegatesCount because if error occurs while
       // loading new data we don't want that the old data is visible
@@ -73,7 +73,7 @@ export default {
       this.delegates = [];
       this.delegatesCount = 0;
 
-      if (this.addressOfVoter === null || this.addressOfVoter === undefined) {
+      if (this.addressOfVoter === null || this.addressOfVoter === undefined || this.addressOfVoter === '') {
         return;
       }
 

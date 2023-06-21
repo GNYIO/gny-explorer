@@ -127,6 +127,7 @@ import * as gnyClient from '@gny/client';
 import { slots } from '@gny/utils';
 import BigNumber from 'bignumber.js';
 
+
 import WhoVotedForMeComponent from '../components/WhoVotedForMe.vue';
 import WhoIVotedForComponent from '../components/WhoIVotedFor.vue';
 
@@ -155,6 +156,10 @@ export default {
 
   data() {
     return {
+      nodes: [],
+      edges: [],
+      options: {},
+
       address: '',
       delegate: {},
       publicKey: '',

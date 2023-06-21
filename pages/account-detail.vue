@@ -4,43 +4,46 @@
       <div class="wrapper">
         <div>
           Address
-          <p>{{account.address}}</p>
+          <p>{{ account.address }}</p>
         </div>
         <div>
           Unlocked Balance
           <br v-if="balance === ''">
-          <i v-if="balance === ''"  class="el-icon-loading"></i>
-          <p >{{balance}}</p>
+          <i v-if="balance === ''" class="el-icon-loading"></i>
+          <p>{{ balance }}</p>
         </div>
         <div>
           Locked Balance
-          <p>{{lockAmount}}</p>
+          <p>{{ lockAmount }}</p>
         </div>
         <div>
           Is Locked
-          <p>{{isLocked}}</p>
-        </div> 
-        <div >
+          <p>{{ isLocked }}</p>
+        </div>
+        <div>
           Lock Height
-          <p>{{lockHeight}}</p>
+          <p>{{ lockHeight }}</p>
         </div>
         <div>
           Username
-          <p v-if="account.username">{{account.username}}</p>
+          <p v-if="account.username">{{ account.username }}</p>
           <p v-else>Not set</p>
         </div>
         <div>
           Public Key
-          <p v-if="publicKey">{{publicKey}}</p>
+          <p v-if="publicKey">{{ publicKey }}</p>
           <p v-else>Not set</p>
-        </div> 
+        </div>
         <div>
           Delegate
-          <p v-if="account.isDelegate"><nuxt-link :to="{name: 'delegate-detail', query: { username: account.username }}">Details</nuxt-link></p>
+          <p v-if="account.isDelegate"><nuxt-link
+              :to="{ name: 'delegate-detail', query: { username: account.username } }">Details</nuxt-link></p>
           <p v-else>False</p>
         </div>
       </div>
     </b-card>
+
+    <visualization-component :address="address" ></visualization-component>
 
     <custom-assets-component :senderAddress="address"></custom-assets-component>
 
@@ -62,6 +65,8 @@ import TransactionsISentComponent from '../components/TransactionsISent.vue';
 import WhoIVotedForComponent from '../components/WhoIVotedFor.vue';
 import CustomAssetsComponent from '../components/CustomAssets.vue';
 import AssetTransfersComponent from '../components/AssetTransfers.vue';
+import VisualizationComponent from '../components/Visualization.vue';
+
 
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],
@@ -76,17 +81,18 @@ export default {
     'who-i-voted-for-component': WhoIVotedForComponent,
     'custom-assets-component': CustomAssetsComponent,
     'asset-transfers-component': AssetTransfersComponent,
+    'visualization-component': VisualizationComponent,
   },
   computed: {
     ...mapGetters(['width']),
   },
-  watch: { 
-    '$route.query.username': async function(username) {
+  watch: {
+    '$route.query.username': async function (username) {
       console.log(`(account-detail) username changed`);
       await this.updatePage(username, null);
     },
 
-    '$route.query.address': async function(address) {
+    '$route.query.address': async function (address) {
       console.log(`(account-detail) address changed`);
       await this.updatePage(null, address);
     }
@@ -102,7 +108,7 @@ export default {
 
       isLocked: false,
       lockedAmount: '',
-      
+
       lockHeight: '',
       lockAmount: '',
 
@@ -115,58 +121,60 @@ export default {
   },
 
   methods: {
+
     updatePage: async function (username, address) {
+      console.log('updatePage');
       // reset all data properties
-        this.account = {}
-        this.address = '';
-        this.publicKey = '';
-        this.balance = '';
-        this.assets = [];
-        
-        this.isLocked = false;
-        this.lockedAmount = '';
-        
-        this.lockHeight = '';
-        this.lockAmount = '';
+      this.account = {}
+      this.address = '';
+      this.publicKey = '';
+      this.balance = '';
+      this.assets = [];
 
-        this.transfers = [];
-        this.transfersCount = 0;
-        this.currentTransfers = [];
-        this.currentPage = 1;
-        this.pageSize = 10;
-        this.limit = 100;
-        this.offset = 0;
+      this.isLocked = false;
+      this.lockedAmount = '';
 
-        let account = null;
-        if (address) {
-          const result = await connection.api.Account.getAccountByAddress(address);
-          if (result.success === true) {
-            account = result;
-          }
+      this.lockHeight = '';
+      this.lockAmount = '';
+
+      this.transfers = [];
+      this.transfersCount = 0;
+      this.currentTransfers = [];
+      this.currentPage = 1;
+      this.pageSize = 10;
+      this.limit = 100;
+      this.offset = 0;
+
+      let account = null;
+      if (address) {
+        const result = await connection.api.Account.getAccountByAddress(address);
+        if (result.success === true) {
+          account = result;
         }
+      }
 
-        if (username) {
-          const result = await connection.api.Account.getAccountByUsername(username);
-          if (result.success === true) {
-            account = result;
-          }
+      if (username) {
+        const result = await connection.api.Account.getAccountByUsername(username);
+        if (result.success === true) {
+          account = result;
         }
+      }
 
-        if (account === null) {
-          throw new Error('failed to fetch account');
-        }
+      if (account === null) {
+        throw new Error('failed to fetch account');
+      }
 
-        this.account = account;
-        this.address = account.address;
-        this.balance = new BigNumber(this.account.gny).dividedBy(1e8).toFixed(0);
+      this.account = account;
+      this.address = account.address;
+      this.balance = new BigNumber(this.account.gny).dividedBy(1e8).toFixed(0);
 
-        this.lockAmount = new BigNumber(account.lockAmount).dividedBy(1e8).toFixed(0);
-        this.isLocked = account.isLocked === '0' ? false : true;
-        this.lockHeight = account.lockHeight;
+      this.lockAmount = new BigNumber(account.lockAmount).dividedBy(1e8).toFixed(0);
+      this.isLocked = account.isLocked === '0' ? false : true;
+      this.lockHeight = account.lockHeight;
 
-        if (account.publicKey) {
-          this.publicKey = account.publicKey.slice(0, 8);
-        }
+      if (account.publicKey) {
+        this.publicKey = account.publicKey.slice(0, 8);
+      }
     },
   },
 
@@ -208,7 +216,7 @@ p {
 }
 
 .nuxt-link {
-  color:#2475ba;
+  color: #2475ba;
   cursor: pointer;
 }
 </style>
