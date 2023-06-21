@@ -127,11 +127,61 @@ export default {
   },
 
   methods: {
-    doubleClick: function(el) {
+    createNetwork: async function() {
+      console.log('creatNetwork');
+
+      // reset
+      this.nodes = [];
+      this.edges = [];
+
+
+      const { nodes, edges } = await getNodesAndEdges(this.address);
+
+      const options = {
+        autoResize: true,
+        height: '500px',
+        width: '100%',
+
+        edges: {
+          labelHighlightBold: false,
+          arrows: {
+            to: {
+              enabled: true,
+            }
+          },
+          shadow: true,
+        },
+        nodes: {
+          shape: 'dot',
+          shadow: true,
+          scaling: {
+            // customScalingFunction: function (min,max,total,value) {
+            //   return value/total;
+            // },
+            // min:1,
+            // max:10,
+          }
+        },
+        interaction: {
+          tooltipDelay: 100,
+        }
+      };
+      this.options = options;
+
+      this.nodes = nodes;
+      this.edges = edges;
+    },
+
+    doubleClick: async function(el) {
       const firstNode = el.nodes[0];
-      console.log(firstNode);
+
+      if (typeof firstNode === 'string') {
+        await navigator.clipboard.writeText(firstNode);
+        console.log(`copied "${firstNode}" to clipboard`);
+      }
     },
     updatePage: async function (username, address) {
+      console.log('updatePage');
       // reset all data properties
       this.account = {}
       this.address = '';
@@ -193,41 +243,7 @@ export default {
 
     await this.updatePage(username, address);
 
-    const { nodes, edges } = await getNodesAndEdges(this.address);
-
-    const options = {
-      autoResize: true,
-      height: '500px',
-      width: '100%',
-
-      edges: {
-        labelHighlightBold: false,
-        arrows: {
-          to: {
-            enabled: true,
-          }
-        },
-        shadow: true,
-      },
-      nodes: {
-        shape: 'dot',
-        shadow: true,
-        scaling: {
-          // customScalingFunction: function (min,max,total,value) {
-          //   return value/total;
-          // },
-          // min:1,
-          // max:10,
-        }
-      },
-      interaction: {
-        tooltipDelay: 100,
-      }
-    };
-    this.options = options;
-
-    this.nodes = nodes;
-    this.edges = edges;
+    await this.createNetwork();
   }
 };
 
