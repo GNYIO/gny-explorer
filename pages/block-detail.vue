@@ -143,7 +143,7 @@ export default {
 
       this.id = this.block.id.slice(0, 24);
 
-      this.reward = new BigNumber(this.block.reward).dividedBy(1e8).toFixed(0);
+      this.reward = new BigNumber(this.block.reward).dividedBy(1e8).toFixed();
 
       // delegate should always have an username
       const rawDelegate = await connection.api.Delegate.getDelegateByPubKey(this.block.delegate);
