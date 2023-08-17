@@ -53,6 +53,7 @@
 
     <who-i-voted-for-component :addressOfVoter="address"></who-i-voted-for-component>
 
+    <burnings-component :senderAddress="address"></burnings-component>
   </div>
 </template>
 
@@ -66,6 +67,7 @@ import WhoIVotedForComponent from '../components/WhoIVotedFor.vue';
 import CustomAssetsComponent from '../components/CustomAssets.vue';
 import AssetTransfersComponent from '../components/AssetTransfers.vue';
 import VisualizationComponent from '../components/Visualization.vue';
+import BurningsComponent from '../components/Burnings.vue';
 
 
 const connection = new gnyClient.Connection(
@@ -82,6 +84,7 @@ export default {
     'custom-assets-component': CustomAssetsComponent,
     'asset-transfers-component': AssetTransfersComponent,
     'visualization-component': VisualizationComponent,
+    'burnings-component': BurningsComponent,
   },
   computed: {
     ...mapGetters(['width']),
