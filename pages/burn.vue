@@ -12,7 +12,7 @@
       </el-table-column>
       <el-table-column prop="tid" align="center" width="auto" label="Transaction ID">
         <template v-slot:default="table">
-          <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: table.row.id }}">
+          <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: table.row.tid }}">
             {{table.row.tid.slice(0,8)}}
           </nuxt-link>
         </template>
@@ -50,6 +50,7 @@ export default {
   data() {
     return {
       burn: [],
+      limit: 100,
       offset: 0,
       loaded: 0,
       loading: true,
