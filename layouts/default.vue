@@ -156,12 +156,11 @@ a {
 }
 
 .second-link {
-    margin-left: 20px;
+    margin-left: 15px;
 }
 
 .logo {
   width: 45px;
-  margin-right: 30px;
   display: inline-block;
   vertical-align: middle;
 }
