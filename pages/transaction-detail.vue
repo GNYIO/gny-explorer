@@ -98,6 +98,11 @@
         </p>
       </div>
 
+      <div v-if="transaction.type === 20">
+        Burned GNY
+        <p>{{ burnedGNY }} GNY</p>
+      </div>
+
 
       <!--transaction type 100 start-->
       <div v-if="transaction.type === 100">
@@ -213,6 +218,9 @@ export default {
       if (this.transaction && this.transaction.type === 10) {
         return 'Transaction - Register Delegate';
       }
+      if (this.transaction && this.transaction.type === 20) {
+        return 'Transaction - Burn GNY';
+      }
 
       if (this.transaction && this.transaction.type === 100) {
         return 'Transaction - Register Asset Issuer';
@@ -256,6 +264,7 @@ export default {
       recipientId: '',
       secondPublicKey: '',
       message: '',
+      burnedGNY: '',
     }
   },
 
@@ -348,6 +357,9 @@ export default {
         case 4:
         case 5:
           this.voteList = this.args[0].split(',');
+          break;
+        case 20:
+          this.burnedGNY = this.args[0] === String(0) ? String(0) : new BigNumber(this.args[0]).dividedBy(1e8).toFixed(0);
           break;
         case 100:
           this.username = this.args[0];
