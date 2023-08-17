@@ -31,12 +31,26 @@
         <i v-if="latestHeight === ''"  class="el-icon-loading"></i>
         <p v-if="latestHeight">{{latestHeight}}</p>
       </div>
+      <div>
+        Current Supply
+        <br v-if="supply === ''">
+        <i v-if="supply === ''"  class="el-icon-loading"></i>
+        <p v-if="supply">{{supply}} GNY</p>
+      </div>
+      <div>
+        Burned Supply
+        <br v-if="burned === ''">
+        <i v-if="burned === ''"  class="el-icon-loading"></i>
+        <p v-if="burned">{{burned}} GNY</p>
+      </div>
     </div>
   </b-card>
 </template>
 
 <script>
 import * as gnyClient from '@gny/client';
+import BigNumber from 'bignumber.js';
+
 console.log(`endpoint: ${process.env['GNY_ENDPOINT']}`);
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],
@@ -53,6 +67,9 @@ export default {
       dalegates: '',
       size: 'loading',
       accounts: '',
+
+      supply: '',
+      burned: '',
     }
   },
 
@@ -60,6 +77,12 @@ export default {
     this.dalegates = (await connection.api.Delegate.getDelegates()).totalCount;
     this.nodes = (await connection.api.Peer.getPeers()).count;
     this.accounts = (await connection.api.Account.countAccounts()).count;
+
+    const rawSupply = await connection.api.Block.getSupply();
+    console.log(JSON.stringify(rawSupply, null, 2));
+
+    this.supply = rawSupply.supply === String(0) ? String(0) : new BigNumber(rawSupply.supply).dividedBy(1e8).toFixed(0);
+    this.burned = rawSupply.burned === String(0) ? String(0) : new BigNumber(rawSupply.burned).dividedBy(1e8).toFixed(0);
   },
 }
 </script>
