@@ -36,6 +36,9 @@
             <b-nav-item>
               <nuxt-link to="/peers" class="second-link">PEERS</nuxt-link>
             </b-nav-item>
+            <b-nav-item>
+              <nuxt-link to="/burn" class="second-link">BURN</nuxt-link>
+            </b-nav-item>
           </b-navbar-nav>
 
           <b-navbar-nav class="ml-auto">
@@ -153,12 +156,11 @@ a {
 }
 
 .second-link {
-    margin-left: 20px;
+    margin-left: 15px;
 }
 
 .logo {
   width: 45px;
-  margin-right: 30px;
   display: inline-block;
   vertical-align: middle;
 }
