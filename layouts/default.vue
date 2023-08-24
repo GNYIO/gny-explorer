@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <el-row class="nerwork-header">
-      <el-col :span="4" :offset="20"><span>{{network}}</span></el-col>
+      <el-col><span class="current_network" >{{network}}</span></el-col>
     </el-row>
     <el-header class="header">
       <b-navbar toggleable="lg" variant="secondary" class="bg-transparent">
@@ -34,10 +34,10 @@
               <nuxt-link to="/assets" class="second-link">ASSETS</nuxt-link>
             </b-nav-item>
             <b-nav-item>
-              <nuxt-link to="/peers" class="second-link">PEERS</nuxt-link>
+              <nuxt-link to="/burnings" class="second-link">BURNINGS</nuxt-link>
             </b-nav-item>
             <b-nav-item>
-              <nuxt-link to="/burnings" class="second-link">BURNINGS</nuxt-link>
+              <nuxt-link to="/peers" class="second-link">PEERS</nuxt-link>
             </b-nav-item>
           </b-navbar-nav>
 
@@ -141,6 +141,7 @@ a {
 .header {
   z-index: 999;
   height: 50px;
+  padding: 0;
 }
 
 .nerwork-header {
@@ -148,15 +149,15 @@ a {
   height: 20px;
 }
 
-.inner {
+/* .inner {
   max-width: 1000px;
   box-sizing: border-box;
   margin: 0px auto;
-  padding: 15px 15px;
-}
+  padding: 5px 5px;
+} */
 
 .second-link {
-    margin-left: 15px;
+    margin-left: 7px;
 }
 
 .logo {
@@ -175,6 +176,11 @@ a {
 .el-footer {
   text-align: center;
   color: #acacac;
+}
+
+.current_network {
+  float: right;
+  padding-right: 1.2rem;
 }
 
 </style>
