@@ -2,7 +2,7 @@
   <b-card title="Burnings" class="shadow">
     <el-table :data="burn" stripe height="500" v-loading="loading">
       <el-table-column prop="amount" align="center" label="Amount" :formatter="formatAmount"></el-table-column>
-      <el-table-column v-if="width > 300" width="65" prop="height" align="center" label="Height"></el-table-column>
+      <el-table-column v-if="width > 300" width="75" prop="height" align="center" label="Height"></el-table-column>
       <el-table-column v-if="width > 450" prop="senderId" align="center" label="Sender" width="auto" :formatter="subSenderId">
         <template v-slot:default="table">
           <nuxt-link class="nuxt-link" :to="{name: 'account-detail', query: { address: table.row.senderId }}">

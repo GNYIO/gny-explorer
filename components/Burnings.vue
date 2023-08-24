@@ -2,7 +2,7 @@
   <b-card :title="formatTitle" class="shadow mt-4">
     <el-table class="clickable-rows" :data="burnings" stripe v-loading="loading">
       <el-table-column prop="amount" align="center" label="Amount" :formatter="formatAmount"></el-table-column>
-      <el-table-column v-if="width > 300" width="65" prop="height" align="center" label="Height"></el-table-column>
+      <el-table-column v-if="width > 300" width="75" prop="height" align="center" label="Height"></el-table-column>
       <el-table-column prop="tid" align="center" width="auto" label="Transaction ID">
         <template v-slot:default="table">
           <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: table.row.tid }}">

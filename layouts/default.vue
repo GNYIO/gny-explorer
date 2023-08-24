@@ -37,7 +37,7 @@
               <nuxt-link to="/peers" class="second-link">PEERS</nuxt-link>
             </b-nav-item>
             <b-nav-item>
-              <nuxt-link to="/burn" class="second-link">BURN</nuxt-link>
+              <nuxt-link to="/burnings" class="second-link">BURNINGS</nuxt-link>
             </b-nav-item>
           </b-navbar-nav>
 
