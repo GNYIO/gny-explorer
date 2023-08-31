@@ -25,7 +25,7 @@
               <nuxt-link to="/blocks" class="second-link">BLOCKS</nuxt-link>
             </b-nav-item>
             <b-nav-item>
-              <nuxt-link to="/transactions" class="second-link">TRANSACTIONS</nuxt-link>
+              <nuxt-link to="/transactions" class="second-link">TRS</nuxt-link>
             </b-nav-item>
             <b-nav-item>
               <nuxt-link to="/delegates" class="second-link">DELEGATES</nuxt-link>
@@ -35,6 +35,9 @@
             </b-nav-item>
             <b-nav-item>
               <nuxt-link to="/burnings" class="second-link">BURNINGS</nuxt-link>
+            </b-nav-item>
+            <b-nav-item>
+              <nuxt-link to="/nfts" class="second-link">NFTS</nuxt-link>
             </b-nav-item>
             <b-nav-item>
               <nuxt-link to="/peers" class="second-link">PEERS</nuxt-link>
