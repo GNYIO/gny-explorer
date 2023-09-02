@@ -1,5 +1,5 @@
 <template>
-  <b-card title="Nfts" class="shadow">
+  <b-card title="NTFs" class="shadow">
     <el-table :data="currentNfts" stripe height="500" v-loading="loading">
       
       <el-table-column
@@ -91,10 +91,14 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import moment from 'moment'
-// import * as gnyClient from '@gny/client'
-import { slots } from '@gny/utils';
-import axios from 'axios';
+import * as gnyClient from '@gny/client'
+
+const connection = new gnyClient.Connection(
+  process.env['GNY_ENDPOINT'],
+  Number(process.env['GNY_PORT']),
+  process.env['GNY_NETWORK'],
+  JSON.parse(process.env['GNY_HTTPS'] || false),
+);
 
 export default {
   computed: {
@@ -112,20 +116,6 @@ export default {
     }
   },
   methods: {
-    subTransactionId: function(row, column) {
-      return row.tid.slice(0, 8)
-    },
-
-    subIssuerId: function(issuerId) {
-      return issuerId.slice(0, 8)
-    },
-
-    timestamp2date: function(row, column) {
-      return moment.utc(slots.getRealTime(row.timestamp)).format(
-        'YYYY-MM-DD HH:mm:ss UTC'
-      )
-    },
-
     handleCurrentChange(currentPage) {
       this.currentPage = currentPage
       this.changePage(this.nfts, currentPage)
@@ -143,19 +133,9 @@ export default {
     }
   },
 
-  // "hash": "2c2624a5059934a947d6e25fe8332ade",
-  //   "previousHash": null,
-  //   "tid": "0bc5492ea8e7d1df038ff7d66c98386fc31b5193e62d9aa60b20c443e24a1ed6",
-  //   "counter": "1",
-  //   "nftMakerId": "one",
-  //   "ownerAddress": "G2ofFMDz8GtWq9n65khKit83bWkQr",
-
   async mounted() {
-    const { data } = await axios.get('http://127.0.0.1:15096/api/nft');
-    const result = data.nfts;
-
-    this.nfts = result;
-    console.log(JSON.stringify(result, null, 2));
+    const { nfts } = await connection.api.Nft.getNfts();
+    this.nfts = nfts;
 
     this.nftsCount = this.nfts.length
     this.handleCurrentChange(1);

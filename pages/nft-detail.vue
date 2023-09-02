@@ -1,0 +1,166 @@
+<template>
+  <div>
+    <b-card title="Nft info" class="shadow">
+      <div class="wrapper">
+        <div v-if="nft.name !== undefined">
+          Name
+          <p>{{ nft.name }}</p>
+        </div>
+        <div v-if="nft.hash !== undefined">
+          Hash
+          <p>{{ nft.hash.slice(0, 16) }}</p>
+        </div>
+
+        <div v-if="nft.previousHash">
+          Previous Hash
+          <p>
+            <nuxt-link :to="{ name: 'nft-detail', query: { hash: nft.previousHash } }">{{ nft.previousHash.slice(0, 16) }}</nuxt-link>
+          </p>
+        </div>
+        <div v-else>
+          Previous Hash
+          <p>no hash</p>
+        </div>
+
+        <div>
+          NFT Maker
+          <p>
+            <nuxt-link :to="{ name: 'nft-maker-detail', query: { makerId: nft.nftMakerId } }">{{ nft.nftMakerId }}</nuxt-link>
+          </p>
+        </div>
+
+        <div>
+          Sequence Number
+          <p>{{ nft.counter }}</p>
+        </div>
+
+        <div>
+          Owner Address
+          <p>
+            <nuxt-link :to="{ name: 'account-detail', query: { address: nft.ownerAddress } }">{{ nft.ownerAddress }}</nuxt-link>
+          </p>
+        </div>
+
+        <div>
+          Minting Transaction
+          <p>
+            <nuxt-link :to="{ name: 'transaction-detail', query: { id: nft.tid } }">{{ nft.tid | truncate(16) }}</nuxt-link>
+          </p>
+        </div>
+
+
+        
+      </div>
+    </b-card>
+
+  </div>
+</template>
+
+<script>
+import { mapGetters } from 'vuex';
+import * as gnyClient from '@gny/client';
+
+const connection = new gnyClient.Connection(
+  process.env['GNY_ENDPOINT'],
+  Number(process.env['GNY_PORT']),
+  process.env['GNY_NETWORK'],
+  JSON.parse(process.env['GNY_HTTPS'] || false),
+);
+
+export default {
+  computed: {
+    ...mapGetters(['width']),
+  },
+  watch: {
+    '$route.query.name': async function (name) {
+      console.log(`(nft-detail) name changed`);
+      await this.updatePage(name, null);
+    },
+    '$route.query.hash': async function (hash) {
+      console.log(`(nft-detail) hash changed`);
+      await this.updatePage(null, hash);
+    }
+  },
+
+  data() {
+    return {
+      nft: {},
+    }
+  },
+
+  methods: {
+    updatePage: async function (name, hash) {
+      console.log(`updatePage (name: ${name}) (hash: ${hash})`);
+      // reset all data properties
+      this.nft = {}
+
+      let nft = null;
+      if (hash) {
+        const result = await connection.api.Nft.getSingleNft({
+          hash,
+        });
+        if (result.success === true) {
+          nft = result.nft;
+        }
+      }
+
+      if (name) {
+        const result = await connection.api.Nft.getSingleNft({
+          name,
+        });
+        if (result.success === true) {
+          nft = result.nft;
+        }
+      }
+
+      if (nft === null) {
+        throw new Error('failed to fetch nft');
+      }
+
+      console.log(JSON.stringify(nft, null, 2));
+      this.nft = nft;
+    },
+  },
+
+  async mounted() {
+    console.log(`(account-detail) mounted()`);
+    const name = this.$route.query.name;
+    const hash = this.$route.query.hash;
+
+    await this.updatePage(name, hash);
+  }
+};
+
+</script>
+
+<style scoped>
+.wrapper {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: stretch;
+}
+
+/* changed */
+@media screen and (min-width: 700px) {
+  .wrapper {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* changed */
+@media screen and (min-width: 1000px) {
+  .wrapper {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+p {
+  color: #acacac;
+}
+
+.nuxt-link {
+  color: #2475ba;
+  cursor: pointer;
+}
+</style>
