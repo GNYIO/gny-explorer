@@ -15,21 +15,21 @@
 
     <b-card title="All NFTs" class="shadow">
       <el-table :data="nfts" stripe height="300" v-loading="loading">
-        <el-table-column v-if="width >= 550" prop="name" align="center" label="Nft Name" width="auto">
+        <el-table-column prop="name" align="center" label="Nft Name" width="auto">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{ name: 'nft-detail', query: { name: table.row.name } }">
               {{ table.row.name | truncate(8) }}
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="hash" align="center" label="Nft Hash" width="auto">
+        <el-table-column v-if="width >= 600" prop="hash" align="center" label="Nft Hash" width="auto">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{ name: 'nft-detail', query: { hash: table.row.hash } }">
               {{ table.row.hash | truncate(8) }}
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="previousHash" align="center" label="Previous Hash" width="auto">
+        <el-table-column v-if="width >= 600" prop="previousHash" align="center" label="Previous Hash" width="auto">
           <template v-slot:default="table">
             <nuxt-link v-if="table.row.previousHash !== null" class="nuxt-link"
               :to="{ name: 'nft-detail', query: { hash: table.row.previousHash } }">
@@ -38,14 +38,14 @@
             <span v-else>no hash</span>
           </template>
         </el-table-column>
-        <el-table-column prop="tid" align="center" label="Transaction ID" width="auto">
+        <el-table-column v-if="width >= 800" prop="tid" align="center" label="Transaction ID" width="auto">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{ name: 'transaction-detail', query: { id: table.row.tid } }">
               {{ table.row.tid | truncate(8) }}
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="ownerAddress" align="center" label="Owner Address" width="auto">
+        <el-table-column v-if="width >= 800" prop="ownerAddress" align="center" label="Owner Address" width="auto">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{ name: 'account-detail', query: { address: table.row.ownerAddress } }">
               {{ table.row.ownerAddress | truncate(6) }}
@@ -60,12 +60,49 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination @current-change="handleCurrentChange" :current-page="currentNftPage" :page-size="5"
+      <el-pagination @current-change="handleCurrentNftChange" :current-page="currentNftPage" :page-size="nftPageSize"
         layout="prev, pager, next" :total="nftsCount" align="center"></el-pagination>
     </b-card>
 
-    <b-card title="All NFT Makers" class="shadow">
 
+    <b-card title="All NFT Makers" class="shadow">
+      <el-table :data="makers" stripe height="300" v-loading="loading">
+        <el-table-column prop="name" align="center" label="Maker Name" width="auto">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{ name: 'nft-maker-detail', query: { makerId: table.row.name } }">
+              {{ table.row.name | truncate(8) }}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+
+        <el-table-column v-if="width >= 400" prop="desc" align="center" label="Description">
+          <template v-slot:default="table">
+            {{  table.row.desc | truncate(8) }}
+          </template>
+        </el-table-column>
+
+        <el-table-column v-if="width >= 800" prop="nftCounter" align="center" label="# of NFTs">
+        </el-table-column>
+
+        <el-table-column v-if="width >= 800"  prop="address" label="Address" align="center">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{ name: 'account-detail', query: { address: table.row.address } }">
+              {{ table.row.address | truncate(6) }}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+
+        <el-table-column v-if="width >= 800" prop="tid" align="center" label="TID" width="auto">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{ name: 'transaction-detail', query: { id: table.row.tid } }">
+              {{ table.row.tid | truncate(8) }}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <el-pagination @current-change="handleCurrentMakerChange" :current-page="currentMakersPage" :page-size="makerPageSize"
+        layout="prev, pager, next" :total="makersCount" align="center"></el-pagination>
     </b-card>
 
   </div>
@@ -95,11 +132,17 @@ export default {
       nftsCount: 0,
       currentNftPage: 1,
       nftPageSize: 5,
+
+      makers: [],
+      makersCount: 0,
+      currentMakersPage: 1,
+      makerPageSize: 5,
+
       loading: true
     }
   },
   methods: {
-    async handleCurrentChange(currentNftPage) {
+    async handleCurrentNftChange(currentNftPage) {
       this.loading = true;
       console.log(`(Nfts) load data for page "${currentNftPage}"`);
 
@@ -115,6 +158,24 @@ export default {
 
       this.loading = false;
     },
+
+    async handleCurrentMakerChange(currentMakersPage) {
+      this.loading = true;
+      console.log(`(Nfts) load maker data for page "${currentMakersPage}"`);
+
+      const from = (currentMakersPage - 1) * this.makerPageSize;
+      const offset = from;
+      const limit = this.makerPageSize;
+
+      const { makers, count } = await connection.api.Nft.getNftMakers(offset, limit);
+      this.makers = makers;
+      this.makersCount = count;
+
+      console.log(JSON.stringify(makers, null, 2));
+
+      this.loading = false;
+    },
+
   },
 
   async mounted() {
@@ -127,8 +188,12 @@ export default {
     // reset
     this.nfts = [];
     this.nftsCount = 0;
+    this.makers = [];
+    this.makersCount = 0;
 
-    await this.handleCurrentChange(1);
+
+    await this.handleCurrentNftChange(1);
+    await this.handleCurrentMakerChange(1);
   }
 }
 </script>
