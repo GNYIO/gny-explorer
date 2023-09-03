@@ -30,6 +30,46 @@
         </div>
       </div>
     </b-card>
+
+    <br/>
+
+    <b-card title="My NFTs" class="shadow">
+      <el-table :data="nfts" stripe height="300" v-loading="loading">
+        <el-table-column prop="name" align="center" label="Nft Name" width="auto">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{ name: 'nft-detail', query: { name: table.row.name } }">
+              {{ table.row.name | truncate(8) }}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+        <el-table-column v-if="width >= 600" prop="hash" align="center" label="Nft Hash" width="auto">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{ name: 'nft-detail', query: { hash: table.row.hash } }">
+              {{ table.row.hash | truncate(8) }}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+        <el-table-column v-if="width >= 600" prop="previousHash" align="center" label="Previous Hash" width="auto">
+          <template v-slot:default="table">
+            <nuxt-link v-if="table.row.previousHash !== null" class="nuxt-link"
+              :to="{ name: 'nft-detail', query: { hash: table.row.previousHash } }">
+              {{ table.row.previousHash | truncate(8) }}
+            </nuxt-link>
+            <span v-else>no hash</span>
+          </template>
+        </el-table-column>
+        <el-table-column v-if="width >= 800" prop="tid" align="center" label="Transaction ID" width="auto">
+          <template v-slot:default="table">
+            <nuxt-link class="nuxt-link" :to="{ name: 'transaction-detail', query: { id: table.row.tid } }">
+              {{ table.row.tid | truncate(8) }}
+            </nuxt-link>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-pagination @current-change="handleCurrentNftChange" :current-page="currentNftPage" :page-size="nftPageSize"
+        layout="prev, pager, next" :total="nftsCount" align="center"></el-pagination>
+    </b-card>
+
   </div>
 </template>
 
@@ -52,13 +92,21 @@ export default {
     '$route.query.makerId': async function (makerId) {
       console.log(`(nft-maker-detail) makerId changed`);
       await this.updatePage(makerId);
+      await this.handleCurrentNftChange(1);
     },
   },
 
   data() {
     return {
       maker: {},
-    }
+
+      loading: true,
+      
+      nfts: [],
+      nftsCount: 0,
+      currentNftPage: 1,
+      nftPageSize: 5,
+    };
   },
 
   methods: {
@@ -84,6 +132,23 @@ export default {
       console.log(JSON.stringify(maker, null, 2));
       this.maker = maker;
     },
+
+    async handleCurrentNftChange(currentNftPage) {
+      this.loading = true;
+      console.log(`(Nfts) load data for page "${currentNftPage}"`);
+
+      const from = (currentNftPage - 1) * this.nftPageSize;
+      const offset = from;
+      const limit = this.nftPageSize;
+
+      const { nfts, count } = await connection.api.Nft.getNfts(offset, limit, this.maker.name);
+      this.nfts = nfts;
+      this.nftsCount = count;
+
+      console.log(JSON.stringify(nfts, null, 2));
+
+      this.loading = false;
+    },
   },
 
   async mounted() {
@@ -93,7 +158,35 @@ export default {
     const makerId = this.$route.query.makerId;
 
     await this.updatePage(makerId);
+    await this.handleCurrentNftChange(1);
   }
 };
 
 </script>
+
+
+<style scoped>
+.wrapper {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: stretch;
+}
+
+/* changed from 300px to 650 */
+@media screen and (min-width: 650px) {
+  .wrapper {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* removed one media query */
+
+@media screen and (min-width: 800px) {
+  .wrapper {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+</style>
+
