@@ -30,8 +30,8 @@
         </div>
 
         <div>
-          Sequence Number
-          <p>{{ nft.counter }}</p>
+          nth NFT minted from NFT Maker
+          <p>{{ nft.counter | ordinal }} from <nuxt-link :to="{ name: 'nft-maker-detail', query: { makerId: nft.nftMakerId } }">{{ nft.nftMakerId }}</nuxt-link></p>
         </div>
 
         <div>
