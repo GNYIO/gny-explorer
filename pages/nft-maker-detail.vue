@@ -18,7 +18,7 @@
           </p>            
         </div>
         <div>
-          Transaction Id
+          Registration Transaction
           <p>
             <nuxt-link :to="{ name: 'transaction-detail', query: { tid: maker.tid } }">{{
             maker.tid | truncate(12) }}</nuxt-link>          

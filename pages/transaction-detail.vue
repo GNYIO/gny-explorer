@@ -160,6 +160,43 @@
       <!--transaction type 103 end-->
 
 
+      <!--transaction type 300 start-->
+      <div v-if="transaction.type === 300">
+        NFT Maker Name
+        <p>
+          <nuxt-link class="nuxt-link" :to="{name: 'nft-maker-detail', query: { makerId: nftMakerName }}">
+            {{ nftMakerName | truncate(12) }}
+          </nuxt-link>
+        </p>
+      </div>
+      <div v-if="transaction.type === 300">
+        NFT Maker Description
+        <p>{{ nftMakerDesc }}</p>
+      </div>
+      <!--transaction type 300 end-->
+
+      <!--transaction type 301 start-->
+      <div v-if="transaction.type === 301">
+        NFT Name
+        <p>
+          <nuxt-link class="nuxt-link" :to="{name: 'nft-detail', query: { name: nftName }}">
+            {{ nftName | truncate(12) }}
+          </nuxt-link>
+        </p>
+      </div>
+      <div v-if="transaction.type === 301">
+        NFT Hash 
+        <p>
+          <nuxt-link class="nuxt-link" :to="{name: 'nft-detail', query: { hash: nftHash }}">
+            {{ nftHash | truncate(12) }}
+          </nuxt-link>
+        </p>
+      </div>
+      <div v-if="transaction.type === 301">
+        
+      </div>
+      <!--transaction type 301 end-->
+
       <div v-if="!!message">
         Message
         <el-tooltip class="item" effect="light" :content="message" placement="bottom">
@@ -235,6 +272,12 @@ export default {
         return 'Transaction - Transfer Asset';
       }
 
+      if (this.transaction && this.transaction.type === 300) {
+        return 'Transaction - Create NFT Maker';
+      }
+      if (this.transaction && this.transaction.type === 301) {
+        return 'Transaction - Create NFT';
+      }
 
       // fallback
       return 'Custom Transaction Name';
@@ -265,6 +308,13 @@ export default {
       secondPublicKey: '',
       message: '',
       burnedGNY: '',
+
+      nftMakerName: '',
+      nftMakerDesc: '',
+
+      nftName: '',
+      nftHash: '',
+      nftMakerId: '',
     }
   },
 
@@ -385,6 +435,15 @@ export default {
 
           this.amount = new BigNumber(this.args[1]).dividedBy(precision).toFixed();
           this.recipientId = this.args[2];
+          break;
+        case 300:
+          this.nftMakerName = this.args[0];
+          this.nftMakerDesc = this.args[1];
+          break;
+        case 301:
+          this.nftName = this.args[0];
+          this.nftHash = this.args[1];
+          this.nftMakerId = this.args[2];
           break;
       }
 
