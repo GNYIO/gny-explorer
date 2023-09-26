@@ -193,8 +193,18 @@
         </p>
       </div>
       <div v-if="transaction.type === 301">
-        
+        NFT Maker
+        <p>
+          <nuxt-link class="nuxt-link" :to="{name: 'nft-maker-detail', query: { makerId: nftMakerId }}">
+            {{ nftMakerId | truncate(12) }}
+          </nuxt-link>
+        </p>
       </div>
+      <div v-if="transaction.type === 301">
+        NFT Url
+        <p>{{nftUrl | truncate(24)}}  <i class="el-icon-copy-document" @click="copyNftUrl"></i></p>
+      </div>
+
       <!--transaction type 301 end-->
 
       <div v-if="!!message">
@@ -314,6 +324,7 @@ export default {
 
       nftName: '',
       nftHash: '',
+      nftUrl: '',
       nftMakerId: '',
     }
   },
@@ -350,6 +361,13 @@ export default {
     async copySecondSenderPubilcKey() {
       try {
         await this.$copyText(this.secondPublicKey);
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    async copyNftUrl() {
+      try {
+        await this.$copyText(this.nftUrl);
       } catch (e) {
         console.error(e);
       }
@@ -444,6 +462,7 @@ export default {
           this.nftName = this.args[0];
           this.nftHash = this.args[1];
           this.nftMakerId = this.args[2];
+          this.nftUrl = this.args[3];
           break;
       }
 
