@@ -1,7 +1,26 @@
 <template>
   <b-card :title="formatTitle" class="shadow mt-4">
     <el-table class="clickable-rows" :data="makers" stripe v-loading="loading">
-      <el-table-column prop="amount" align="center" label="Amount"></el-table-column>
+
+      <el-table-column prop="name" align="center" label="name" width="auto">
+        <template v-slot:default="table">
+          <nuxt-link class="nuxt-link" :to="{ name: 'nft-maker-detail', query: { makerId: table.row.name } }">
+            {{ table.row.name }}
+          </nuxt-link>
+        </template>
+      </el-table-column>
+
+      <el-table-column prop="desc" align="center" label="description" :formatter="subDes"></el-table-column>
+
+      <el-table-column prop="tid" align="center" label="Register Trs">
+        <template v-slot:default="table">
+          <nuxt-link class="nuxt-link" :to="{ name: 'transaction-detail', query: { id: table.row.tid } }">
+            {{ table.row.tid.slice(0, 8) }}
+          </nuxt-link>
+        </template>
+      </el-table-column>
+
+      <el-table-column prop="nftCounter" align="center" label="# of NFTs created"></el-table-column>
     </el-table>
 
     <el-pagination @current-change="handleCurrentChange" :current-page="currentPage" :page-size="5"
@@ -13,9 +32,6 @@
 <script>
 import { mapGetters } from 'vuex';
 import * as gnyClient from '@gny/client';
-import BigNumber from 'bignumber.js';
-
-
 
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],
@@ -73,14 +89,20 @@ export default {
 
       const from = (currentPage - 1) * this.pageSize;
 
+      console.log(`offset: ${from}, limit: ${this.pageSize}, address: ${this.address}`);
+
       const raw = await connection.api.Nft.getNftMakers(from, this.pageSize, this.address);
-      this.makers = raw.burn;
+      this.makers = raw.makers;
       this.makersCount = raw.count;
 
       console.log(`(NftMakers) makers: ${JSON.stringify(this.makers, null, 2)}`);
 
       this.loading = false;
-    }
+    },
+
+    subDes: function (row, column) {
+      return row.desc.slice(0,8) + '...';
+    },
   },
 };
 

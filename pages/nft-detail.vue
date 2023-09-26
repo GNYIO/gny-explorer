@@ -1,6 +1,7 @@
 <template>
   <div>
-    <b-card title="Nft info" class="shadow">
+    <b-card title="NFT
+     info" class="shadow">
       <div class="wrapper">
         <div v-if="nft.name !== undefined">
           Name
@@ -30,8 +31,8 @@
         </div>
 
         <div>
-          nth NFT minted from NFT Maker
-          <p>{{ nft.counter | ordinal }} from <nuxt-link :to="{ name: 'nft-maker-detail', query: { makerId: nft.nftMakerId } }">{{ nft.nftMakerId }}</nuxt-link></p>
+          nth NFT from same Maker
+          <p><strong>{{ nft.counter | ordinal }}</strong> NFT from <nuxt-link :to="{ name: 'nft-maker-detail', query: { makerId: nft.nftMakerId } }">{{ nft.nftMakerId }}</nuxt-link></p>
         </div>
 
         <div>
