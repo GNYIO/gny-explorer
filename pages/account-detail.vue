@@ -56,6 +56,8 @@
     <burnings-component :senderAddress="address"></burnings-component>
 
     <nft-makers-component :address="address"></nft-makers-component>
+
+    <nfts-component :ownerAddress="address"></nfts-component>
   </div>
 </template>
 
@@ -71,6 +73,7 @@ import AssetTransfersComponent from '../components/AssetTransfers.vue';
 import VisualizationComponent from '../components/Visualization.vue';
 import BurningsComponent from '../components/Burnings.vue';
 import NftMakersComponent from '../components/NftMakers.vue';
+import NftsComponent from '../components/Nfts.vue';
 
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],
@@ -88,6 +91,7 @@ export default {
     'visualization-component': VisualizationComponent,
     'burnings-component': BurningsComponent,
     'nft-makers-component': NftMakersComponent,
+    'nfts-component': NftsComponent,
   },
   computed: {
     ...mapGetters(['width']),
