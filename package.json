@@ -4,6 +4,7 @@
   "description": "",
   "author": "",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon server/index.js --watch server",
     "build": "nuxt build",
@@ -12,9 +13,9 @@
     "generate": "nuxt generate --spa"
   },
   "dependencies": {
-    "@gny/client": "^1.0.139",
-    "@gny/extended-joi": "^1.0.139",
-    "@gny/utils": "^1.0.139",
+    "@gny/client": "^1.0.141",
+    "@gny/extended-joi": "^1.0.141",
+    "@gny/utils": "^1.0.141",
     "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/dotenv": "^1.4.1",
     "bignumber.js": "^9.1.1",
