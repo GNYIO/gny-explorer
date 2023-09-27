@@ -141,11 +141,13 @@ export default {
       const offset = from;
       const limit = this.nftPageSize;
 
-      const { nfts, count } = await connection.api.Nft.getNfts(offset, limit, this.maker.name);
+      const { nfts, count } = await connection.api.Nft.getNfts({
+        offset,
+        limit,
+        maker: this.maker.name,
+      });
       this.nfts = nfts;
       this.nftsCount = count;
-
-      console.log(JSON.stringify(nfts, null, 2));
 
       this.loading = false;
     },

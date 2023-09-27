@@ -150,7 +150,7 @@ export default {
       const offset = from;
       const limit = this.nftPageSize;
 
-      const { nfts, count } = await connection.api.Nft.getNfts(offset, limit);
+      const { nfts, count } = await connection.api.Nft.getNfts({ offset, limit });
       this.nfts = nfts;
       this.nftsCount = count;
 
