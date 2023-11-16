@@ -5,11 +5,11 @@
       <div class="wrapper">
         <div v-if="nft.name !== undefined">
           Name
-          <p>{{ nft.name }}</p>
+          <p>{{ nft.name | truncate(18) }} <i class="el-icon-copy-document" @click="copyName"></i></p>
         </div>
         <div v-if="nft.hash !== undefined">
           Hash
-          <p>{{ nft.hash.slice(0, 16) }}</p>
+          <p>{{ nft.hash | truncate(16) }} <i class="el-icon-copy-document" @click="copyHash"></i></p>
         </div>
 
         <div v-if="nft.previousHash">
@@ -46,6 +46,12 @@
           Minting Transaction
           <p>
             <nuxt-link :to="{ name: 'transaction-detail', query: { id: nft.tid } }">{{ nft.tid | truncate(16) }}</nuxt-link>
+          </p>
+        </div>
+
+        <div>
+          NFT URL <span class="grayed_out">(at your own risk)</span>
+          <p>{{ nft.url | truncate(24)}}  <i class="el-icon-copy-document" @click="copyNftUrl"></i>
           </p>
         </div>
 
@@ -118,8 +124,28 @@ export default {
         throw new Error('failed to fetch nft');
       }
 
-      console.log(JSON.stringify(nft, null, 2));
       this.nft = nft;
+    },
+    async copyName() {
+      try {
+        await this.$copyText(this.nft.name);
+      } catch (err) {
+        console.error(e);
+      }
+    },
+    async copyHash() {
+      try {
+        await this.$copyText(this.nft.hash);
+      } catch (err) {
+        console.error(e);
+      }
+    },
+    async copyNftUrl() {
+      try {
+        await this.$copyText(this.nft.url);
+      } catch (e) {
+        console.error(e);
+      }
     },
   },
 
@@ -163,5 +189,24 @@ p {
 .nuxt-link {
   color: #2475ba;
   cursor: pointer;
+}
+
+.el-icon-copy-document {
+  transition: 0.1s;
+  transition-property: color;
+}
+
+.el-icon-copy-document:hover {
+  color: #565656;
+}
+
+.el-icon-copy-document:active {
+  color: black;
+}
+
+.grayed_out {
+  color: #acacac;
+  font-size: 12px;
+  font-weight: 300;
 }
 </style>
