@@ -29,7 +29,7 @@
           <p>{{prettyBalance}} GNY</p>
         </div>
         <div>
-          Locked Balance (voting weight)
+          Locked Balance (own voting weight)
           <br v-if="prettyLockBalance === ''">
           <i v-if="prettyLockBalance === ''"  class="el-icon-loading"></i>
           <p>{{prettyLockBalance}} GNY</p>
@@ -43,6 +43,10 @@
           <br v-if="lockHeight === ''">
           <i v-if="lockHeight === ''"  class="el-icon-loading"></i>
           <p>{{lockHeight}}</p>
+        </div>
+        <div>
+          Sum Voting Weight
+          <p>{{ votes }}</p>
         </div>
         <div>
           Missed Blocks
@@ -177,6 +181,7 @@ export default {
       prettyLockBalance: '',
       isLocked: false,
       lockHeight: '',
+      votes: '',
     }
   },
 
@@ -232,6 +237,7 @@ export default {
         this.rewards = new BigNumber(delegate.rewards).dividedBy(1e8).toFixed();
         this.blockTitle = 'Produced Blocks ' + '(total: ' + delegate.producedBlocks + ')';
         this.blocksCount = new BigNumber(delegate.producedBlocks).toNumber();
+        this.votes = new BigNumber(delegate.votes).dividedBy(1e8).toFixed();
 
         const query = {
           offset: this.offset,
