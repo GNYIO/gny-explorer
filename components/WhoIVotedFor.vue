@@ -95,8 +95,10 @@ export default {
       console.log(`delegatescount: ${this.delegatesCount}`);
 
       let result = [];
-      // this endpoint is not paged because it only returns
-      // up to 33 votes
+      // this endpoint is not paged because it can only return up to 101
+      // of own votes
+      // when voting one can only vote for up to 33 delegates at one time
+      // then it
       const raw = await connection.api.Delegate.getOwnVotes(query);
       if (raw.success === true) {
         result = raw.delegates;
