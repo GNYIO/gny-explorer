@@ -201,7 +201,7 @@
         </p>
       </div>
       <div v-if="transaction.type === 301">
-        NFT Url
+        NFT URL <span class="grayed_out">(at your own risk)</span>
         <p>{{nftUrl | truncate(24)}}  <i class="el-icon-copy-document" @click="copyNftUrl"></i></p>
       </div>
 
@@ -524,6 +524,13 @@ p {
 
 .el-icon-copy-document:active {
   color: black;
+}
+
+
+.grayed_out {
+  color: #acacac;
+  font-size: 12px;
+  font-weight: 300;
 }
 
 </style>
