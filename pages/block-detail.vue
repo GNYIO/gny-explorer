@@ -66,7 +66,7 @@
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="fee" align="center" label="Fee" width="120"></el-table-column>
+        <el-table-column prop="fee" align="center" label="Fee" :formatter="formatFee" width="120"></el-table-column>
       </el-table>
     </b-card>
   </div>
@@ -121,6 +121,11 @@ export default {
 
     timestamp2date: function (row, column) {
       return moment.utc(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD HH:mm:ss UTC');
+    },
+
+    formatFee: function (row) {
+      console.log(row.fee);
+      return new BigNumber(row.fee).dividedBy(1e8).toFixed();
     },
 
     updatePage: async function (height) {
