@@ -32,7 +32,7 @@
           Locked Balance
           <br v-if="prettyLockBalance === ''">
           <i v-if="prettyLockBalance === ''"  class="el-icon-loading"></i>
-          <el-tooltip effect="dark" placement="left-end">
+          <el-tooltip effect="dark" placement="bottom">
             <div slot="content">Own voting weight
             </div>
             <p>{{prettyLockBalance}} GNY</p>
@@ -46,11 +46,14 @@
           Lock Height
           <br v-if="lockHeight === ''">
           <i v-if="lockHeight === ''"  class="el-icon-loading"></i>
-          <p>{{lockHeight}}</p>
+          <el-tooltip effect="dark" placement="bottom">
+            <div slot="content">Lock Height describes the height after which<br/>the "lockAmount" ({{ prettyLockBalance }} GNY) can be unlocked again.</div>
+            <p>{{lockHeight}}</p>
+          </el-tooltip>
         </div>
         <div>
           Votes Received
-          <el-tooltip effect="dark" placement="left-end">
+          <el-tooltip effect="dark" placement="bottom">
             <div slot="content">Only locked GNY count as votes.<br/>Voting for a delegate increases their "Votes received".<br/>"Votes Received" is the sum of all votes for this delegate.</div>
             <p>{{ votes }} GNY</p>
           </el-tooltip>

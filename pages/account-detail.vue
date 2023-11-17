@@ -10,19 +10,21 @@
           Unlocked Balance
           <br v-if="balance === ''">
           <i v-if="balance === ''" class="el-icon-loading"></i>
-          <p>{{ balance }}</p>
+          <p>{{ balance }} GNY</p>
         </div>
         <div>
           Locked Balance
-          <p>{{ lockAmount }}</p>
+          <el-tooltip effect="dark" placement="bottom">
+            <div slot="content">{{lockAmount}} available to unlock at height {{ lockHeight }}</div>
+            <p>{{ lockAmount }} GNY</p>
+          </el-tooltip>
         </div>
         <div>
-          Is Locked
-          <p>{{ isLocked }}</p>
-        </div>
-        <div>
-          Lock Height
-          <p>{{ lockHeight }}</p>
+          Total Balance
+          <el-tooltip effect="dark" placement="bottom">
+            <div slot="content">Unlocked Balance ({{ balance }} GNY) plus locked Balance ({{ lockAmount }} GNY  ) = {{ totalBalance }} GNY</div>
+            <p>{{ totalBalance }}</p>
+          </el-tooltip>
         </div>
         <div>
           Username
@@ -114,6 +116,7 @@ export default {
       address: '',
       publicKey: '',
       balance: '',
+      totalBalance: '',
       assets: [],
 
       isLocked: false,
@@ -139,6 +142,7 @@ export default {
       this.address = '';
       this.publicKey = '';
       this.balance = '';
+      this.totalBalance = '';
       this.assets = [];
 
       this.isLocked = false;
@@ -181,6 +185,8 @@ export default {
       this.lockAmount = new BigNumber(account.lockAmount).dividedBy(1e8).toFixed(0);
       this.isLocked = account.isLocked === '0' ? false : true;
       this.lockHeight = account.lockHeight;
+
+      this.totalBalance = new BigNumber(this.balance).plus(this.lockAmount).toFixed();
 
       if (account.publicKey) {
         this.publicKey = account.publicKey.slice(0, 8);
