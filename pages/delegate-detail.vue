@@ -10,7 +10,7 @@
         </div>
         <div>
           Public Key
-          <p>{{publicKey.slice(0,8)}}</p>
+          <p>{{publicKey.slice(0,8)}} <i class="el-icon-copy-document" @click="copyPublicKey"></i></p>
         </div>
         <div>
           Address
@@ -29,10 +29,14 @@
           <p>{{prettyBalance}} GNY</p>
         </div>
         <div>
-          Locked Balance (own voting weight)
+          Locked Balance
           <br v-if="prettyLockBalance === ''">
           <i v-if="prettyLockBalance === ''"  class="el-icon-loading"></i>
-          <p>{{prettyLockBalance}} GNY</p>
+          <el-tooltip effect="dark" placement="left-end">
+            <div slot="content">Own voting weight
+            </div>
+            <p>{{prettyLockBalance}} GNY</p>
+          </el-tooltip>
         </div>
         <div>
           Is Locked
@@ -45,8 +49,11 @@
           <p>{{lockHeight}}</p>
         </div>
         <div>
-          Sum Voting Weight
-          <p>{{ votes }}</p>
+          Votes Received
+          <el-tooltip effect="dark" placement="left-end">
+            <div slot="content">Only locked GNY count as votes.<br/>Voting for a delegate increases their "Votes received".<br/>"Votes Received" is the sum of all votes for this delegate.</div>
+            <p>{{ votes }} GNY</p>
+          </el-tooltip>
         </div>
         <div>
           Missed Blocks
@@ -209,6 +216,14 @@ export default {
     formatLockAmount: function (row, column) {
       return new BigNumber(row.lockAmount).dividedBy(1e8).toFixed();
     },
+
+    copyPublicKey: async function() {
+      try {
+        await this.$copyText(this.publicKey);
+      } catch (e) {
+        console.error(e);
+      }
+    },
     
     updatePage: async function (username, publicKey) {
       try {
@@ -327,5 +342,18 @@ export default {
 .nuxt-link {
   color:#2475ba;
   cursor: pointer;
+}
+
+.el-icon-copy-document {
+  transition: 0.1s;
+  transition-property: color;
+}
+
+.el-icon-copy-document:hover {
+  color: #565656;
+}
+
+.el-icon-copy-document:active {
+  color: black;
 }
 </style>

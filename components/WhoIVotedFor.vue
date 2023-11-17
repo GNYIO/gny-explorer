@@ -12,7 +12,7 @@
 
       <el-table-column v-if="width >= 500" prop="producedBlocks" align="center" label="Produced Blocks" width="auto"></el-table-column>
       <el-table-column v-if="width >= 800" prop="missedBlocks" align="center" label="Missed Blocks" width="auto"></el-table-column>
-      <el-table-column v-if="width >= 1200" prop="votes" align="center" label="Overall Vote Weight (GNY)" :formatter="voteWeightFormatter" width="200"></el-table-column>
+      <el-table-column v-if="width >= 1200" prop="votes" align="center" label="Votes Received" :formatter="voteWeightFormatter" width="200"></el-table-column>
       <el-table-column v-if="width >= 1000" prop="approval" align="center" label="Approval" width="auto"></el-table-column>
 
     </el-table>
@@ -82,7 +82,7 @@ export default {
   },
   methods: {
     voteWeightFormatter: function (row, column) {
-      return new BigNumber(row.votes).dividedBy(1e8).toFixed();
+      return new BigNumber(row.votes).dividedBy(1e8).toFixed() + ' GNY';
     },
     handleCurrentChange: async function(currentPage) {
       this.loading = true;
