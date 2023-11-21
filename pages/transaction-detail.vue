@@ -165,7 +165,7 @@
         NFT Maker Name
         <p>
           <nuxt-link class="nuxt-link" :to="{name: 'nft-maker-detail', query: { makerId: nftMakerName }}">
-            {{ nftMakerName | truncate(12) }}
+            {{ nftMakerName | truncate(32) }}
           </nuxt-link>
         </p>
       </div>
@@ -180,7 +180,7 @@
         NFT Name
         <p>
           <nuxt-link class="nuxt-link" :to="{name: 'nft-detail', query: { name: nftName }}">
-            {{ nftName | truncate(12) }}
+            {{ nftName | truncate(28) }}
           </nuxt-link>
         </p>
       </div>
@@ -188,7 +188,7 @@
         NFT Hash 
         <p>
           <nuxt-link class="nuxt-link" :to="{name: 'nft-detail', query: { hash: nftHash }}">
-            {{ nftHash | truncate(12) }}
+            {{ nftHash | truncate(28) }}
           </nuxt-link>
         </p>
       </div>
@@ -196,13 +196,13 @@
         NFT Maker
         <p>
           <nuxt-link class="nuxt-link" :to="{name: 'nft-maker-detail', query: { makerId: nftMakerId }}">
-            {{ nftMakerId | truncate(12) }}
+            {{ nftMakerId | truncate(28) }}
           </nuxt-link>
         </p>
       </div>
       <div v-if="transaction.type === 301">
         NFT URL <span class="grayed_out">(at your own risk)</span>
-        <p>{{nftUrl | truncate(24)}}  <i class="el-icon-copy-document" @click="copyNftUrl"></i></p>
+        <p>{{nftUrl | truncate(28)}}  <i class="el-icon-copy-document" @click="copyNftUrl"></i></p>
       </div>
 
       <!--transaction type 301 end-->
