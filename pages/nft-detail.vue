@@ -20,8 +20,20 @@
         </div>
         <div v-else>
           Previous Hash
-          <p>no hash</p>
+          <p>no previous hash</p>
         </div>
+
+        <div v-if="nextHash.hash">
+          Next Hash
+          <p>
+            <nuxt-link :to="{ name: 'nft-detail', query: { hash: nextHash.hash } }">{{ nextHash.hash.slice(0, 16) }}</nuxt-link>
+          </p>
+        </div>
+        <div v-else>
+          Next Hash
+          <p>no next hash</p>
+        </div>
+
 
         <div>
           NFT Maker
@@ -30,7 +42,8 @@
           </p>
         </div>
 
-        <div>
+        <!-- use v-if otherwise when loading one can see for a split second "undefined" -->
+        <div v-if="nft.counter">
           nth NFT from same Maker
           <p><strong>{{ nft.counter | ordinal }}</strong> NFT from <nuxt-link :to="{ name: 'nft-maker-detail', query: { makerId: nft.nftMakerId } }">{{ nft.nftMakerId }}</nuxt-link></p>
         </div>
@@ -92,6 +105,7 @@ export default {
   data() {
     return {
       nft: {},
+      nextHash: {}
     }
   },
 
@@ -100,6 +114,7 @@ export default {
       console.log(`updatePage (name: ${name}) (hash: ${hash})`);
       // reset all data properties
       this.nft = {}
+      this.nextHash = {}
 
       let nft = null;
       if (hash) {
@@ -125,6 +140,19 @@ export default {
       }
 
       this.nft = nft;
+
+      // try to get next hash
+      console.log(`counter: ${nft.counter}`);
+      const nextHashRaw =  await connection.api.Nft.getNfts({
+        maker: nft.nftMakerId,
+        limit: 1,
+        offset: Number(nft.counter),
+      });
+
+      if (nextHashRaw.nfts.length === 1) {
+        this.nextHash = nextHashRaw.nfts[0];
+      }
+
     },
     async copyName() {
       try {
@@ -161,6 +189,10 @@ export default {
 </script>
 
 <style scoped>
+i {
+    cursor: pointer;
+}
+
 .wrapper {
   margin: 0;
   display: grid;
