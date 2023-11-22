@@ -68,9 +68,27 @@
           </p>
         </div>
 
-
-        
       </div>
+    </b-card>
+
+    <b-card title="NFT Chain" class="shadow mt-4">
+      <el-steps simple>
+
+        <el-step v-for="row in rows" :status="typeof row.hash === 'string' ? 'success' : 'wait'" icon="el-icon-upload" v-bind:key="row.counter">
+          <div slot="title">
+
+            <span v-if="row.hash && row.current">
+              <strong>NFT &#35;{{ row.counter }}</strong>
+            </span>
+
+            <nuxt-link v-if="row.hash && !row.current" :to="{ name: 'nft-detail', query: { hash: row.hash } }">NFT &#35;{{ row.counter }}</nuxt-link>
+            
+            <span v-if="!row.hash">not minted yet</span>
+
+          </div>
+        </el-step>
+        
+      </el-steps>
     </b-card>
 
   </div>
@@ -105,7 +123,9 @@ export default {
   data() {
     return {
       nft: {},
-      nextHash: {}
+      nftMaker: {},
+      nextHash: {},
+      rows: [],
     }
   },
 
@@ -113,8 +133,10 @@ export default {
     updatePage: async function (name, hash) {
       console.log(`updatePage (name: ${name}) (hash: ${hash})`);
       // reset all data properties
-      this.nft = {}
-      this.nextHash = {}
+      this.nft = {};
+      this.nftMaker = {};
+      this.nextHash = {};
+      this.rows = [];
 
       let nft = null;
       if (hash) {
@@ -138,8 +160,16 @@ export default {
       if (nft === null) {
         throw new Error('failed to fetch nft');
       }
-
       this.nft = nft;
+
+
+      const { maker } = await connection.api.Nft.getSingleNftMaker(nft.nftMakerId);
+      if (maker === null) {
+        throw new Error('failed to fetch nft maker');
+      }
+      this.nftMaker = maker;
+
+
 
       // try to get next hash
       console.log(`counter: ${nft.counter}`);
@@ -153,6 +183,41 @@ export default {
         this.nextHash = nextHashRaw.nfts[0];
       }
 
+      
+
+
+
+      // add previous nft to rows
+      const rows = [];
+      if (typeof nft.previousHash === 'string') {
+        rows.push({
+          hash: nft.previousHash,
+          counter: Number(nft.counter) -1,
+        });
+      }
+
+      // add current nft to rows
+      rows.push({
+        hash: nft.hash,
+        counter: Number(nft.counter),
+        current: true,
+      });
+
+      // add next or future nft to rows
+      if (Object.keys(this.nextHash).length > 0) { // not an empty object
+        rows.push({
+          hash: this.nextHash.hash,
+          counter: Number(this.nextHash.counter),
+        });
+      } else { // empty object
+        rows.push({
+          hash: undefined,
+          counter: Number(this.nft.counter) + 1,
+        });
+      }
+      
+      this.rows = rows;
+      console.log(`rows: ${JSON.stringify(rows, null, 2)}`);
     },
     async copyName() {
       try {
