@@ -4,7 +4,7 @@
 
       <el-table-column prop="name" align="center" label="name" width="auto">
         <template v-slot:default="table">
-          <nuxt-link class="nuxt-link" :to="{ name: 'nft-maker-detail', query: { makerId: table.row.name } }">
+          <nuxt-link class="nuxt-link" :to="{ name: 'dat-maker-detail', query: { makerId: table.row.name } }">
             {{ table.row.name }}
           </nuxt-link>
         </template>
@@ -20,7 +20,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="nftCounter" align="center" label="# of NFTs created"></el-table-column>
+      <el-table-column prop="datCounter" align="center" label="# of DATs created"></el-table-column>
     </el-table>
 
     <el-pagination @current-change="handleCurrentChange" :current-page="currentPage" :page-size="5"
@@ -44,7 +44,7 @@ export default {
   computed: {
     ...mapGetters(['width']),
     formatTitle() {
-      return 'My Registered NFTMakers ' + '(total: ' + this.makersCount + ')';
+      return 'My Registered DATMakers ' + '(total: ' + this.makersCount + ')';
     },
   },
   data() {
@@ -67,14 +67,14 @@ export default {
 
   watch: {
     address: async function (address) {
-      console.log(`(NftMakers) address changed to "${this.address}"`);
+      console.log(`(DatMakers) address changed to "${this.address}"`);
 
       // reset
       this.makers = [];
       this.makersCount = 0;
 
       if (this.address === null || this.address === undefined || this.address === '') {
-        console.log(`(NftMakers) address is "undefined"`);
+        console.log(`(DatMakers) address is "undefined"`);
         return;
       }
 
@@ -85,17 +85,17 @@ export default {
   methods: {
     handleCurrentChange: async function (currentPage) {
       this.loading = true;
-      console.log(`(NftMakers) load data for page "${currentPage}"`);
+      console.log(`(DatMakers) load data for page "${currentPage}"`);
 
       const from = (currentPage - 1) * this.pageSize;
 
       console.log(`offset: ${from}, limit: ${this.pageSize}, address: ${this.address}`);
 
-      const raw = await connection.api.Nft.getNftMakers(from, this.pageSize, this.address);
+      const raw = await connection.api.Dat.getDatMakers(from, this.pageSize, this.address);
       this.makers = raw.makers;
       this.makersCount = raw.count;
 
-      console.log(`(NftMakers) makers: ${JSON.stringify(this.makers, null, 2)}`);
+      console.log(`(DatMakers) makers: ${JSON.stringify(this.makers, null, 2)}`);
 
       this.loading = false;
     },

@@ -21,8 +21,8 @@ const mapping = {
   207: 'ml.fraudDetection',
   208: 'ml.locationPrediction',
   209: 'ml.nlp',
-  300: 'nft.registerNftMaker',
-  301: 'nft.createNft',
+  300: 'dat.registerDatMaker',
+  301: 'dat.createDat',
 };
 
 

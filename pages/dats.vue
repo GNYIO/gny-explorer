@@ -1,30 +1,30 @@
 <template>
   <div>
-    <b-card title="NFTs Overview" class="shadow">
+    <b-card title="DATs Overview" class="shadow">
       <div class="wrapper">
         <div>
-          NFTs
-          <p>{{ totalNfts }}</p>
+          DATs
+          <p>{{ totalDats }}</p>
         </div>
         <div>
-          NFT Makers
-          <p>{{ totalNftMakers }}</p>
+          DAT Makers
+          <p>{{ totalDatMakers }}</p>
         </div>
       </div>
     </b-card>
 
-    <b-card title="All NFTs" class="shadow">
-      <el-table :data="nfts" stripe height="300" v-loading="loading">
-        <el-table-column prop="name" align="center" label="Nft Name" width="auto">
+    <b-card title="All DATs" class="shadow">
+      <el-table :data="dats" stripe height="300" v-loading="loading">
+        <el-table-column prop="name" align="center" label="Dat Name" width="auto">
           <template v-slot:default="table">
-            <nuxt-link class="nuxt-link" :to="{ name: 'nft-detail', query: { name: table.row.name } }">
+            <nuxt-link class="nuxt-link" :to="{ name: 'dat-detail', query: { name: table.row.name } }">
               {{ table.row.name | truncate(8) }}
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column v-if="width >= 600" prop="hash" align="center" label="Nft Hash" width="auto">
+        <el-table-column v-if="width >= 600" prop="hash" align="center" label="Dat Hash" width="auto">
           <template v-slot:default="table">
-            <nuxt-link class="nuxt-link" :to="{ name: 'nft-detail', query: { hash: table.row.hash } }">
+            <nuxt-link class="nuxt-link" :to="{ name: 'dat-detail', query: { hash: table.row.hash } }">
               {{ table.row.hash | truncate(8) }}
             </nuxt-link>
           </template>
@@ -32,7 +32,7 @@
         <el-table-column v-if="width >= 600" prop="previousHash" align="center" label="Previous Hash" width="auto">
           <template v-slot:default="table">
             <nuxt-link v-if="table.row.previousHash !== null" class="nuxt-link"
-              :to="{ name: 'nft-detail', query: { hash: table.row.previousHash } }">
+              :to="{ name: 'dat-detail', query: { hash: table.row.previousHash } }">
               {{ table.row.previousHash | truncate(8) }}
             </nuxt-link>
             <span v-else>no hash</span>
@@ -52,24 +52,24 @@
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="nftMakerId" align="center" label="Nft Maker" width="auto">
+        <el-table-column prop="datMakerId" align="center" label="Dat Maker" width="auto">
           <template v-slot:default="table">
-            <nuxt-link class="nuxt-link" :to="{ name: 'nft-maker-detail', query: { makerId: table.row.nftMakerId } }">
-              {{ table.row.nftMakerId | truncate(8) }}
+            <nuxt-link class="nuxt-link" :to="{ name: 'dat-maker-detail', query: { makerId: table.row.datMakerId } }">
+              {{ table.row.datMakerId | truncate(8) }}
             </nuxt-link>
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination @current-change="handleCurrentNftChange" :current-page="currentNftPage" :page-size="nftPageSize"
-        layout="prev, pager, next" :total="nftsCount" align="center"></el-pagination>
+      <el-pagination @current-change="handleCurrentDatChange" :current-page="currentDatPage" :page-size="datPageSize"
+        layout="prev, pager, next" :total="datsCount" align="center"></el-pagination>
     </b-card>
 
 
-    <b-card title="All NFT Makers" class="shadow">
+    <b-card title="All DAT Makers" class="shadow">
       <el-table :data="makers" stripe height="300" v-loading="loading">
         <el-table-column prop="name" align="center" label="Maker Name" width="auto">
           <template v-slot:default="table">
-            <nuxt-link class="nuxt-link" :to="{ name: 'nft-maker-detail', query: { makerId: table.row.name } }">
+            <nuxt-link class="nuxt-link" :to="{ name: 'dat-maker-detail', query: { makerId: table.row.name } }">
               {{ table.row.name | truncate(8) }}
             </nuxt-link>
           </template>
@@ -81,7 +81,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column v-if="width >= 800" prop="nftCounter" align="center" label="# of NFTs">
+        <el-table-column v-if="width >= 800" prop="datCounter" align="center" label="# of DATs">
         </el-table-column>
 
         <el-table-column v-if="width >= 800"  prop="address" label="Address" align="center">
@@ -125,13 +125,13 @@ export default {
   },
   data() {
     return {
-      totalNfts: 0,
-      totalNftMakers: 0,
+      totalDats: 0,
+      totalDatMakers: 0,
 
-      nfts: [],
-      nftsCount: 0,
-      currentNftPage: 1,
-      nftPageSize: 5,
+      dats: [],
+      datsCount: 0,
+      currentDatPage: 1,
+      datPageSize: 5,
 
       makers: [],
       makersCount: 0,
@@ -142,32 +142,32 @@ export default {
     }
   },
   methods: {
-    async handleCurrentNftChange(currentNftPage) {
+    async handleCurrentDatChange(currentDatPage) {
       this.loading = true;
-      console.log(`(Nfts) load data for page "${currentNftPage}"`);
+      console.log(`(Dats) load data for page "${currentDatPage}"`);
 
-      const from = (currentNftPage - 1) * this.nftPageSize;
+      const from = (currentDatPage - 1) * this.datPageSize;
       const offset = from;
-      const limit = this.nftPageSize;
+      const limit = this.datPageSize;
 
-      const { nfts, count } = await connection.api.Nft.getNfts({ offset, limit });
-      this.nfts = nfts;
-      this.nftsCount = count;
+      const { dats, count } = await connection.api.Dat.getDats({ offset, limit });
+      this.dats = dats;
+      this.datsCount = count;
 
-      console.log(JSON.stringify(nfts, null, 2));
+      console.log(JSON.stringify(dats, null, 2));
 
       this.loading = false;
     },
 
     async handleCurrentMakerChange(currentMakersPage) {
       this.loading = true;
-      console.log(`(Nfts) load maker data for page "${currentMakersPage}"`);
+      console.log(`(Dats) load maker data for page "${currentMakersPage}"`);
 
       const from = (currentMakersPage - 1) * this.makerPageSize;
       const offset = from;
       const limit = this.makerPageSize;
 
-      const { makers, count } = await connection.api.Nft.getNftMakers(offset, limit);
+      const { makers, count } = await connection.api.Dat.getDatMakers(offset, limit);
       this.makers = makers;
       this.makersCount = count;
 
@@ -179,20 +179,20 @@ export default {
   },
 
   async mounted() {
-    const totalNfts = await connection.api.Nft.getNfts();
-    const totalNftMakers = await connection.api.Nft.getNftMakers();
-    this.totalNfts = totalNfts.count;
-    this.totalNftMakers = totalNftMakers.count;
+    const totalDats = await connection.api.Dat.getDats();
+    const totalDatMakers = await connection.api.Dat.getDatMakers();
+    this.totalDats = totalDats.count;
+    this.totalDatMakers = totalDatMakers.count;
 
 
     // reset
-    this.nfts = [];
-    this.nftsCount = 0;
+    this.dats = [];
+    this.datsCount = 0;
     this.makers = [];
     this.makersCount = 0;
 
 
-    await this.handleCurrentNftChange(1);
+    await this.handleCurrentDatChange(1);
     await this.handleCurrentMakerChange(1);
   }
 }

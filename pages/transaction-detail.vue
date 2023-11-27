@@ -162,47 +162,47 @@
 
       <!--transaction type 300 start-->
       <div v-if="transaction.type === 300">
-        NFT Maker Name
+        DAT Maker Name
         <p>
-          <nuxt-link class="nuxt-link" :to="{name: 'nft-maker-detail', query: { makerId: nftMakerName }}">
-            {{ nftMakerName | truncate(32) }}
+          <nuxt-link class="nuxt-link" :to="{name: 'dat-maker-detail', query: { makerId: datMakerName }}">
+            {{ datMakerName | truncate(32) }}
           </nuxt-link>
         </p>
       </div>
       <div v-if="transaction.type === 300">
-        NFT Maker Description
-        <p>{{ nftMakerDesc }}</p>
+        DAT Maker Description
+        <p>{{ datMakerDesc }}</p>
       </div>
       <!--transaction type 300 end-->
 
       <!--transaction type 301 start-->
       <div v-if="transaction.type === 301">
-        NFT Name
+        DAT Name
         <p>
-          <nuxt-link class="nuxt-link" :to="{name: 'nft-detail', query: { name: nftName }}">
-            {{ nftName | truncate(28) }}
+          <nuxt-link class="nuxt-link" :to="{name: 'dat-detail', query: { name: datName }}">
+            {{ datName | truncate(28) }}
           </nuxt-link>
         </p>
       </div>
       <div v-if="transaction.type === 301">
-        NFT Hash 
+        DAT Hash 
         <p>
-          <nuxt-link class="nuxt-link" :to="{name: 'nft-detail', query: { hash: nftHash }}">
-            {{ nftHash | truncate(28) }}
+          <nuxt-link class="nuxt-link" :to="{name: 'dat-detail', query: { hash: datHash }}">
+            {{ datHash | truncate(28) }}
           </nuxt-link>
         </p>
       </div>
       <div v-if="transaction.type === 301">
-        NFT Maker
+        DAT Maker
         <p>
-          <nuxt-link class="nuxt-link" :to="{name: 'nft-maker-detail', query: { makerId: nftMakerId }}">
-            {{ nftMakerId | truncate(28) }}
+          <nuxt-link class="nuxt-link" :to="{name: 'dat-maker-detail', query: { makerId: datMakerId }}">
+            {{ datMakerId | truncate(28) }}
           </nuxt-link>
         </p>
       </div>
       <div v-if="transaction.type === 301">
-        NFT URL <span class="grayed_out">(at your own risk)</span>
-        <p>{{nftUrl | truncate(28)}}  <i class="el-icon-copy-document" @click="copyNftUrl"></i></p>
+        DAT URL <span class="grayed_out">(at your own risk)</span>
+        <p>{{datUrl | truncate(28)}}  <i class="el-icon-copy-document" @click="copyDatUrl"></i></p>
       </div>
 
       <!--transaction type 301 end-->
@@ -283,10 +283,10 @@ export default {
       }
 
       if (this.transaction && this.transaction.type === 300) {
-        return 'Transaction - Create NFT Maker';
+        return 'Transaction - Create DAT Maker';
       }
       if (this.transaction && this.transaction.type === 301) {
-        return 'Transaction - Create NFT';
+        return 'Transaction - Create DAT';
       }
 
       // fallback
@@ -319,13 +319,13 @@ export default {
       message: '',
       burnedGNY: '',
 
-      nftMakerName: '',
-      nftMakerDesc: '',
+      datMakerName: '',
+      datMakerDesc: '',
 
-      nftName: '',
-      nftHash: '',
-      nftUrl: '',
-      nftMakerId: '',
+      datName: '',
+      datHash: '',
+      datUrl: '',
+      datMakerId: '',
     }
   },
 
@@ -365,9 +365,9 @@ export default {
         console.error(e);
       }
     },
-    async copyNftUrl() {
+    async copyDatUrl() {
       try {
-        await this.$copyText(this.nftUrl);
+        await this.$copyText(this.datUrl);
       } catch (e) {
         console.error(e);
       }
@@ -455,14 +455,14 @@ export default {
           this.recipientId = this.args[2];
           break;
         case 300:
-          this.nftMakerName = this.args[0];
-          this.nftMakerDesc = this.args[1];
+          this.datMakerName = this.args[0];
+          this.datMakerDesc = this.args[1];
           break;
         case 301:
-          this.nftName = this.args[0];
-          this.nftHash = this.args[1];
-          this.nftMakerId = this.args[2];
-          this.nftUrl = this.args[3];
+          this.datName = this.args[0];
+          this.datHash = this.args[1];
+          this.datMakerId = this.args[2];
+          this.datUrl = this.args[3];
           break;
       }
 

@@ -25,26 +25,26 @@
           </p>
         </div>
         <div>
-          NFTs created
-          <p>{{ maker.nftCounter }}</p>
+          DATs created
+          <p>{{ maker.datCounter }}</p>
         </div>
       </div>
     </b-card>
 
     <br/>
 
-    <b-card title="My NFTs" class="shadow">
-      <el-table :data="nfts" stripe height="300" v-loading="loading">
-        <el-table-column prop="name" align="center" label="Nft Name" width="auto">
+    <b-card title="My DATs" class="shadow">
+      <el-table :data="dats" stripe height="300" v-loading="loading">
+        <el-table-column prop="name" align="center" label="Dat Name" width="auto">
           <template v-slot:default="table">
-            <nuxt-link class="nuxt-link" :to="{ name: 'nft-detail', query: { name: table.row.name } }">
+            <nuxt-link class="nuxt-link" :to="{ name: 'dat-detail', query: { name: table.row.name } }">
               {{ table.row.name | truncate(8) }}
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column v-if="width >= 600" prop="hash" align="center" label="Nft Hash" width="auto">
+        <el-table-column v-if="width >= 600" prop="hash" align="center" label="Dat Hash" width="auto">
           <template v-slot:default="table">
-            <nuxt-link class="nuxt-link" :to="{ name: 'nft-detail', query: { hash: table.row.hash } }">
+            <nuxt-link class="nuxt-link" :to="{ name: 'dat-detail', query: { hash: table.row.hash } }">
               {{ table.row.hash | truncate(8) }}
             </nuxt-link>
           </template>
@@ -52,7 +52,7 @@
         <el-table-column v-if="width >= 600" prop="previousHash" align="center" label="Previous Hash" width="auto">
           <template v-slot:default="table">
             <nuxt-link v-if="table.row.previousHash !== null" class="nuxt-link"
-              :to="{ name: 'nft-detail', query: { hash: table.row.previousHash } }">
+              :to="{ name: 'dat-detail', query: { hash: table.row.previousHash } }">
               {{ table.row.previousHash | truncate(8) }}
             </nuxt-link>
             <span v-else>no hash</span>
@@ -66,8 +66,8 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-pagination @current-change="handleCurrentNftChange" :current-page="currentNftPage" :page-size="nftPageSize"
-        layout="prev, pager, next" :total="nftsCount" align="center"></el-pagination>
+      <el-pagination @current-change="handleCurrentDatChange" :current-page="currentDatPage" :page-size="datPageSize"
+        layout="prev, pager, next" :total="datsCount" align="center"></el-pagination>
     </b-card>
 
   </div>
@@ -90,9 +90,9 @@ export default {
   },
   watch: {
     '$route.query.makerId': async function (makerId) {
-      console.log(`(nft-maker-detail) makerId changed`);
+      console.log(`(dat-maker-detail) makerId changed`);
       await this.updatePage(makerId);
-      await this.handleCurrentNftChange(1);
+      await this.handleCurrentDatChange(1);
     },
   },
 
@@ -102,22 +102,22 @@ export default {
 
       loading: true,
       
-      nfts: [],
-      nftsCount: 0,
-      currentNftPage: 1,
-      nftPageSize: 5,
+      dats: [],
+      datsCount: 0,
+      currentDatPage: 1,
+      datPageSize: 5,
     };
   },
 
   methods: {
     updatePage: async function (name) {
-      console.log(`nft-maker-detail (name: ${name})`);
+      console.log(`dat-maker-detail (name: ${name})`);
       // reset all data properties
       this.maker = {}
 
       let maker = null;
       if (name) {
-        const result = await connection.api.Nft.getSingleNftMaker(name);
+        const result = await connection.api.Dat.getSingleDatMaker(name);
         console.log(JSON.stringify(result, null, 2));
 
         if (result.success === true) {
@@ -133,21 +133,21 @@ export default {
       this.maker = maker;
     },
 
-    async handleCurrentNftChange(currentNftPage) {
+    async handleCurrentDatChange(currentDatPage) {
       this.loading = true;
-      console.log(`(Nfts) load data for page "${currentNftPage}"`);
+      console.log(`(Dats) load data for page "${currentDatPage}"`);
 
-      const from = (currentNftPage - 1) * this.nftPageSize;
+      const from = (currentDatPage - 1) * this.datPageSize;
       const offset = from;
-      const limit = this.nftPageSize;
+      const limit = this.datPageSize;
 
-      const { nfts, count } = await connection.api.Nft.getNfts({
+      const { dats, count } = await connection.api.Dat.getDats({
         offset,
         limit,
         maker: this.maker.name,
       });
-      this.nfts = nfts;
-      this.nftsCount = count;
+      this.dats = dats;
+      this.datsCount = count;
 
       this.loading = false;
     },
@@ -156,11 +156,11 @@ export default {
   async mounted() {
     console.log('mounted');
 
-    console.log(`(nft-maker-detail) mounted()`);
+    console.log(`(dat-maker-detail) mounted()`);
     const makerId = this.$route.query.makerId;
 
     await this.updatePage(makerId);
-    await this.handleCurrentNftChange(1);
+    await this.handleCurrentDatChange(1);
   }
 };
 

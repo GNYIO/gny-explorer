@@ -1,7 +1,7 @@
 import * as x from '@gny/client';
 
 // 1. add "type":"module", to package.json
-// 2. call this script: node --es-module-specifier-resolution=node create_nfts.js
+// 2. call this script: node --es-module-specifier-resolution=node create_dats.js
 
 
 const connection = new x.Connection('127.0.0.1', 4096, 'localnet', false);
@@ -26,10 +26,10 @@ function makeHash(length) {
   return result;
 }
 
-async function registerNftMaker(name) {
+async function registerDatMaker(name) {
   try {
     console.log(`register: ${name}`);
-    const trs = await connection.contract.Nft.registerNftMaker(name, 'predictions', genesis);
+    const trs = await connection.contract.Dat.registerDatMaker(name, 'predictions', genesis);
     console.log(JSON.stringify(trs, null, 2));
 
     await sleep(15 * 1000);
@@ -38,7 +38,7 @@ async function registerNftMaker(name) {
   }
 }
 
-async function registerNft(makerName) {
+async function registerDat(makerName) {
   try {
     const coin = makerName.split('_')[0]; // takes BTC from BTC_PREDICTION
 
@@ -46,14 +46,14 @@ async function registerNft(makerName) {
     const month = randomIntFromInterval(1, 12);
     const day = randomIntFromInterval(1, 28);
 
-    const nftName = `${year}${month}${day}_${coin}`;
-    console.log(`nftName: ${nftName}, makerName: ${makerName}`);
+    const datName = `${year}${month}${day}_${coin}`;
+    console.log(`datName: ${datName}, makerName: ${makerName}`);
 
     const hash = makeHash(50);
 
     const url = 'https://test.com/test';
 
-    const trs = await connection.contract.Nft.createNft(nftName, hash, makerName, url, genesis);
+    const trs = await connection.contract.Dat.createDat(datName, hash, makerName, url, genesis);
     console.log(JSON.stringify(trs, null, 2));
 
     await sleep(7 * 1000);
@@ -77,11 +77,11 @@ async function registerNft(makerName) {
   ];
 
   for (const m of makers) {
-    await registerNftMaker(m);
+    await registerDatMaker(m);
   }
 
   for (const n of [...makers, ...makers, ...makers, ...makers, ...makers]) {
-    await registerNft(n);
+    await registerDat(n);
   }
 
 

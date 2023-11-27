@@ -37,7 +37,7 @@
               <nuxt-link to="/burnings" class="second-link">BURNINGS</nuxt-link>
             </b-nav-item>
             <b-nav-item>
-              <nuxt-link to="/nfts" class="second-link">NFTS</nuxt-link>
+              <nuxt-link to="/dats" class="second-link">DATS</nuxt-link>
             </b-nav-item>
             <b-nav-item>
               <nuxt-link to="/peers" class="second-link">PEERS</nuxt-link>
