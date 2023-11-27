@@ -12,9 +12,9 @@
     "generate": "nuxt generate --spa"
   },
   "dependencies": {
-    "@gny/client": "^1.0.141",
-    "@gny/extended-joi": "^1.0.141",
-    "@gny/utils": "^1.0.141",
+    "@gny/client": "^1.0.147",
+    "@gny/extended-joi": "^1.0.148",
+    "@gny/utils": "^1.0.148",
     "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/dotenv": "^1.4.1",
     "bignumber.js": "^9.1.1",
