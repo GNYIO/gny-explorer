@@ -59,8 +59,8 @@
 <script>
 import { mapGetters } from 'vuex'
 import moment from 'moment'
-import * as gnyClient from '@gny/client'
-import { slots } from '@gny/utils'
+import * as gnyClient from '@gnyio/client'
+import { slots } from '@gnyio/utils'
 import { BigNumber } from 'bignumber.js'
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],

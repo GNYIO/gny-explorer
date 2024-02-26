@@ -3,7 +3,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import compression from 'compression';
 import customLogger from '../utils/logger';
-import { Connection } from '@gny/client';
+import { Connection } from '@gnyio/client';
 import got from 'got';
 
 /* My express App */

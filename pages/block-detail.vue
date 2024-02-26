@@ -75,8 +75,8 @@
 <script>
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
-import * as gnyClient from '@gny/client';
-import { slots } from '@gny/utils';
+import * as gnyClient from '@gnyio/client';
+import { slots } from '@gnyio/utils';
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],
   Number(process.env['GNY_PORT']),
