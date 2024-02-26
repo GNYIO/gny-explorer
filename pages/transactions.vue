@@ -42,8 +42,8 @@
 import { mapGetters } from 'vuex';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
-import * as gnyClient from '@gny/client';
-import { slots } from '@gny/utils';
+import * as gnyClient from '@gnyio/client';
+import { slots } from '@gnyio/utils';
 import { contractMappingFilter } from '../helpers/getTransactionType';
 
 const connection = new gnyClient.Connection(

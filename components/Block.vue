@@ -34,7 +34,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import moment from 'moment';
-import { slots } from '@gny/utils';
+import { slots } from '@gnyio/utils';
 
 export default {
   props: ['blocks', 'blocksLoading'],
