@@ -1,7 +1,6 @@
 <template>
   <div>
-    <b-card title="DAT
-     info" class="shadow">
+    <b-card :title="custom_title" class="shadow">
       <div class="wrapper">
         <div v-if="dat.name !== undefined">
           Name
@@ -108,6 +107,23 @@ const connection = new gnyClient.Connection(
 export default {
   computed: {
     ...mapGetters(['width']),
+    custom_title: {
+      get: function() {
+        if (typeof this.dat.name === 'string') {
+          const last = this.dat.name.split('.')[1];
+
+          if (last.length > 20) {
+            const lastShort = last.slice(0, 20) + '...';
+            return `DAT ${lastShort}`;
+          } else {
+            return `DAT ${last}`
+          }
+
+        } else {
+          return 'DAT Info';
+        }
+      },
+    }
   },
   watch: {
     '$route.query.name': async function (name) {
