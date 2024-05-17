@@ -68,13 +68,18 @@
         </div>
 
         <div>
-          <el-tooltip effect="dark" placement="bottom">
-            <div slot="content">Verify this DAT by clicking this button</div>
+          <el-tooltip v-if="showError === false && showSuccess === false" effect="dark" placement="bottom">
+            <div slot="content">Verify this DAT by clicking this button. Use at your own risk!</div>
             <el-button @click="verify" style="font-size: 53px;" type="warning" icon="el-icon-question" circle></el-button>
           </el-tooltip>
 
-          <el-button type="danger" icon="el-icon-close" circle></el-button>
-          <el-button type="success" icon="el-icon-check" circle></el-button>
+          <el-tooltip v-if="showError" effect="dark" placement="bottom">
+            <div slot="content">{{ errorText }}</div>
+            <el-button style="font-size: 53px;" v-if="showError === true" type="danger" icon="el-icon-close" circle></el-button>
+          </el-tooltip>
+
+
+          <el-button style="font-size: 53px;" v-if="showSuccess === true" type="success" icon="el-icon-check" circle></el-button>
         </div>
 
       </div>
@@ -106,6 +111,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import * as gnyClient from '@gnyio/client';
+import axios from 'axios';
 
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],
@@ -148,6 +154,12 @@ export default {
 
   data() {
     return {
+      showError: false,
+      errorText: '',
+
+      showSuccess: false,
+      successText: '',
+
       dat: {},
       datMaker: {},
       nextHash: {},
@@ -269,6 +281,27 @@ export default {
 
     async verify() {
       console.log('verifing DAT...');
+
+      try {
+        const result = await axios.request({
+          method: 'GET',
+          basURL: this.dat.url,
+          maxRedirects: 0, // do not redirect
+          responseType: 'json',
+        });
+      } catch (err) {
+
+        // error happens if domain does not exist or file can't be found
+        console.log('error during fetching json data (dat-detail)');
+        console.log(err);
+
+        this.showError = true;
+        this.errorText = 'File can\'t be found!';
+
+        // todo: show Notification popup
+
+        return;
+      }
     },
   },
 
