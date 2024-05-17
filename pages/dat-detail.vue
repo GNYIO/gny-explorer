@@ -67,6 +67,16 @@
           </p>
         </div>
 
+        <div>
+          <el-tooltip effect="dark" placement="bottom">
+            <div slot="content">Verify this DAT by clicking this button</div>
+            <el-button @click="verify" style="font-size: 53px;" type="warning" icon="el-icon-question" circle></el-button>
+          </el-tooltip>
+
+          <el-button type="danger" icon="el-icon-close" circle></el-button>
+          <el-button type="success" icon="el-icon-check" circle></el-button>
+        </div>
+
       </div>
     </b-card>
 
@@ -255,6 +265,10 @@ export default {
       } catch (e) {
         console.error(e);
       }
+    },
+
+    async verify() {
+      console.log('verifing DAT...');
     },
   },
 
