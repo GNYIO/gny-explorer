@@ -7,9 +7,9 @@
 </template>
 
 <script>
-import { joi } from '@gny/extended-joi';
+import { joi } from '@gnyio/extended-joi';
 import BigNumber from 'bignumber.js';
-import * as gnyClient from '@gny/client';
+import * as gnyClient from '@gnyio/client';
 
 console.log(`endpoint: ${process.env['GNY_ENDPOINT']}`);
 const connection = new gnyClient.Connection(

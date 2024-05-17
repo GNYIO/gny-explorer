@@ -1,5 +1,5 @@
 
-const client = require('@gny/client');
+const client = require('@gnyio/client');
 const BigNumber = require('bignumber.js');
 
 

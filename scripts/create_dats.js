@@ -1,4 +1,4 @@
-import * as x from '@gny/client';
+import * as x from '@gnyio/client';
 
 // 1. add "type":"module", to package.json
 // 2. call this script: node --es-module-specifier-resolution=node create_dats.js

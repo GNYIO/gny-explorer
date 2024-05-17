@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import * as gnyClient from '@gny/client';
+import * as gnyClient from '@gnyio/client';
 import BigNumber from 'bignumber.js';
 
 console.log(`endpoint: ${process.env['GNY_ENDPOINT']}`);

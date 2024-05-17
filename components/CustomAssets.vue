@@ -22,7 +22,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import BigNumber from 'bignumber.js';
-import * as gnyClient from '@gny/client';
+import * as gnyClient from '@gnyio/client';
 
 
 
