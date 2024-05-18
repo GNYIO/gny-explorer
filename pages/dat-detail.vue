@@ -293,7 +293,9 @@ export default {
           maxRedirects: 0, // do not redirect
           // responseType: 'json',
           crossDomain: true,
+          timeout: 2000,
         });
+        console.log('finished request');
       } catch (err) {
 
         // error happens if domain does not exist or file can't be found
@@ -306,6 +308,9 @@ export default {
         // todo: show Notification popup
         return;
       }
+
+      console.log('after try block');
+
 
       // await gnyClient.
       const validationResult = gnyClient.schemas.datSchema.validate(result.data);
