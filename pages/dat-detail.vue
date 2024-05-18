@@ -69,7 +69,7 @@
 
         <div>
           <el-tooltip v-if="showError === false && showSuccess === false" effect="dark" placement="bottom">
-            <div slot="content">Verify this DAT by clicking this button. Use at your own risk!</div>
+            <div slot="content">Verify this DAT by clicking this button.<br/> Use at your own risk!</div>
             <el-button @click="verify" style="font-size: 53px;" type="warning" icon="el-icon-question" circle></el-button>
           </el-tooltip>
 
@@ -112,6 +112,7 @@
 import { mapGetters } from 'vuex';
 import * as gnyClient from '@gnyio/client';
 import axios from 'axios';
+import * as webEd from '@gnyio/web-ed';
 
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],
@@ -282,12 +283,16 @@ export default {
     async verify() {
       console.log('verifing DAT...');
 
+      let result = null;
       try {
-        const result = await axios.request({
+        console.log(`url: ${this.dat.url}`);
+
+        result = await axios.request({
           method: 'GET',
-          basURL: this.dat.url,
+          url: this.dat.url,
           maxRedirects: 0, // do not redirect
-          responseType: 'json',
+          // responseType: 'json',
+          crossDomain: true,
         });
       } catch (err) {
 
@@ -299,9 +304,29 @@ export default {
         this.errorText = 'File can\'t be found!';
 
         // todo: show Notification popup
-
         return;
       }
+
+      // await gnyClient.
+      const validationResult = gnyClient.schemas.datSchema.validate(result.data);
+      if (validationResult.error) {
+        this.showError = true;
+        this.errorText = 'Data is not in correct format';
+        return;
+      }
+
+      const data = result.data.data;
+      const hash = result.data.hash;
+
+      const ownHash = webEd.createSha256Hash(data);
+      if (hash !== ownHash) {
+        this.showError = true;
+        this.showError = 'Hash does not match the provided data!';
+      } else {
+        this.showSuccess = true;
+      }
+
+
     },
   },
 
