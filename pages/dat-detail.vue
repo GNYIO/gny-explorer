@@ -70,7 +70,9 @@
         <div>
           <el-tooltip v-if="showError === false && showSuccess === false" effect="dark" placement="bottom">
             <div slot="content">Verify this DAT by clicking this button.<br/> Use at your own risk!</div>
-            <el-button @click="verify" style="font-size: 53px;" type="warning" icon="el-icon-question" circle></el-button>
+
+            <!-- setting the "border-width" to "0px" fixes a bug where the border of the button overflows the el-loading-mask css class -->
+            <el-button style="font-size: 53px; border-width: 0px;" @click="verify" type="warning" icon="el-icon-question" circle v-loading="buttonLoading"></el-button>
           </el-tooltip>
 
           <el-tooltip v-if="showError" effect="dark" placement="bottom">
@@ -160,6 +162,7 @@ export default {
 
       showSuccess: false,
       successText: '',
+      buttonLoading: false,
 
       dat: {},
       datMaker: {},
@@ -281,6 +284,8 @@ export default {
     },
 
     async verify() {
+      this.buttonLoading = true;
+
       console.log('verifing DAT...');
 
       let result = null;
