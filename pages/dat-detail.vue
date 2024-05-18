@@ -312,7 +312,7 @@ export default {
       console.log('after try block');
 
 
-      // await gnyClient.
+      // validate structure of data
       const validationResult = gnyClient.schemas.datSchema.validate(result.data);
       if (validationResult.error) {
         this.showError = true;
@@ -320,17 +320,39 @@ export default {
         return;
       }
 
-      const data = result.data.data;
-      const hash = result.data.hash;
+      if (result.data.hash) { // is DATsha256
+        const data = result.data.data;
+        const hash = result.data.hash;
 
-      const ownHash = webEd.createSha256Hash(data);
-      if (hash !== ownHash) {
-        this.showError = true;
-        this.showError = 'Hash does not match the provided data!';
-      } else {
-        this.showSuccess = true;
+        const ownHash = webEd.createSha256Hash(data);
+        if (hash !== ownHash) {
+          this.showError = true;
+          this.showError = 'Hash does not match the provided data!';
+        } else {
+          this.showSuccess = true;
+        }
+      } else { // is DATEd25519
+        const data = result.data.data;
+        const publicKey = result.data.publicKey;
+        const signature = result.data.signature;
+        try {
+          const result = gnyClient.verification.MessageWebBase.verify(
+            data,
+            signature,
+            publicKey
+          );
+          if (result) {
+            ths.showSuccess = true;
+          } else {
+            this.showError = true;
+            this.showError = 'ed25519 signature does not match';
+          }
+        } catch (err) {
+          this.showError = true;
+          this.showError = 'ed25519 not in correct format';
+          return;
+        }
       }
-
 
     },
   },
