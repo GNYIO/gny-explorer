@@ -80,8 +80,11 @@
             <el-button style="font-size: 53px;" v-if="showError === true" type="danger" icon="el-icon-close" circle></el-button>
           </el-tooltip>
 
+          <el-tooltip v-if="showSuccess" effect="dark" placement="bottom">
+            <div slot="content">{{ successText }}</div>
 
-          <el-button style="font-size: 53px;" v-if="showSuccess === true" type="success" icon="el-icon-check" circle></el-button>
+            <el-button style="font-size: 53px;" v-if="showSuccess === true" type="success" icon="el-icon-check" circle></el-button>
+          </el-tooltip>
         </div>
 
       </div>
@@ -335,6 +338,7 @@ export default {
           this.showError = 'Hash does not match the provided data!';
         } else {
           this.showSuccess = true;
+          this.successText = 'Hashes are matching! Data wasn\'t tampered with!';
         }
       } else { // is DATEd25519
         const data = result.data.data;
@@ -348,6 +352,7 @@ export default {
           );
           if (result) {
             ths.showSuccess = true;
+            this.successText = 'Signature is correct. Data wasn\'t tampered with';
           } else {
             this.showError = true;
             this.showError = 'ed25519 signature does not match';
