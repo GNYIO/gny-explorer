@@ -301,7 +301,7 @@ export default {
           maxRedirects: 0, // do not redirect
           // responseType: 'json',
           crossDomain: true,
-          timeout: 2000,
+          timeout: 5000,
         });
         console.log('finished request');
       } catch (err) {
