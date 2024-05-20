@@ -3,7 +3,7 @@
     <b-card :title="custom_title" class="shadow">
       <div class="wrapper">
         <div v-if="dat.name !== undefined">
-          Name
+          DAT Name
           <p>{{ dat.name | truncate(18) }} <i class="el-icon-copy-document" @click="copyName"></i></p>
         </div>
         <div v-if="dat.hash !== undefined">
@@ -12,24 +12,24 @@
         </div>
 
         <div v-if="dat.previousHash">
-          Previous Hash
+          Previous Hash in chain
           <p>
             <nuxt-link :to="{ name: 'dat-detail', query: { hash: dat.previousHash } }">{{ dat.previousHash.slice(0, 16) }}</nuxt-link>
           </p>
         </div>
         <div v-else>
-          Previous Hash
+          Previous Hash in chain
           <p>no previous hash</p>
         </div>
 
         <div v-if="nextHash.hash">
-          Next Hash
+          Next Hash in chain
           <p>
             <nuxt-link :to="{ name: 'dat-detail', query: { hash: nextHash.hash } }">{{ nextHash.hash.slice(0, 16) }}</nuxt-link>
           </p>
         </div>
         <div v-else>
-          Next Hash
+          Next Hash in chain
           <p>no next hash</p>
         </div>
 
@@ -69,7 +69,7 @@
 
         <div>
           <el-tooltip v-if="showError === false && showSuccess === false" effect="dark" placement="bottom">
-            <div slot="content">Verify this DAT by clicking this button.<br/> Use at your own risk!</div>
+            <div slot="content">Click to verify this DAT.<br/> Use at your own risk!</div>
 
             <!-- setting the "border-width" to "0px" fixes a bug where the border of the button overflows the el-loading-mask css class -->
             <el-button style="font-size: 53px; border-width: 0px;" @click="verify" type="warning" icon="el-icon-question" circle v-loading="buttonLoading"></el-button>
@@ -311,7 +311,7 @@ export default {
         console.log(err);
 
         this.showError = true;
-        this.errorText = 'File can\'t be found!';
+        this.errorText = 'File not found!';
 
         // todo: show Notification popup
         return;
@@ -335,10 +335,10 @@ export default {
         const ownHash = webEd.createSha256Hash(data);
         if (hash !== ownHash) {
           this.showError = true;
-          this.showError = 'Hash does not match the provided data!';
+          this.showError = 'Data does not match the provided Hash!';
         } else {
           this.showSuccess = true;
-          this.successText = 'Hashes are matching! Data wasn\'t tampered with!';
+          this.successText = 'Hashes are matching! Data has not changed.';
         }
       } else { // is DATEd25519
         const data = result.data.data;
