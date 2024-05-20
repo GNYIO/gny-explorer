@@ -322,7 +322,7 @@ export default {
 
       // validate structure of data
       const validationResult = gnyClient.schemas.datSchema.validate(result.data);
-      if (validationResult.error) {
+      if (!validationResult.result) {
         this.showError = true;
         this.errorText = 'Data is not in correct format';
         return;
@@ -335,7 +335,7 @@ export default {
         const ownHash = webEd.createSha256Hash(data);
         if (hash !== ownHash) {
           this.showError = true;
-          this.showError = 'Data does not match the provided Hash!';
+          this.errorText = 'Data does not match the provided Hash!';
         } else {
           this.showSuccess = true;
           this.successText = 'Hashes are matching! Data has not changed.';
