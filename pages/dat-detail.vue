@@ -43,7 +43,7 @@
 
         <!-- use v-if otherwise when loading one can see for a split second "undefined" -->
         <div v-if="dat.counter">
-          nth DAT from same Maker
+          Chronological order position
           <p><strong>{{ dat.counter | ordinal }}</strong> DAT from <nuxt-link :to="{ name: 'dat-maker-detail', query: { makerId: dat.datMakerId } }">{{ dat.datMakerId }}</nuxt-link></p>
         </div>
 
