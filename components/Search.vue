@@ -8,8 +8,8 @@
 
 <script>
 import { joi } from '@gnyio/extended-joi';
-import BigNumber from 'bignumber.js';
 import * as gnyClient from '@gnyio/client';
+import { isDatMaker, isDatName, isDatHash } from '@gnyio/utils';
 
 console.log(`endpoint: ${process.env['GNY_ENDPOINT']}`);
 const connection = new gnyClient.Connection(
@@ -29,6 +29,21 @@ export default {
   methods: {
     async search() {
       const input = this.input;
+
+      if (isDatMaker(input)) {
+        this.$router.push({ name: 'dat-maker-detail', query: { makerId: input }});
+        return;
+      }
+
+      if (isDatName(input)) {
+        this.$router.push({ name: 'dat-detail', query: { name: input }});
+        return;
+      }
+
+      if (isDatHash(input)) {
+        this.$router.push({ name: 'dat-detail', query: { hash: input }});
+        return;
+      }
 
       const addressSchema = joi
         .string()
