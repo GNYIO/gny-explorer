@@ -14,7 +14,7 @@ import Block from '~/components/Block.vue';
 import Transaction from '~/components/Transaction.vue';
 
 import BigNumber from 'bignumber.js';
-import * as gnyClient from '@gny/client';
+import * as gnyClient from '@gnyio/client';
 console.log(`endpoint: ${process.env['GNY_ENDPOINT']}`);
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],

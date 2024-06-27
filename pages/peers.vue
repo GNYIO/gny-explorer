@@ -29,7 +29,7 @@ function sleep(ms) {
 }
 
 
-import * as gnyClient from '@gny/client';
+import * as gnyClient from '@gnyio/client';
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],
   Number(process.env['GNY_PORT']),
