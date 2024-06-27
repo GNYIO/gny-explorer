@@ -1,10 +1,9 @@
 <template>
   <div>
-    <b-card title="DAT
-     info" class="shadow">
+    <b-card :title="custom_title" class="shadow">
       <div class="wrapper">
         <div v-if="dat.name !== undefined">
-          Name
+          DAT Name
           <p>{{ dat.name | truncate(18) }} <i class="el-icon-copy-document" @click="copyName"></i></p>
         </div>
         <div v-if="dat.hash !== undefined">
@@ -13,24 +12,24 @@
         </div>
 
         <div v-if="dat.previousHash">
-          Previous Hash
+          Previous Hash in chain
           <p>
             <nuxt-link :to="{ name: 'dat-detail', query: { hash: dat.previousHash } }">{{ dat.previousHash.slice(0, 16) }}</nuxt-link>
           </p>
         </div>
         <div v-else>
-          Previous Hash
+          Previous Hash in chain
           <p>no previous hash</p>
         </div>
 
         <div v-if="nextHash.hash">
-          Next Hash
+          Next Hash in chain
           <p>
             <nuxt-link :to="{ name: 'dat-detail', query: { hash: nextHash.hash } }">{{ nextHash.hash.slice(0, 16) }}</nuxt-link>
           </p>
         </div>
         <div v-else>
-          Next Hash
+          Next Hash in chain
           <p>no next hash</p>
         </div>
 
@@ -44,7 +43,7 @@
 
         <!-- use v-if otherwise when loading one can see for a split second "undefined" -->
         <div v-if="dat.counter">
-          nth DAT from same Maker
+          Chronological order position
           <p><strong>{{ dat.counter | ordinal }}</strong> DAT from <nuxt-link :to="{ name: 'dat-maker-detail', query: { makerId: dat.datMakerId } }">{{ dat.datMakerId }}</nuxt-link></p>
         </div>
 
@@ -66,6 +65,26 @@
           DAT URL <span class="grayed_out">(at your own risk)</span>
           <p>{{ dat.url | truncate(24)}}  <i class="el-icon-copy-document" @click="copyDatUrl"></i>
           </p>
+        </div>
+
+        <div>
+          <el-tooltip v-if="showError === false && showSuccess === false" effect="dark" placement="bottom">
+            <div slot="content">Click to verify this DAT.<br/> Use at your own risk!</div>
+
+            <!-- setting the "border-width" to "0px" fixes a bug where the border of the button overflows the el-loading-mask css class -->
+            <el-button style="font-size: 53px; border-width: 0px;" @click="verify" type="warning" icon="el-icon-question" circle v-loading="buttonLoading"></el-button>
+          </el-tooltip>
+
+          <el-tooltip v-if="showError" effect="dark" placement="bottom">
+            <div slot="content">{{ errorText }}</div>
+            <el-button style="font-size: 53px;" v-if="showError === true" type="danger" icon="el-icon-close" circle></el-button>
+          </el-tooltip>
+
+          <el-tooltip v-if="showSuccess" effect="dark" placement="bottom">
+            <div slot="content">{{ successText }}</div>
+
+            <el-button style="font-size: 53px;" v-if="showSuccess === true" type="success" icon="el-icon-check" circle></el-button>
+          </el-tooltip>
         </div>
 
       </div>
@@ -97,6 +116,8 @@
 <script>
 import { mapGetters } from 'vuex';
 import * as gnyClient from '@gnyio/client';
+import axios from 'axios';
+import * as webEd from '@gnyio/web-ed';
 
 const connection = new gnyClient.Connection(
   process.env['GNY_ENDPOINT'],
@@ -108,6 +129,23 @@ const connection = new gnyClient.Connection(
 export default {
   computed: {
     ...mapGetters(['width']),
+    custom_title: {
+      get: function() {
+        if (typeof this.dat.name === 'string') {
+          const last = this.dat.name.split('.')[1];
+
+          if (last.length > 20) {
+            const lastShort = last.slice(0, 20) + '...';
+            return `DAT ${lastShort}`;
+          } else {
+            return `DAT ${last}`
+          }
+
+        } else {
+          return 'DAT Info';
+        }
+      },
+    }
   },
   watch: {
     '$route.query.name': async function (name) {
@@ -122,6 +160,13 @@ export default {
 
   data() {
     return {
+      showError: false,
+      errorText: '',
+
+      showSuccess: false,
+      successText: '',
+      buttonLoading: false,
+
       dat: {},
       datMaker: {},
       nextHash: {},
@@ -239,6 +284,86 @@ export default {
       } catch (e) {
         console.error(e);
       }
+    },
+
+    async verify() {
+      this.buttonLoading = true;
+
+      console.log('verifing DAT...');
+
+      let result = null;
+      try {
+        console.log(`url: ${this.dat.url}`);
+
+        result = await axios.request({
+          method: 'GET',
+          url: this.dat.url,
+          maxRedirects: 0, // do not redirect
+          // responseType: 'json',
+          crossDomain: true,
+          timeout: 5000,
+        });
+        console.log('finished request');
+      } catch (err) {
+
+        // error happens if domain does not exist or file can't be found
+        console.log('error during fetching json data (dat-detail)');
+        console.log(err);
+
+        this.showError = true;
+        this.errorText = 'File not found!';
+
+        // todo: show Notification popup
+        return;
+      }
+
+      console.log('after try block');
+
+
+      // validate structure of data
+      const validationResult = gnyClient.schemas.datSchema.validate(result.data);
+      if (!validationResult.result) {
+        this.showError = true;
+        this.errorText = 'Data is not in correct format';
+        return;
+      }
+
+      if (result.data.hash) { // is DATsha256
+        const data = result.data.data;
+        const hash = result.data.hash;
+
+        const ownHash = webEd.createSha256Hash(data);
+        if (hash !== ownHash) {
+          this.showError = true;
+          this.errorText = 'Data does not match the provided Hash!';
+        } else {
+          this.showSuccess = true;
+          this.successText = 'Hashes are matching! Data has not changed.';
+        }
+      } else { // is DATEd25519
+        const data = result.data.data;
+        const publicKey = result.data.publicKey;
+        const signature = result.data.signature;
+        try {
+          const result = gnyClient.verification.MessageWebBase.verify(
+            data,
+            signature,
+            publicKey
+          );
+          if (result) {
+            ths.showSuccess = true;
+            this.successText = 'Signature is correct. Data wasn\'t tampered with';
+          } else {
+            this.showError = true;
+            this.showError = 'ed25519 signature does not match';
+          }
+        } catch (err) {
+          this.showError = true;
+          this.showError = 'ed25519 not in correct format';
+          return;
+        }
+      }
+
     },
   },
 
