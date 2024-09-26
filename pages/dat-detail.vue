@@ -188,6 +188,11 @@ export default {
       this.nextHash = {};
       this.rows = [];
 
+      // dats
+      this.showError = false;
+      this.showSuccess = false;
+      this.buttonLoading = false;
+
       let dat = null;
       if (hash) {
         const result = await connection.api.Dat.getSingleDat({
