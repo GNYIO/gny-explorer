@@ -28,6 +28,12 @@
           DATs created
           <p>{{ maker.datCounter }}</p>
         </div>
+        <div>
+          Creation Time
+          <p>{{ maker.timestamp | timestamp2datefilter }}</p>
+        </div>
+
+
       </div>
     </b-card>
 

@@ -62,6 +62,11 @@
         </div>
 
         <div>
+          Time Minted
+          <p>{{ dat.timestamp | timestamp2datefilter }}</p>
+        </div>
+
+        <div>
           DAT URL <span class="grayed_out">(at your own risk)</span>
           <p>{{ dat.url | truncate(24)}}  <i class="el-icon-copy-document" @click="copyDatUrl"></i>
           </p>
@@ -182,6 +187,11 @@ export default {
       this.datMaker = {};
       this.nextHash = {};
       this.rows = [];
+
+      // dats
+      this.showError = false;
+      this.showSuccess = false;
+      this.buttonLoading = false;
 
       let dat = null;
       if (hash) {
@@ -314,6 +324,7 @@ export default {
         this.errorText = 'File not found!';
 
         // todo: show Notification popup
+        this.buttonLoading = false;
         return;
       }
 
@@ -325,6 +336,7 @@ export default {
       if (!validationResult.result) {
         this.showError = true;
         this.errorText = 'Data is not in correct format';
+        this.buttonLoading = false;
         return;
       }
 
@@ -336,9 +348,13 @@ export default {
         if (hash !== ownHash) {
           this.showError = true;
           this.errorText = 'Data does not match the provided Hash!';
+          this.buttonLoading = false;
+          return;
         } else {
           this.showSuccess = true;
           this.successText = 'Hashes are matching! Data has not changed.';
+          this.buttonLoading = false;
+          return;
         }
       } else { // is DATEd25519
         const data = result.data.data;
@@ -353,13 +369,18 @@ export default {
           if (result) {
             ths.showSuccess = true;
             this.successText = 'Signature is correct. Data wasn\'t tampered with';
+            this.buttonLoading = false;
+            return;
           } else {
             this.showError = true;
-            this.showError = 'ed25519 signature does not match';
+            this.errorText = 'ed25519 signature does not match';
+            this.buttonLoading = false;
+            return;
           }
         } catch (err) {
           this.showError = true;
-          this.showError = 'ed25519 not in correct format';
+          this.errorText = 'ed25519 not in correct format';
+          this.buttonLoading = false;
           return;
         }
       }
