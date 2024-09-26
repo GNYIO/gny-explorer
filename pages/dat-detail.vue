@@ -324,6 +324,7 @@ export default {
         this.errorText = 'File not found!';
 
         // todo: show Notification popup
+        this.buttonLoading = false;
         return;
       }
 
@@ -335,6 +336,7 @@ export default {
       if (!validationResult.result) {
         this.showError = true;
         this.errorText = 'Data is not in correct format';
+        this.buttonLoading = false;
         return;
       }
 
@@ -346,9 +348,13 @@ export default {
         if (hash !== ownHash) {
           this.showError = true;
           this.errorText = 'Data does not match the provided Hash!';
+          this.buttonLoading = false;
+          return;
         } else {
           this.showSuccess = true;
           this.successText = 'Hashes are matching! Data has not changed.';
+          this.buttonLoading = false;
+          return;
         }
       } else { // is DATEd25519
         const data = result.data.data;
@@ -363,13 +369,18 @@ export default {
           if (result) {
             ths.showSuccess = true;
             this.successText = 'Signature is correct. Data wasn\'t tampered with';
+            this.buttonLoading = false;
+            return;
           } else {
             this.showError = true;
-            this.showError = 'ed25519 signature does not match';
+            this.errorText = 'ed25519 signature does not match';
+            this.buttonLoading = false;
+            return;
           }
         } catch (err) {
           this.showError = true;
-          this.showError = 'ed25519 not in correct format';
+          this.errorText = 'ed25519 not in correct format';
+          this.buttonLoading = false;
           return;
         }
       }
