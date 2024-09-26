@@ -62,6 +62,11 @@
         </div>
 
         <div>
+          Time Minted
+          <p>{{ dat.timestamp | timestamp2datefilter }}</p>
+        </div>
+
+        <div>
           DAT URL <span class="grayed_out">(at your own risk)</span>
           <p>{{ dat.url | truncate(24)}}  <i class="el-icon-copy-document" @click="copyDatUrl"></i>
           </p>

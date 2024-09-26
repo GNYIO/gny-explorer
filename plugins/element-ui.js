@@ -3,6 +3,8 @@ import ElementUI from 'element-ui';
 // import 'element-theme-chalk';
 import 'element-ui/lib/theme-chalk/index.css';
 import locale from 'element-ui/lib/locale/lang/en';
+import moment from 'moment';
+import { slots } from '@gnyio/utils';
 
 Vue.use(ElementUI, { locale });
 
@@ -30,4 +32,12 @@ Vue.filter('ordinal', function(text) {
   if (lastChar === '3') return `${text}rd`;
 
   return `${text}th`;
+});
+
+Vue.filter('timestamp2datefilter', function (text) {
+  if (text === null || text === undefined || text === '') {
+    return '';
+  }
+
+  return moment.utc(slots.getRealTime(text)).format('YYYY-MM-DD HH:mm:ss UTC');
 });
