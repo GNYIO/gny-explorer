@@ -3,9 +3,9 @@
 
 ## Configure Endpoint
 
-Create `.env` variable
+Create `.dev.vars` variable
 ```bash
-touch .env
+touch .dev.vars
 ```
 
 Insert the following values into `.env`
@@ -15,6 +15,7 @@ GNY_NETWORK=localnet
 GNY_PORT=4096
 GNY_HTTPS=false
 ```
+
 
 ## Build Setup
 
@@ -32,6 +33,7 @@ $ npm run start
 # generate static project
 $ npm run generate
 ```
+
 
 
 # Local Function Development
