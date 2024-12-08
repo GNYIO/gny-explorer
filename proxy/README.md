@@ -39,3 +39,7 @@ curl 'https://proxy.gny.io/?ip=21.21.21.21&port=4096'
 
 ```
 
+
+## TODO
+
+Currently the proxy does not restrict users to pass in localhost ip addresses: `?ip=127.0.0.1`. This could be used to enumerate the locally running services.

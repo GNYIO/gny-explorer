@@ -11,7 +11,7 @@ const result = {
 };
 
 async function getNode(axios, ip, port, network, https) {
-    const url = `/api?ip=${ip}&port=${port}&networkType=${network}&https=${https}`;
+    const url = `https://proxy.gny.io/api?ip=${ip}&port=${port}&networkType=${network}&https=${https}`;
     console.log(`getNode() url: ${url}`);
     const request = await axios.get(url);
 
