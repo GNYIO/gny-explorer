@@ -10,11 +10,12 @@ touch .env
 
 Insert the following values into `.env`
 ```bash
-GNY_ENDPOINT=45.76.215.117
-GNY_NETWORK=localnet
+GNY_ENDPOINT=testnet.gny.io
+GNY_NETWORK=testnet
 GNY_PORT=4096
-GNY_HTTPS=false
+GNY_HTTPS=true
 ```
+
 
 ## Build Setup
 
@@ -34,22 +35,7 @@ $ npm run generate
 ```
 
 
-# Local Function Development
 
-```bash
-npm install --global netlify-cli
+# /peers
 
-# build functions -> functions-build
-NODE_ENV=dev netlify functions:build --src=functions --functions=functions-build
-
-
-# build the vue.js app into -> dist
-npm run generate
-
-
-# serve (the static)
-#    dist/
-#    functions-build/
-netlify dev --dir=dist --functions=functions-build
-```
-
+The **/peers** tab calls the proxy server in the `proxy/` directory. Before we used `netlify functions`. We no longer use `netlify`, because they have no cost cap.

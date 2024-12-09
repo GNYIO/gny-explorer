@@ -1,0 +1,25 @@
+[Unit]
+Description=gny-explorer-proxy
+Documentation=https://github.com/gnyio/gny-explorer/blob/testnet/proxy/README.md
+Wants=network-online.target
+After=network-online.target
+
+
+[Service]
+User=gny-explorer-proxy
+Group=gny-explorer-proxy
+Type=simple
+WorkingDirectory=/opt/gny-explorer/proxy
+ExecStart=/usr/local/bin/node /opt/gny-explorer/proxy/index.js
+Restart=on-failure
+
+
+ProtectSystem=strict
+RestrictAddressFamilies=AF_INET
+NoNewPrivileges=yes
+RestrictSUIDSGID=yes
+ProtectKernelModules=yes
+
+
+[Install]
+WantedBy=multi-user.target
