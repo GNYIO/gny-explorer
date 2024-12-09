@@ -1,5 +1,5 @@
-import express, { request } from 'express';
-import ky from 'ky';
+import express from 'express';
+import axios from 'axios';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import expressWinston from 'express-winston';
@@ -89,17 +89,20 @@ app.get('/request', async function (req, res) {
     let peersInfo;
     let peers;
     try {
-        system = await ky.get(`http://${ip}:${port}/api/system`, {
+        const { data: systemData } = await axios.get(`http://${ip}:${port}/api/system`, {
             timeout: 1000,
-        }).json();
+        });
+        system = systemData;
 
-        peersInfo = await ky.get(`http://${ip}:${port}/api/peers/info`, {
+        const { data: peersInfoData } = await axios.get(`http://${ip}:${port}/api/peers/info`, {
             timeout: 1000,
-        }).json()
+        });
+        peersInfo = peersInfoData;
 
-        peers = await await ky.get(`http://${ip}:${port}/api/peers`, {
+        const { data: peersData } = await await axios.get(`http://${ip}:${port}/api/peers`, {
             timeout: 1000,
-        }).json()
+        });
+        peers = peersData;
 
     } catch (err) {
         console.log(err.message)
