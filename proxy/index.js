@@ -1,9 +1,34 @@
-import express from 'express';
+import express, { request } from 'express';
 import ky from 'ky';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import expressWinston from 'express-winston';
 import winston from 'winston';
+import { Counter, register } from 'prom-client';
+
+const requests = new Counter({
+    name: 'gny_explorer_proxy_requests',
+    help: 'requests counter',
+    labelNames: ['method', 'endpoint', 'statusCode'],
+});
+
+// initialize metrics
+requests.inc({
+    method: 'GET',
+    endpoint: '/request',
+    statusCode: 200, // success
+}, 0);
+requests.inc({
+    method: 'GET',
+    endpoint: '/request',
+    statusCode: 421, // validation failed
+}, 0);
+requests.inc({
+    method: 'GET',
+    endpoint: '/metrics',
+    statusCode: 200, // success
+}, 0);
+
 
 const app = express();
 app.use(cors());
@@ -90,7 +115,20 @@ app.get('/request', async function (req, res) {
         peersInfo,
         peers,
     });
-})
+});
+
+app.get('/metrics', async function (req, res) {
+    requests.inc({
+        method: 'GET',
+        endpoint: '/metrics',
+        statusCode: '200',
+    });
+
+    const data = await register.metrics();
+    res.set('Content-Type', register.contentType);
+
+    return res.send(data);
+});
 
 
 app.listen('5000', '127.0.0.1', function (err) {
