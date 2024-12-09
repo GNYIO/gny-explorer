@@ -102,7 +102,7 @@ app.get('/request', async function (req, res) {
         const { data: peersData } = await await axios.get(`http://${ip}:${port}/api/peers`, {
             timeout: 1000,
         });
-        peers = peersData;
+        peers = peersData.peers;
 
     } catch (err) {
         console.log(err.message)
