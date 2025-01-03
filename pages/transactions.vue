@@ -1,13 +1,7 @@
 <template>
     <b-card title="Transactions" class="shadow">
       <el-table :data="transactions" stripe height="500" v-loading="loading">
-        <el-table-column prop="id" align="center" width="auto" label="Transaction ID">
-          <template v-slot:default="table">
-            <nuxt-link class="nuxt-link" :to="{name: 'transaction-detail', query: { id: table.row.id }}">
-              {{table.row.id.slice(0,8)}}
-            </nuxt-link>
-          </template>
-        </el-table-column>
+
         <el-table-column prop="height" align="center" label="Block Height" width="auto">
           <template v-slot:default="table">
             <nuxt-link class="nuxt-link" :to="{name: 'block-detail', query: { height: table.row.height }}">

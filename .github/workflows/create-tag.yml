@@ -1,0 +1,37 @@
+name: create tag
+on:
+  workflow_dispatch:
+    inputs:
+      desiredTag:
+        description: Specify release tag
+        required: true
+
+jobs:
+  run-merge:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '20.13.1'
+
+      - name: update package.json
+        run: node scripts/update_version.js ${{ github.event.inputs.desiredTag }}
+
+      # - name: git add
+      #   run: git add package.json
+
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Release ${{ github.event.inputs.desiredTag }}"
+          commit_user_name: My GitHub Actions Bot
+          commit_user_email: my-github-actions-bot@example.org
+          commit_author: Author <actions@github.com>
+          tagging_message: "${{ github.event.inputs.desiredTag }}"

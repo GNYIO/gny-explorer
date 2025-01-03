@@ -5,7 +5,7 @@
         <div>
           Block ID
           <p>
-            {{id}}...  <i class="el-icon-copy-document" @click="copyId"></i>
+            {{id | truncate(24)}}  <i class="el-icon-copy-document" @click="copyId"></i>
           </p>
         </div>
         <div :span="8" >
@@ -16,7 +16,7 @@
           Previous block
           <p>
             <nuxt-link class="nuxt-link" :to="{ name: 'block-detail', query: { height: block.height - 1 }}">
-              {{prevId}}...
+              {{prevId | truncate(24)}}
             </nuxt-link>
           </p>
         </div>
@@ -66,7 +66,7 @@
             </nuxt-link>
           </template>
         </el-table-column>
-        <el-table-column prop="fee" align="center" label="Fee" width="120"></el-table-column>
+        <el-table-column prop="fee" align="center" label="Fee" :formatter="formatFee" width="120"></el-table-column>
       </el-table>
     </b-card>
   </div>
@@ -123,6 +123,11 @@ export default {
       return moment.utc(slots.getRealTime(row.timestamp)).format('YYYY-MM-DD HH:mm:ss UTC');
     },
 
+    formatFee: function (row) {
+      console.log(row.fee);
+      return new BigNumber(row.fee).dividedBy(1e8).toFixed();
+    },
+
     updatePage: async function (height) {
       try {
       const block = (await connection.api.Block.getBlockByHeight(height)).block;
@@ -133,7 +138,7 @@ export default {
       this.block = block
 
       if (new BigNumber(this.block.height).isGreaterThan(0)) {
-        this.prevId = this.block.prevBlockId.slice(0, 24);
+        this.prevId = this.block.prevBlockId;
       } else {
         this.prevId = null;
       }
@@ -141,7 +146,7 @@ export default {
       this.date = moment.utc(slots.getRealTime(this.block.timestamp)).format('YYYY-MM-DD HH:mm:ss UTC');
       this.transactions = transactions;
 
-      this.id = this.block.id.slice(0, 24);
+      this.id = this.block.id;
 
       this.reward = new BigNumber(this.block.reward).dividedBy(1e8).toFixed();
 

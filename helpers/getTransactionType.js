@@ -7,6 +7,7 @@ const mapping = {
   5: 'basic.unvote',
   6: 'basic.unlock',
   10: 'basic.registerDelegate',
+  20: 'basic.burn',
   100: 'uia.registerIssuer',
   101: 'uia.registerAsset',
   102: 'uia.issue',
@@ -20,6 +21,8 @@ const mapping = {
   207: 'ml.fraudDetection',
   208: 'ml.locationPrediction',
   209: 'ml.nlp',
+  300: 'dat.registerDatMaker',
+  301: 'dat.createDat',
 };
 
 

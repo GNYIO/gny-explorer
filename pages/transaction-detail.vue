@@ -160,6 +160,53 @@
       <!--transaction type 103 end-->
 
 
+      <!--transaction type 300 start-->
+      <div v-if="transaction.type === 300">
+        DAT Maker Name
+        <p>
+          <nuxt-link class="nuxt-link" :to="{name: 'dat-maker-detail', query: { makerId: datMakerName }}">
+            {{ datMakerName | truncate(32) }}
+          </nuxt-link>
+        </p>
+      </div>
+      <div v-if="transaction.type === 300">
+        DAT Maker Description
+        <p>{{ datMakerDesc }}</p>
+      </div>
+      <!--transaction type 300 end-->
+
+      <!--transaction type 301 start-->
+      <div v-if="transaction.type === 301">
+        DAT Name
+        <p>
+          <nuxt-link class="nuxt-link" :to="{name: 'dat-detail', query: { name: datName }}">
+            {{ datName | truncate(28) }}
+          </nuxt-link>
+        </p>
+      </div>
+      <div v-if="transaction.type === 301">
+        DAT Hash 
+        <p>
+          <nuxt-link class="nuxt-link" :to="{name: 'dat-detail', query: { hash: datHash }}">
+            {{ datHash | truncate(28) }}
+          </nuxt-link>
+        </p>
+      </div>
+      <div v-if="transaction.type === 301">
+        DAT Maker
+        <p>
+          <nuxt-link class="nuxt-link" :to="{name: 'dat-maker-detail', query: { makerId: datMakerId }}">
+            {{ datMakerId | truncate(28) }}
+          </nuxt-link>
+        </p>
+      </div>
+      <div v-if="transaction.type === 301">
+        DAT URL <span class="grayed_out">(at your own risk)</span>
+        <p>{{datUrl | truncate(28)}}  <i class="el-icon-copy-document" @click="copyDatUrl"></i></p>
+      </div>
+
+      <!--transaction type 301 end-->
+
       <div v-if="!!message">
         Message
         <el-tooltip class="item" effect="light" :content="message" placement="bottom">
@@ -235,6 +282,12 @@ export default {
         return 'Transaction - Transfer Asset';
       }
 
+      if (this.transaction && this.transaction.type === 300) {
+        return 'Transaction - Create DAT Maker';
+      }
+      if (this.transaction && this.transaction.type === 301) {
+        return 'Transaction - Create DAT';
+      }
 
       // fallback
       return 'Custom Transaction Name';
@@ -265,6 +318,14 @@ export default {
       secondPublicKey: '',
       message: '',
       burnedGNY: '',
+
+      datMakerName: '',
+      datMakerDesc: '',
+
+      datName: '',
+      datHash: '',
+      datUrl: '',
+      datMakerId: '',
     }
   },
 
@@ -300,6 +361,13 @@ export default {
     async copySecondSenderPubilcKey() {
       try {
         await this.$copyText(this.secondPublicKey);
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    async copyDatUrl() {
+      try {
+        await this.$copyText(this.datUrl);
       } catch (e) {
         console.error(e);
       }
@@ -386,6 +454,16 @@ export default {
           this.amount = new BigNumber(this.args[1]).dividedBy(precision).toFixed();
           this.recipientId = this.args[2];
           break;
+        case 300:
+          this.datMakerName = this.args[0];
+          this.datMakerDesc = this.args[1];
+          break;
+        case 301:
+          this.datName = this.args[0];
+          this.datHash = this.args[1];
+          this.datMakerId = this.args[2];
+          this.datUrl = this.args[3];
+          break;
       }
 
     }
@@ -446,6 +524,13 @@ p {
 
 .el-icon-copy-document:active {
   color: black;
+}
+
+
+.grayed_out {
+  color: #acacac;
+  font-size: 12px;
+  font-weight: 300;
 }
 
 </style>
