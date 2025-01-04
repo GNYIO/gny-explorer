@@ -1,9 +1,9 @@
-import Vue from 'vue';
+// import Vue from 'vue';
 
 
-const state = Vue.observable({
-  width: window.innerWidth,
-});
+// const state = Vue.observable({
+//   width: window.innerWidth,
+// });
 
 
 window.addEventListener('resize', () => {

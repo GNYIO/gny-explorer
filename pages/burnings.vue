@@ -18,12 +18,12 @@
         </template>
       </el-table-column>
 
-      <infinite-loading
+      <!-- <infinite-loading
         slot="append"
         @infinite="infiniteHandler"
         force-use-infinite-wrapper=".el-table__body-wrapper">
         <div slot="no-more"></div>
-      </infinite-loading>
+      </infinite-loading> -->
     </el-table>
   </b-card>
 </template>

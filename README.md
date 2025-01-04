@@ -12,7 +12,7 @@ Insert the following values into `.env`
 ```bash
 GNY_ENDPOINT=testnet.gny.io
 GNY_NETWORK=testnet
-GNY_PORT=4096
+GNY_PORT=80
 GNY_HTTPS=true
 ```
 

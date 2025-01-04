@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import ElementUI from 'element-ui';
 // import 'element-theme-chalk';
-import 'element-ui/lib/theme-chalk/index.css';
+import 'element-plus/lib/theme-chalk/index.css';
 import locale from 'element-ui/lib/locale/lang/en';
 import moment from 'moment';
 import { slots } from '@gnyio/utils';

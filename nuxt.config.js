@@ -37,7 +37,7 @@ module.exports = {
   ** Global CSS
   */
   css: [
-    'element-ui/lib/theme-chalk/index.css'
+    /* 'element-plus/lib/theme-chalk/index.css' */
   ],
   /*
   ** Plugins to load before mounting the App
@@ -66,13 +66,8 @@ module.exports = {
   ** Nuxt.js modules
   */
   modules: [
-    // Doc: https://axios.nuxtjs.org/usage
-    '@nuxtjs/axios',
-    // Doc: https://github.com/nuxt-community/dotenv-module
-    '@nuxtjs/dotenv',
-    'nuxt-clipboard2',
-    '@aceforth/nuxt-netlify',
-    'bootstrap-vue/nuxt',
+    /* https://github.com/vedmant/nuxt3-vuex */
+    'nuxt3-vuex-module',
   ],
   /*
   ** Axios module configuration

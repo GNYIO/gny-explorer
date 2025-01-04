@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -88,7 +89,7 @@ export default {
 
   async mounted() {
 
-    const result = await getAllPeers(this.$axios);
+    const result = await getAllPeers(axios);
 
     this.graphNodes.push(...result.visNodes);
 

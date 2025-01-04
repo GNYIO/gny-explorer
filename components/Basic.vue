@@ -1,5 +1,9 @@
 <template>
-  <b-card title="Basic" class="shadow">
+  <div class="card-body shadow">
+    <h4 class="card-title">
+      Basic
+    </h4>
+
     <div class="wrapper">
       <div>
         Blocks
@@ -44,7 +48,7 @@
         <p v-if="burned">{{burned}} GNY</p>
       </div>
     </div>
-  </b-card>
+  </div>
 </template>
 
 <script>
@@ -115,5 +119,20 @@ p {
   .wrapper {
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   }
+}
+
+.card-body {
+  flex: 1 1 auto;
+  min-height: 1px;
+  padding: 1.25rem;
+}
+
+.card-title {
+  margin-bottom: 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 500;
+  line-height: 1.2;
+  margin-top: 0;
+
 }
 </style>

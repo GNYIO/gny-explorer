@@ -20,12 +20,12 @@
         <el-table-column v-if="width > 800" prop="fee" label="Fee" align="center" width="auto" :formatter="formatFee"></el-table-column>
         <el-table-column v-if="width > 600" prop="type" label="Type" align="center" width="auto" :formatter="formatType"></el-table-column>
 
-        <infinite-loading
+        <!-- <infinite-loading
           slot="append"
           @infinite="infiniteHandler"
           force-use-infinite-wrapper=".el-table__body-wrapper">
           <div slot="no-more"></div>
-        </infinite-loading>
+        </infinite-loading> -->
       </el-table>
 
     </b-card>
